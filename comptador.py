@@ -44,7 +44,7 @@ class Comptador:
         if type(tipus) != int:
             raise RuntimeError("Tipus no es un enter");
             
-        if tipus < 1 || tipus > 3:
+        if (tipus < 1 or tipus > 3):
             raise RuntimeError("Tipus te el valor = ",tipus);
 
         if type(trama) == list:
@@ -297,40 +297,48 @@ def calculChecksum(self,trama):
 
 
 def llegeixTrama(self):
-    varx = ''
-    checksum = 0
+    varx=''
+    checksum=0
     capcalera=sock.recv(1)
-    if len(capcalera) == 1: #si hem rebut algun caracter
-        if ord(capcalera) == 0x10: #en cas que sigui tFixa:
-            varx=sock.recv(5)
-        if len(varx) == 5:
-        trama=list(capcalera + varx)
-        for i in range(len(trama)):
-        if type(trama[i]) == str:
-        trama[i] = ord(trama[i])
-        checksum = self.calculChecksum(trama)
-        if trama[5] != 0x16: #comprovar ultim caracter
-        print("ERROR en la funcio llegeixTrama():")
-        print("L'ultim caracter de la trama no es 0x16 sino", (trama[5]))
-        print(trama)
-        trama = []
-        return trama
-        if checksum != (trama[4]): #comprovar checksum
-        print("ERROR en la funcio llegeixTrama():")
-        print("El Checksum no coincideix amb la informacio de la trama")
-        print(trama)
-        print('esperat:', checksum)
-        print('obtingut:', (trama[4]))
-        trama = []
-        return trama
-    #en cas que la capçalera, el final i el checksum siguin correctes envia:
-    return trama
+
+    if len(capcalera) > 0: #si hem rebut algun caracter
+
+			if ord(capcalera) == 0x10: #en cas que sigui tFixa:
+				varx=sock.recv(5)
+
+			if len(varx) == 5:
+				trama=list(capcalera + varx)
+
+			for i in range(len(trama)):
+			if type(trama[i]) == str:
+			trama[i] = ord(trama[i])
+			checksum = self.calculChecksum(trama)
+			if trama[5] != 0x16: #comprovar ultim caracter
+				print("ERROR en la funcio llegeixTrama():")
+				print("L'ultim caracter de la trama no es 0x16 sino", (trama[5]))
+				print(trama)
+				trama = []
+				return trama
+
+			if checksum != (trama[4]): #comprovar checksum
+				print("ERROR en la funcio llegeixTrama():")
+				print("El Checksum no coincideix amb la informacio de la trama")
+				print(trama)
+				print('esperat:', checksum)
+				print('obtingut:', (trama[4]))
+				trama = []
+				return trama
+
+			#en cas que la capçalera, el final i el checksum siguin correctes envia:
+			return trama
+
     elif len(varx) != 5:
     print("ERROR en la funcio llegeixTrama():")
     print("S\'esperava un paquet de 6 bytes i n'hem rebut:", len(varx))
     print(trama)
     trama = []
     return trama
+
     else:
     print("ERROR en la funcio llegeixTrama():")
     print("S'ha rebut una longitud de trama que no es ni 6, ni 0")
@@ -472,391 +480,391 @@ def envia(self,valors,imprimeix_enviament,imprimeix_rebuda):
 
 def llegirInstantanis(self):
 
-self.diccionari = {
-    "Data":0,
-    "Hora":0,
-    "kWh Activa Importacio":0,
-    "kWh Activa Importacio Error":0,
-    "kWh Activa Exportacio":0,
-    "kWh Activa Exportacio Error":0,
-    "KVArh Reactiva Q1":0,
-    "KVArh Reactiva Q1 Error":0,
-    "KVArh Reactiva Q2":0,
-    "KVArh Reactiva Q2 Error":0,
-    "KVArh Reactiva Q3":0,
-    "KVArh Reactiva Q3 Error":0,
-    "KVArh Reactiva Q4":0,
-    "KVArh Reactiva Q4 Error":0,
-    "Potencia Activa Total KW":0,
-    "Potencia Reactiva Total KVAr":0,
-    "Factor de potencia total (en milessimes)":0,
-    "P. Activa total es importada":0,
-    "P.Reactiva total es Q1/Q2":0,
-    "P.Reactiva total es Q1/Q2 Error":0,
-    "P.Activa Fase I KW":0,
-    "P.Reactiva Fase I KVAr":0,
-    "Factor de Potencia (cos phi). Fase I (en milessimes)":0,
-    "La P. Activa Fase I es importada":0,
-    "P.Reactiva Fase I es Q1/Q2":0,
-    "Error de lectura en P.Total Fase I invalides":0,
-    "P.Activa Fase II KW":0,
-    "P.Reactiva Fase II KVAr":0,
-    "Factor de Potencia (cos phi). Fase II (en milessimes)":0,
-    "P. Activa Fase II es importada":0,
-    "P.Reactiva Fase II es Q1/Q2":0,
-    "Error de lectura P.Total Fase II":0,
-    "P.Activa Fase III KW":0,
-    "P.Reactiva Fase III KVAr":0,
-    "Factor de Potencia (cos phi). Fase III (en milessimes)":0,
-    "La P. Activa Fase III es importada":0,
-    "P.Reactiva Fase III es Q1/Q2":0,
-    "Error de Lectrua en P.Total Fase III":0,
-    "Intensitat Fase I (decimes de A)":0,
-    "Tensio Fase I (decimes de V)":0,
-    "Error de Lectura mesures de Fase I":0,
-    "Intensitat Fase II (decimes de A)":0,
-    "Tensio Fase II (decimes de V)":0,
-    "Error de Lectura de mesures de Fase II":0,
-    "Intensitat Fase III (decimes de A)":0,
-    "Tensio Fase III (decimes de V)":0,
-    "Error de Lectura de les mesures de la Fase III":0,
-}
+	self.diccionari = {
+			"Data":0,
+			"Hora":0,
+			"kWh Activa Importacio":0,
+			"kWh Activa Importacio Error":0,
+			"kWh Activa Exportacio":0,
+			"kWh Activa Exportacio Error":0,
+			"KVArh Reactiva Q1":0,
+			"KVArh Reactiva Q1 Error":0,
+			"KVArh Reactiva Q2":0,
+			"KVArh Reactiva Q2 Error":0,
+			"KVArh Reactiva Q3":0,
+			"KVArh Reactiva Q3 Error":0,
+			"KVArh Reactiva Q4":0,
+			"KVArh Reactiva Q4 Error":0,
+			"Potencia Activa Total KW":0,
+			"Potencia Reactiva Total KVAr":0,
+			"Factor de potencia total (en milessimes)":0,
+			"P. Activa total es importada":0,
+			"P.Reactiva total es Q1/Q2":0,
+			"P.Reactiva total es Q1/Q2 Error":0,
+			"P.Activa Fase I KW":0,
+			"P.Reactiva Fase I KVAr":0,
+			"Factor de Potencia (cos phi). Fase I (en milessimes)":0,
+			"La P. Activa Fase I es importada":0,
+			"P.Reactiva Fase I es Q1/Q2":0,
+			"Error de lectura en P.Total Fase I invalides":0,
+			"P.Activa Fase II KW":0,
+			"P.Reactiva Fase II KVAr":0,
+			"Factor de Potencia (cos phi). Fase II (en milessimes)":0,
+			"P. Activa Fase II es importada":0,
+			"P.Reactiva Fase II es Q1/Q2":0,
+			"Error de lectura P.Total Fase II":0,
+			"P.Activa Fase III KW":0,
+			"P.Reactiva Fase III KVAr":0,
+			"Factor de Potencia (cos phi). Fase III (en milessimes)":0,
+			"La P. Activa Fase III es importada":0,
+			"P.Reactiva Fase III es Q1/Q2":0,
+			"Error de Lectrua en P.Total Fase III":0,
+			"Intensitat Fase I (decimes de A)":0,
+			"Tensio Fase I (decimes de V)":0,
+			"Error de Lectura mesures de Fase I":0,
+			"Intensitat Fase II (decimes de A)":0,
+			"Tensio Fase II (decimes de V)":0,
+			"Error de Lectura de mesures de Fase II":0,
+			"Intensitat Fase III (decimes de A)":0,
+			"Tensio Fase III (decimes de V)":0,
+			"Error de Lectura de les mesures de la Fase III":0,
+	}
 
-#====(12 i 13)
-valorsTrama=dict(tipus='',ccc=0, direccioContador = 0, idASDU = 0, SQN = 0, causa = 0, direccioPM = 0, direccioRegistre = 0, objecteInformacio1 = [None])
-valorsTrama['direccioContador'] = direccioContador
-valorsTrama['tipus'] = 'f'
-valorsTrama['ccc'] = 0x49
-valorsTrama = self.envia(valorsTrama, 0, 0)
+	#====(12 i 13)
+	valorsTrama=dict(tipus='',ccc=0,direccioContador=0,idASDU=0,SQN=0,causa=0,direccioPM=0,direccioRegistre=0,objecteInformacio1=[None])
+	valorsTrama['direccioContador']=direccioContador
+	valorsTrama['tipus']='f'
+	valorsTrama['ccc']=0x49
+	valorsTrama=self.envia(valorsTrama,0,0)
 
-while valorsTrama['ccc'] == None:
-valorsTrama = dict(tipus = '', ccc = 0, direccioContador = 0, idASDU = 0, SQN = 0, causa = 0, direccioPM = 0, direccioRegistre = 0, objecteInformacio1 = [None])
-valorsTrama['direccioContador'] = direccioContador
-valorsTrama['tipus'] = 'f'
-valorsTrama['ccc'] = 0x49
-valorsTrama = self.envia(valorsTrama, 0, 0)
+	while valorsTrama['ccc'] == None:
+	valorsTrama=dict(tipus='',ccc=0,direccioContador=0,idASDU=0,SQN=0,causa=0,direccioPM=0,direccioRegistre=0,objecteInformacio1=[None])
+	valorsTrama['direccioContador']=direccioContador
+	valorsTrama['tipus']='f'
+	valorsTrama['ccc']=0x49
+	valorsTrama=self.envia(valorsTrama,0,0)
 
-if valorsTrama['ccc'] != 0x0B:
-print ("Paquet 13 defectuos! (halt!)")
-time.sleep(10000)
-
-
-#====(14)
-valorsTrama = dict(tipus = '', ccc = 0, direccioContador = 0, idASDU = 0, SQN = 0, causa = 0, direccioPM = 0, direccioRegistre = 0, objecteInformacio1 = [None])
-valorsTrama['direccioContador'] = direccioContador
-valorsTrama['tipus'] = 'f'
-valorsTrama['ccc'] = 0x40
-valorsTrama = self.envia(valorsTrama, 0, 0)
-if valorsTrama['ccc'] != 0x00:
-print("Paquet 15 defectuos!:")
+	if valorsTrama['ccc'] != 0x0B:
+	print ("Paquet 13 defectuos! (halt!)")
+	time.sleep(10000)
 
 
-##====(17 i 18) enviar contrasenya
-unitats = psw & 0xFF
-desenes = (psw & 0xFF00) >> 8
-centenes = (psw & 0xFF0000) >> 16
-milers = (psw & 0xFF000000) >> 24
-
-valorsTrama = dict(tipus = 'v', direccioContador = direccioContador, ccc = 0x73, idASDU = 0xB7, SQN = 0x01, causa = 0x06, direccioRegistre = 0, objecteInformacio1 = [unitats, desenes, centenes, milers])
-valorsTrama = self.envia(valorsTrama, 0, 0)
-if valorsTrama['ccc'] != 0x00:
-print("Paquet 18 defectuos!:")
-
-#====(19 i 20)
-valorsTrama = dict(tipus = '', ccc = 0, direccioContador = 0, idASDU = 0, SQN = 0, causa = 0, direccioPM = 0, direccioRegistre = 0, objecteInformacio1 = [None])
-valorsTrama['direccioContador'] = direccioContador
-valorsTrama['tipus'] = 'f'
-valorsTrama['ccc'] = 0x5B
-valorsTrama = self.envia(valorsTrama, 0, 0)
-if valorsTrama['ccc'] != 0x08 or valorsTrama['causa'] != 0x07 or valorsTrama['idASDU'] != 0xB7:
-print("Paquet 20 defectuos!:")
-
-##====(22 i 23)
-valorsTrama = dict(tipus = 'v', ccc = 0x73, direccioContador = direccioContador, idASDU = 0x8D, SQN = 0, causa = 5, direccioPM = 0, direccioRegistre = 0, objecteInformacio1 = [])
-valorsTrama = self.envia(valorsTrama, 0, 0)
-if valorsTrama['ccc'] != 0x00:
-print("Paquet 23 defectuos")
+	#====(14)
+	valorsTrama=dict(tipus='',ccc=0,direccioContador=0,idASDU=0,SQN=0,causa=0,direccioPM=0,direccioRegistre=0,objecteInformacio1=[None])
+	valorsTrama['direccioContador']=direccioContador
+	valorsTrama['tipus']='f'
+	valorsTrama['ccc']=0x40
+	valorsTrama=self.envia(valorsTrama,0,0)
+	if valorsTrama['ccc'] != 0x00:
+	print("Paquet 15 defectuos!:")
 
 
-#===(24 i 25)
-valorsTrama = dict(tipus = '', ccc = 0, direccioContador = 0, idASDU = 0, SQN = 0, causa = 0, direccioPM = 0, direccioRegistre = 0, objecteInformacio1 = [None])
-valorsTrama['direccioContador'] = direccioContador
-valorsTrama['tipus'] = 'f'
-valorsTrama['ccc'] = 0x5B
-valorsTrama = self.envia(valorsTrama, 0, 0)
-if valorsTrama['ccc'] != 0x08 or valorsTrama['causa'] != 0x05 or valorsTrama['idASDU'] != 0x8E:
-print("Paquet 25 defectuos!:")
+	##====(17 i 18) enviar contrasenya
+	unitats = psw & 0xFF
+	desenes = (psw & 0xFF00) >> 8
+	centenes = (psw & 0xFF0000) >> 16
+	milers = (psw & 0xFF000000) >> 24
 
-##====(26 i 27)
-valorsTrama = dict(tipus = 'v', ccc = 0x73, direccioContador = direccioContador, idASDU = 0xBB, SQN = 0, causa = 6, direccioPM = 0, direccioRegistre = 0, objecteInformacio1 = [])
-valorsTrama = self.envia(valorsTrama, 0, 0)
-if valorsTrama['ccc'] != 0x00:
-print("Paquet 27 defectuos")
+	valorsTrama=dict(tipus='v',direccioContador=direccioContador,ccc=0x73,idASDU=0xB7,SQN=0x01,causa=0x06,direccioRegistre=0,objecteInformacio1=[unitats,desenes,centenes,milers])
+	valorsTrama=self.envia(valorsTrama,0,0)
+	if valorsTrama['ccc'] != 0x00:
+	print("Paquet 18 defectuos!:")
 
-#===(28 i 29)
-valorsTrama = dict(tipus = '', ccc = 0, direccioContador = 0, idASDU = 0, SQN = 0, causa = 0, direccioPM = 0, direccioRegistre = 0, objecteInformacio1 = [None])
-valorsTrama['direccioContador'] = direccioContador
-valorsTrama['tipus'] = 'f'
-valorsTrama['ccc'] = 0x5B
-valorsTrama = self.envia(valorsTrama, 0, 0)
-if valorsTrama['ccc'] != 0x08 or valorsTrama['causa'] != 0x07 or valorsTrama['idASDU'] != 0xBB:
-print("Paquet 29 defectuos!:")
+	#====(19 i 20)
+	valorsTrama=dict(tipus='',ccc=0,direccioContador=0,idASDU=0,SQN=0,causa=0,direccioPM=0,direccioRegistre=0,objecteInformacio1=[None])
+	valorsTrama['direccioContador']=direccioContador
+	valorsTrama['tipus']='f'
+	valorsTrama['ccc']=0x5B
+	valorsTrama=self.envia(valorsTrama,0,0)
+	if valorsTrama['ccc'] != 0x08 or valorsTrama['causa'] != 0x07 or valorsTrama['idASDU'] != 0xB7:
+	print("Paquet 20 defectuos!:")
 
-##====(32 i 33)
-unitats = psw & 0xFF
-desenes = (psw & 0xFF00) >> 8
-centenes = (psw & 0xFF0000) >> 16
-milers = (psw & 0xFF000000) >> 24
-
-valorsTrama = dict(tipus = 'v', direccioContador = direccioContador, ccc = 0x73, idASDU = 0xB7, SQN = 0x01, causa = 0x06, direccioRegistre = 0, objecteInformacio1 = [unitats, desenes, centenes, milers])
-valorsTrama = self.envia(valorsTrama, 0, 0)
-if valorsTrama['ccc'] != 0x00:
-print("Paquet 33 defectuos!:")
-
-#===(34 i 35)
-valorsTrama = dict(tipus = '', ccc = 0, direccioContador = 0, idASDU = 0, SQN = 0, causa = 0, direccioPM = 0, direccioRegistre = 0, objecteInformacio1 = [None])
-valorsTrama['direccioContador'] = direccioContador
-valorsTrama['tipus'] = 'f'
-valorsTrama['ccc'] = 0x5B
-valorsTrama = self.envia(valorsTrama, 0, 0)
-if valorsTrama['ccc'] != 0x08 or valorsTrama['causa'] != 0x07 or valorsTrama['idASDU'] != 0xB7:
-print("Paquet 35 defectuos!:")
-
-##====(37 i 38) ::Read Instantaneous Values ccc=115, ASDU=162, causa=5, dir.reg=0, obj inf=192,193,194
-valorsTrama = dict(tipus = 'v', ccc = 0x73, direccioContador = direccioContador, idASDU = 0xA2, SQN = 3, causa = 5, direccioPM = 0, direccioRegistre = 0, objecteInformacio1 = [0xC0, 0XC1, 0xC2, 0x62, 0x16])
-valorsTrama = self.envia(valorsTrama, 0, 0)
-if valorsTrama['ccc'] != 0x00:
-print("Paquet 38 defectuos")
+	##====(22 i 23)
+	valorsTrama=dict(tipus='v',ccc=0x73,direccioContador=direccioContador,idASDU=0x8D,SQN=0,causa=5,direccioPM=0,direccioRegistre=0,objecteInformacio1=[])
+	valorsTrama = self.envia(valorsTrama, 0, 0)
+	if valorsTrama['ccc'] != 0x00:
+	print("Paquet 23 defectuos")
 
 
-#===(39 i 40)
-valorsTrama = dict(tipus = '', ccc = 0, direccioContador = 0, idASDU = 0, SQN = 0, causa = 0, direccioPM = 0, direccioRegistre = 0, objecteInformacio1 = [None])
-valorsTrama['direccioContador'] = direccioContador
-valorsTrama['tipus'] = 'f'
-valorsTrama['ccc'] = 0x5B
-valorsTrama = self.envia(valorsTrama, 0, 0)
-if valorsTrama['ccc'] != 0x08 or valorsTrama['causa'] != 0x05 or valorsTrama['idASDU'] != 0xA3:
-print("Paquet 40 defectuos!:")
-else:
-objInfo = valorsTrama['objecteInformacio1']
+	#===(24 i 25)
+	valorsTrama = dict(tipus = '', ccc = 0, direccioContador = 0, idASDU = 0, SQN = 0, causa = 0, direccioPM = 0, direccioRegistre = 0, objecteInformacio1 = [None])
+	valorsTrama['direccioContador'] = direccioContador
+	valorsTrama['tipus'] = 'f'
+	valorsTrama['ccc'] = 0x5B
+	valorsTrama = self.envia(valorsTrama, 0, 0)
+	if valorsTrama['ccc'] != 0x08 or valorsTrama['causa'] != 0x05 or valorsTrama['idASDU'] != 0x8E:
+	print("Paquet 25 defectuos!:")
 
-self.diccionari["Data"] = (time.strftime("%Y-%m-%d"))
-self.diccionari["Hora"] = (time.strftime("%H:%M:%S"))
-print("Dins de la classe, accedim a data i hora: ",
-self.diccionari["Data"],
-self.diccionari["Hora"])
-#Objecte 1 (192) - A
-temp = objInfo[1] + (objInfo[2] << 8) + (objInfo[3] << 16) + (((0b11111100 & objInfo[4]) >> 2) << 24)
-self.diccionari["kWh Activa Importacio"] = temp
-if (0b1 & objInfo[4]) == 1:
-self.diccionari["kWh Activa Importacio Error"] = 1
-else:
-self.diccionari["kWh Activa Importacio Error"] = 0
+	##====(26 i 27)
+	valorsTrama = dict(tipus = 'v', ccc = 0x73, direccioContador = direccioContador, idASDU = 0xBB, SQN = 0, causa = 6, direccioPM = 0, direccioRegistre = 0, objecteInformacio1 = [])
+	valorsTrama = self.envia(valorsTrama, 0, 0)
+	if valorsTrama['ccc'] != 0x00:
+	print("Paquet 27 defectuos")
 
-#Objecte 1 (192) - B
-temp = objInfo[5] + (objInfo[6] << 8) + (objInfo[7] << 16) + (((0b11111100 & objInfo[8]) >> 2) << 24)
-self.diccionari["kWh Activa Exportacio"] = temp
-if (0b1 & objInfo[8]) == 1:
-self.diccionari["kWh Activa Exportacio Error"] = 1
-else:
-self.diccionari["kWh Activa Exportacio Error"] = 0
+	#===(28 i 29)
+	valorsTrama = dict(tipus = '', ccc = 0, direccioContador = 0, idASDU = 0, SQN = 0, causa = 0, direccioPM = 0, direccioRegistre = 0, objecteInformacio1 = [None])
+	valorsTrama['direccioContador'] = direccioContador
+	valorsTrama['tipus'] = 'f'
+	valorsTrama['ccc'] = 0x5B
+	valorsTrama = self.envia(valorsTrama, 0, 0)
+	if valorsTrama['ccc'] != 0x08 or valorsTrama['causa'] != 0x07 or valorsTrama['idASDU'] != 0xBB:
+	print("Paquet 29 defectuos!:")
 
-#Objecte 1 (192) - C
-temp = objInfo[9] + (objInfo[10] << 8) + (objInfo[11] << 16) + (((0b11111100 & objInfo[12]) >> 2) << 24)
-self.diccionari["KVArh Reactiva Q1"] = temp
-if (0b1 & objInfo[12]) == 1:
-self.diccionari["KVArh Reactiva Q1 Error"] = 1
-else:
-self.diccionari["KVArh Reactiva Q1 Error"] = 0
+	##====(32 i 33)
+	unitats = psw & 0xFF
+	desenes = (psw & 0xFF00) >> 8
+	centenes = (psw & 0xFF0000) >> 16
+	milers = (psw & 0xFF000000) >> 24
 
-#Objecte 1 (192) - D
-temp = objInfo[13] + (objInfo[14] << 8) + (objInfo[15] << 16) + (((0b11111100 & objInfo[16]) >> 2) << 24)
-self.diccionari["KVArh Reactiva Q2"] = temp
-if (0b1 & objInfo[16]) == 1:
-self.diccionari["KVArh Reactiva Q2 Error"] = 1
-else:
-self.diccionari["KVArh Reactiva Q2 Error"] = 0
+	valorsTrama = dict(tipus = 'v', direccioContador = direccioContador, ccc = 0x73, idASDU = 0xB7, SQN = 0x01, causa = 0x06, direccioRegistre = 0, objecteInformacio1 = [unitats, desenes, centenes, milers])
+	valorsTrama = self.envia(valorsTrama, 0, 0)
+	if valorsTrama['ccc'] != 0x00:
+	print("Paquet 33 defectuos!:")
 
-#Objecte 1 (192) - E
-temp = objInfo[17] + (objInfo[18] << 8) + (objInfo[19] << 16) + (((0b11111100 & objInfo[20]) >> 2) << 24)
-self.diccionari["KVArh Reactiva Q3"] = temp
-if (0b1 & objInfo[20]) == 1:
-self.diccionari["KVArh Reactiva Q3 Error"] = 1
-else:
-self.diccionari["KVArh Reactiva Q3 Error"] = 0
+	#===(34 i 35)
+	valorsTrama = dict(tipus = '', ccc = 0, direccioContador = 0, idASDU = 0, SQN = 0, causa = 0, direccioPM = 0, direccioRegistre = 0, objecteInformacio1 = [None])
+	valorsTrama['direccioContador'] = direccioContador
+	valorsTrama['tipus'] = 'f'
+	valorsTrama['ccc'] = 0x5B
+	valorsTrama = self.envia(valorsTrama, 0, 0)
+	if valorsTrama['ccc'] != 0x08 or valorsTrama['causa'] != 0x07 or valorsTrama['idASDU'] != 0xB7:
+	print("Paquet 35 defectuos!:")
 
-#Objecte 1 (192) - F
-temp = objInfo[21] + (objInfo[22] << 8) + (objInfo[23] << 16) + (((0b11111100 & objInfo[24]) >> 2) << 24)
-self.diccionari["KVArh Reactiva Q4"] = temp
-if (0b1 & objInfo[24]) == 1:
-self.diccionari["KVArh Reactiva Q4 Error"] = 1
-else:
-self.diccionari["KVArh Reactiva Q4 Error"] = 0
+	##====(37 i 38) ::Read Instantaneous Values ccc=115, ASDU=162, causa=5, dir.reg=0, obj inf=192,193,194
+	valorsTrama = dict(tipus = 'v', ccc = 0x73, direccioContador = direccioContador, idASDU = 0xA2, SQN = 3, causa = 5, direccioPM = 0, direccioRegistre = 0, objecteInformacio1 = [0xC0, 0XC1, 0xC2, 0x62, 0x16])
+	valorsTrama = self.envia(valorsTrama, 0, 0)
+	if valorsTrama['ccc'] != 0x00:
+	print("Paquet 38 defectuos")
 
-#Objecte 1 (192) - G Hora i data
-#objInfo[55],56, 57, 58, 59
 
-#Objecte 2 (193) - A
-temp = objInfo[31] + (objInfo[32] << 8) + (objInfo[33] << 16)
-self.diccionari["Potencia Activa Total KW"] = temp
+	#===(39 i 40)
+	valorsTrama = dict(tipus = '', ccc = 0, direccioContador = 0, idASDU = 0, SQN = 0, causa = 0, direccioPM = 0, direccioRegistre = 0, objecteInformacio1 = [None])
+	valorsTrama['direccioContador'] = direccioContador
+	valorsTrama['tipus'] = 'f'
+	valorsTrama['ccc'] = 0x5B
+	valorsTrama = self.envia(valorsTrama, 0, 0)
+	if valorsTrama['ccc'] != 0x08 or valorsTrama['causa'] != 0x05 or valorsTrama['idASDU'] != 0xA3:
+	print("Paquet 40 defectuos!:")
+	else:
+	objInfo = valorsTrama['objecteInformacio1']
 
-#Objecte 2 (193) - B
-temp = objInfo[34] + (objInfo[35] << 8) + (objInfo[36] << 16)
-self.diccionari["Potencia Reactiva Total KVAr"] = temp
+	self.diccionari["Data"] = (time.strftime("%Y-%m-%d"))
+	self.diccionari["Hora"] = (time.strftime("%H:%M:%S"))
+	print("Dins de la classe, accedim a data i hora: ",
+	self.diccionari["Data"],
+	self.diccionari["Hora"])
+	#Objecte 1 (192) - A
+	temp = objInfo[1] + (objInfo[2] << 8) + (objInfo[3] << 16) + (((0b11111100 & objInfo[4]) >> 2) << 24)
+	self.diccionari["kWh Activa Importacio"] = temp
+	if (0b1 & objInfo[4]) == 1:
+	self.diccionari["kWh Activa Importacio Error"] = 1
+	else:
+	self.diccionari["kWh Activa Importacio Error"] = 0
 
-#Objecte 2 (193) - C
-temp = objInfo[37] + (((0b11000000 & objInfo[38]) >> 6) << 8)
-self.diccionari["Factor de potencia total (en milessimes)"] = temp
+	#Objecte 1 (192) - B
+	temp = objInfo[5] + (objInfo[6] << 8) + (objInfo[7] << 16) + (((0b11111100 & objInfo[8]) >> 2) << 24)
+	self.diccionari["kWh Activa Exportacio"] = temp
+	if (0b1 & objInfo[8]) == 1:
+	self.diccionari["kWh Activa Exportacio Error"] = 1
+	else:
+	self.diccionari["kWh Activa Exportacio Error"] = 0
 
-#Objecte 2 (193) - D
-if (0b00100000 & objInfo[38]) == 0:
-#print("La P. Activa total es importada")
-self.diccionari["P. Activa total es importada"] = 1
-else:
-#print("La P.Activa total es exportada")
-self.diccionari["P. Activa total es importada"] = 0
+	#Objecte 1 (192) - C
+	temp = objInfo[9] + (objInfo[10] << 8) + (objInfo[11] << 16) + (((0b11111100 & objInfo[12]) >> 2) << 24)
+	self.diccionari["KVArh Reactiva Q1"] = temp
+	if (0b1 & objInfo[12]) == 1:
+	self.diccionari["KVArh Reactiva Q1 Error"] = 1
+	else:
+	self.diccionari["KVArh Reactiva Q1 Error"] = 0
 
-#Objecte 2 (193) - E
-if (0b00010000 & objInfo[38]) == 0:
-#print("P.Reactiva total es Q1/Q2")
-self.diccionari["P.Reactiva total es Q1/Q2"] = 1
-else:
-#print("P.Reactiva total es Q3/Q4")
-self.diccionari["P.Reactiva total es Q1/Q2"] = 0
+	#Objecte 1 (192) - D
+	temp = objInfo[13] + (objInfo[14] << 8) + (objInfo[15] << 16) + (((0b11111100 & objInfo[16]) >> 2) << 24)
+	self.diccionari["KVArh Reactiva Q2"] = temp
+	if (0b1 & objInfo[16]) == 1:
+	self.diccionari["KVArh Reactiva Q2 Error"] = 1
+	else:
+	self.diccionari["KVArh Reactiva Q2 Error"] = 0
 
-#Objecte 2 (193) - F
-if (0b1 & objInfo[38]) == 1:
-#print("P.Total Mesures invalides")
-self.diccionari["P.Reactiva total es Q1/Q2 Error"] = 1
-else:
-self.diccionari["P.Reactiva total es Q1/Q2 Error"] = 0
+	#Objecte 1 (192) - E
+	temp = objInfo[17] + (objInfo[18] << 8) + (objInfo[19] << 16) + (((0b11111100 & objInfo[20]) >> 2) << 24)
+	self.diccionari["KVArh Reactiva Q3"] = temp
+	if (0b1 & objInfo[20]) == 1:
+	self.diccionari["KVArh Reactiva Q3 Error"] = 1
+	else:
+	self.diccionari["KVArh Reactiva Q3 Error"] = 0
 
-# Objecte 2 (193) - G
-self.diccionari["P.Activa Fase I KW"] = objInfo[39] + (objInfo[40] << 8) + (objInfo[41] << 16)
+	#Objecte 1 (192) - F
+	temp = objInfo[21] + (objInfo[22] << 8) + (objInfo[23] << 16) + (((0b11111100 & objInfo[24]) >> 2) << 24)
+	self.diccionari["KVArh Reactiva Q4"] = temp
+	if (0b1 & objInfo[24]) == 1:
+	self.diccionari["KVArh Reactiva Q4 Error"] = 1
+	else:
+	self.diccionari["KVArh Reactiva Q4 Error"] = 0
 
-# Objecte 2 (193) - H
-self.diccionari["P.Reactiva Fase I KVAr"] = objInfo[42] + (objInfo[43] << 8) + (objInfo[44] << 16)
+	#Objecte 1 (192) - G Hora i data
+	#objInfo[55],56, 57, 58, 59
 
-#Objecte 2 (193) - I
-self.diccionari["Factor de Potencia (cos phi). Fase I (en milessimes)"] = objInfo[45] + (((0b11000000 & objInfo[46]) >> 6) << 8)
+	#Objecte 2 (193) - A
+	temp = objInfo[31] + (objInfo[32] << 8) + (objInfo[33] << 16)
+	self.diccionari["Potencia Activa Total KW"] = temp
 
-#Objecte 2 (193) - J
-if (0b00100000 & objInfo[46]) == 0:
-#print("La P. Activa Fase I es importada")
-self.diccionari["La P. Activa Fase I es importada"] = 1
-else:
-#print("La P.Activa Fase I es exportada")
-self.diccionari["La P. Activa Fase I es importada"] = 0
+	#Objecte 2 (193) - B
+	temp = objInfo[34] + (objInfo[35] << 8) + (objInfo[36] << 16)
+	self.diccionari["Potencia Reactiva Total KVAr"] = temp
 
-#Objecte 2 (193) - K
-if (0b00010000 & objInfo[46]) == 0:
-# print("P.Reactiva Fase I es Q1/Q2")
-self.diccionari["P.Reactiva Fase I es Q1/Q2"] = 1
-else:
-#print("P.Reactiva Fase I es Q3/Q4")
-self.diccionari["P.Reactiva Fase I es Q1/Q2"] = 0
+	#Objecte 2 (193) - C
+	temp = objInfo[37] + (((0b11000000 & objInfo[38]) >> 6) << 8)
+	self.diccionari["Factor de potencia total (en milessimes)"] = temp
 
-#Objecte 2 (193) - L
-if (0b1 & objInfo[46]) == 1:
-#print("P.Total Fase I invalides")
-self.diccionari["Error de lectura en P.Total Fase I invalides"] = 1
-else:
-self.diccionari["Error de lectura en P.Total Fase I invalides"] = 0
+	#Objecte 2 (193) - D
+	if (0b00100000 & objInfo[38]) == 0:
+	#print("La P. Activa total es importada")
+	self.diccionari["P. Activa total es importada"] = 1
+	else:
+	#print("La P.Activa total es exportada")
+	self.diccionari["P. Activa total es importada"] = 0
 
-#Objecte 2 (193) - M
-self.diccionari["P.Activa Fase II KW"] = objInfo[47] + (objInfo[48] << 8) + (objInfo[49] << 16)
+	#Objecte 2 (193) - E
+	if (0b00010000 & objInfo[38]) == 0:
+	#print("P.Reactiva total es Q1/Q2")
+	self.diccionari["P.Reactiva total es Q1/Q2"] = 1
+	else:
+	#print("P.Reactiva total es Q3/Q4")
+	self.diccionari["P.Reactiva total es Q1/Q2"] = 0
 
-#Objecte 2 (193) - N
-self.diccionari["P.Reactiva Fase II KVAr"] = objInfo[50] + (objInfo[51] << 8) + (objInfo[52] << 16)
+	#Objecte 2 (193) - F
+	if (0b1 & objInfo[38]) == 1:
+	#print("P.Total Mesures invalides")
+	self.diccionari["P.Reactiva total es Q1/Q2 Error"] = 1
+	else:
+	self.diccionari["P.Reactiva total es Q1/Q2 Error"] = 0
 
-#Objecte 2 (193) - O
-self.diccionari["Factor de Potencia (cos phi). Fase II (en milessimes)"] = objInfo[53] + (((0b11000000 & objInfo[54]) >> 6) << 8)
+	# Objecte 2 (193) - G
+	self.diccionari["P.Activa Fase I KW"] = objInfo[39] + (objInfo[40] << 8) + (objInfo[41] << 16)
 
-#Objecte 2 (193) - P
-if (0b00100000 & objInfo[54]) == 0:
-self.diccionari["P. Activa Fase II es importada"] = 1
-else:
-#print("La P.Activa Fase II es exportada")
-self.diccionari["P. Activa Fase II es importada"] = 0
+	# Objecte 2 (193) - H
+	self.diccionari["P.Reactiva Fase I KVAr"] = objInfo[42] + (objInfo[43] << 8) + (objInfo[44] << 16)
 
-#Objecte 2 (193) - Q
-if (0b00010000 & objInfo[54]) == 0:
-#print("P.Reactiva Fase II es Q1/Q2")
-self.diccionari["P.Reactiva Fase II es Q1/Q2"] = 1
-else:
-# print("P.Reactiva Fase II es Q3/Q4")
-self.diccionari["P.Reactiva Fase II es Q1/Q2"] = 0
+	#Objecte 2 (193) - I
+	self.diccionari["Factor de Potencia (cos phi). Fase I (en milessimes)"] = objInfo[45] + (((0b11000000 & objInfo[46]) >> 6) << 8)
 
-#Objecte 2 (193) - R
-if (0b1 & objInfo[54]) == 1:
-self.diccionari["Error de lectura P.Total Fase II"] = 1
-else:
-self.diccionari["Error de lectura P.Total Fase II"] = 0
+	#Objecte 2 (193) - J
+	if (0b00100000 & objInfo[46]) == 0:
+	#print("La P. Activa Fase I es importada")
+	self.diccionari["La P. Activa Fase I es importada"] = 1
+	else:
+	#print("La P.Activa Fase I es exportada")
+	self.diccionari["La P. Activa Fase I es importada"] = 0
 
-#Objecte 2 (193) - S
-self.diccionari["P.Activa Fase III KW"] = objInfo[55] + (objInfo[56] << 8) + (objInfo[57] << 16)
+	#Objecte 2 (193) - K
+	if (0b00010000 & objInfo[46]) == 0:
+	# print("P.Reactiva Fase I es Q1/Q2")
+	self.diccionari["P.Reactiva Fase I es Q1/Q2"] = 1
+	else:
+	#print("P.Reactiva Fase I es Q3/Q4")
+	self.diccionari["P.Reactiva Fase I es Q1/Q2"] = 0
 
-#Objecte 2 (193) - T
-self.diccionari["P.Reactiva Fase III KVAr"] = objInfo[58] + (objInfo[59] << 8) + (objInfo[60] << 16)
+	#Objecte 2 (193) - L
+	if (0b1 & objInfo[46]) == 1:
+	#print("P.Total Fase I invalides")
+	self.diccionari["Error de lectura en P.Total Fase I invalides"] = 1
+	else:
+	self.diccionari["Error de lectura en P.Total Fase I invalides"] = 0
 
-#Objecte 2 (193) - U
-self.diccionari["Factor de Potencia (cos phi). Fase III (en milessimes)"] = objInfo[61] + (((0b11000000 & objInfo[62]) >> 6) << 8)
+	#Objecte 2 (193) - M
+	self.diccionari["P.Activa Fase II KW"] = objInfo[47] + (objInfo[48] << 8) + (objInfo[49] << 16)
 
-#Objecte 2 (193) - V
-if (0b00100000 & objInfo[62]) == 0:
-self.diccionari["La P. Activa Fase III es importada"] = 1
-else:
-#print("La P.Activa Fase III es exportada")
-self.diccionari["La P. Activa Fase III es importada"] = 0
+	#Objecte 2 (193) - N
+	self.diccionari["P.Reactiva Fase II KVAr"] = objInfo[50] + (objInfo[51] << 8) + (objInfo[52] << 16)
 
-#Objecte 2 (193) - W
-if (0b00010000 & objInfo[62]) == 0:
-self.diccionari["P.Reactiva Fase III es Q1/Q2"] = 1
-else:
-# print("P.Reactiva Fase III es Q3/Q4")
-self.diccionari["P.Reactiva Fase III es Q1/Q2"] = 0
+	#Objecte 2 (193) - O
+	self.diccionari["Factor de Potencia (cos phi). Fase II (en milessimes)"] = objInfo[53] + (((0b11000000 & objInfo[54]) >> 6) << 8)
 
-#Objecte 2 (193) - X
-if (0b1 & objInfo[62]) == 1:
-self.diccionari["Error de Lectrua en P.Total Fase III"] = 1
-else:
-self.diccionari["Error de Lectrua en P.Total Fase III"] = 0
+	#Objecte 2 (193) - P
+	if (0b00100000 & objInfo[54]) == 0:
+	self.diccionari["P. Activa Fase II es importada"] = 1
+	else:
+	#print("La P.Activa Fase II es exportada")
+	self.diccionari["P. Activa Fase II es importada"] = 0
 
-#Objecte 2 (193) - Y Hora i data
-#objInfo[63, 64, 65, 66, 67
+	#Objecte 2 (193) - Q
+	if (0b00010000 & objInfo[54]) == 0:
+	#print("P.Reactiva Fase II es Q1/Q2")
+	self.diccionari["P.Reactiva Fase II es Q1/Q2"] = 1
+	else:
+	# print("P.Reactiva Fase II es Q3/Q4")
+	self.diccionari["P.Reactiva Fase II es Q1/Q2"] = 0
 
-#Objecte 3 (194) - A
-self.diccionari["Intensitat Fase I (decimes de A)"] = objInfo[69] + (objInfo[70] << 8) + (objInfo[71] << 16)
+	#Objecte 2 (193) - R
+	if (0b1 & objInfo[54]) == 1:
+	self.diccionari["Error de lectura P.Total Fase II"] = 1
+	else:
+	self.diccionari["Error de lectura P.Total Fase II"] = 0
 
-#Objecte 3 (194) - B
-self.diccionari["Tensio Fase I (decimes de V)"] = objInfo[72] + (objInfo[73] << 8) + (objInfo[74] << 16) + (((0b11111100 & objInfo[75]) >> 2) << 24)
+	#Objecte 2 (193) - S
+	self.diccionari["P.Activa Fase III KW"] = objInfo[55] + (objInfo[56] << 8) + (objInfo[57] << 16)
 
-#Objecte 3 (194) - C
-if (0b1 & objInfo[75]) == 1:
-self.diccionari["Error de Lectura mesures de Fase I"] = 1
-else:
-self.diccionari["Error de Lectura mesures de Fase I"] = 0
+	#Objecte 2 (193) - T
+	self.diccionari["P.Reactiva Fase III KVAr"] = objInfo[58] + (objInfo[59] << 8) + (objInfo[60] << 16)
 
-#Objecte 3 (194) - D
-self.diccionari["Intensitat Fase II (decimes de A)"] = objInfo[76] + (objInfo[77] << 8) + (objInfo[78] << 16)
+	#Objecte 2 (193) - U
+	self.diccionari["Factor de Potencia (cos phi). Fase III (en milessimes)"] = objInfo[61] + (((0b11000000 & objInfo[62]) >> 6) << 8)
 
-#Objecte 3 (194) - E
-self.diccionari["Tensio Fase II (decimes de V)"] = objInfo[79] + (objInfo[80] << 8) + (objInfo[81] << 16) + (((0b11111100 & objInfo[82]) >> 2) << 24)
+	#Objecte 2 (193) - V
+	if (0b00100000 & objInfo[62]) == 0:
+	self.diccionari["La P. Activa Fase III es importada"] = 1
+	else:
+	#print("La P.Activa Fase III es exportada")
+	self.diccionari["La P. Activa Fase III es importada"] = 0
 
-#Objecte 3 (194) - F
-if (0b1 & objInfo[83]) == 1:
-self.diccionari["Error de Lectura de mesures de Fase II"] = 1
-else:
-self.diccionari["Error de Lectura de mesures de Fase II"] = 0
+	#Objecte 2 (193) - W
+	if (0b00010000 & objInfo[62]) == 0:
+	self.diccionari["P.Reactiva Fase III es Q1/Q2"] = 1
+	else:
+	# print("P.Reactiva Fase III es Q3/Q4")
+	self.diccionari["P.Reactiva Fase III es Q1/Q2"] = 0
 
-#Objecte 3 (194) - G
-self.diccionari["Intensitat Fase III (decimes de A)"] = objInfo[83] + (objInfo[84] << 8) + (objInfo[85] << 16)
+	#Objecte 2 (193) - X
+	if (0b1 & objInfo[62]) == 1:
+	self.diccionari["Error de Lectrua en P.Total Fase III"] = 1
+	else:
+	self.diccionari["Error de Lectrua en P.Total Fase III"] = 0
 
-#Objecte 3 (194) - H
-self.diccionari["Tensio Fase III (decimes de V)"] = objInfo[86] + (objInfo[87] << 8) + (objInfo[88] << 16) + (((0b11111100 & objInfo[89]) >> 2) << 24)
+	#Objecte 2 (193) - Y Hora i data
+	#objInfo[63, 64, 65, 66, 67
 
-#Objecte 3 (194) - I
-if (0b1 & objInfo[89]) == 1:
-self.diccionari["Error de Lectura de les mesures de la Fase III"] = 1
-else:
-self.diccionari["Error de Lectura de les mesures de la Fase III"] = 0
+	#Objecte 3 (194) - A
+	self.diccionari["Intensitat Fase I (decimes de A)"] = objInfo[69] + (objInfo[70] << 8) + (objInfo[71] << 16)
+
+	#Objecte 3 (194) - B
+	self.diccionari["Tensio Fase I (decimes de V)"] = objInfo[72] + (objInfo[73] << 8) + (objInfo[74] << 16) + (((0b11111100 & objInfo[75]) >> 2) << 24)
+
+	#Objecte 3 (194) - C
+	if (0b1 & objInfo[75]) == 1:
+		self.diccionari["Error de Lectura mesures de Fase I"] = 1
+	else:
+		self.diccionari["Error de Lectura mesures de Fase I"] = 0
+
+	#Objecte 3 (194) - D
+	self.diccionari["Intensitat Fase II (decimes de A)"] = objInfo[76] + (objInfo[77] << 8) + (objInfo[78] << 16)
+
+	#Objecte 3 (194) - E
+	self.diccionari["Tensio Fase II (decimes de V)"] = objInfo[79] + (objInfo[80] << 8) + (objInfo[81] << 16) + (((0b11111100 & objInfo[82]) >> 2) << 24)
+
+	#Objecte 3 (194) - F
+	if (0b1 & objInfo[83]) == 1:
+	self.diccionari["Error de Lectura de mesures de Fase II"] = 1
+	else:
+	self.diccionari["Error de Lectura de mesures de Fase II"] = 0
+
+	#Objecte 3 (194) - G
+	self.diccionari["Intensitat Fase III (decimes de A)"] = objInfo[83] + (objInfo[84] << 8) + (objInfo[85] << 16)
+
+	#Objecte 3 (194) - H
+	self.diccionari["Tensio Fase III (decimes de V)"] = objInfo[86] + (objInfo[87] << 8) + (objInfo[88] << 16) + (((0b11111100 & objInfo[89]) >> 2) << 24)
+
+	#Objecte 3 (194) - I
+	if (0b1 & objInfo[89]) == 1:
+		self.diccionari["Error de Lectura de les mesures de la Fase III"] = 1
+	else:
+		self.diccionari["Error de Lectura de les mesures de la Fase III"] = 0
