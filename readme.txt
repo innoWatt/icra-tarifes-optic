@@ -10,7 +10,10 @@ descripció: http://www.edpenergia.es/recursosedp/doc/distribucion-gas/20130814/
 PROVAR!: https://github.com/Ebolon/iec104
 
 Cal executar l'script "server/tcp_serial_redirect.py" al raspberry:
-`python tcp_serial_redirect.py --parity E -P 3333 /dev/ttyUSB0 9600`
+
+```bash
+python tcp_serial_redirect.py --parity E -P 3333 /dev/ttyUSB0 9600
+```
 
 rasbperry: 
 	- ip local:   192.168.103.63
