@@ -17,9 +17,9 @@ python tcp_serial_redirect.py --parity E -P 3333 /dev/ttyUSB0 9600
 
 Dades Rasbperry: pi icrahopetayea 
 
-	* ip local:   192.168.103.63
-	* ip externa: 84.89.61.64
-	* port serial redirigit al port 3333
+* ip local:   192.168.103.63
+* ip externa: 84.89.61.64
+* port serial redirigit al port 3333
 
 	ser.port = "/dev/ttyUSB0"
 	ser.baudrate=9600
