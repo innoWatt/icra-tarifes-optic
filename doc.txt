@@ -1,0 +1,22 @@
+DOCUMENTACIÓ PROGRAMA ICRA – TARIFES – OPTIC
+
+A l’ICRA tenim una raspberry connectada al comptador 
+amb un sensor optic. 
+
+rasbperry: 
+	- ip local:   192.168.103.63
+	- ip externa: 84.89.61.64
+	- user: pi 
+	- pass: icrahopetayea 
+
+	ser.port = "/dev/ttyUSB0"
+	ser.baudrate=9600
+	ser.bytesize=8
+	ser.parity=serial.PARITY_EVEN
+	ser.stopbits=1
+	ser.xonxoff=False
+	ser.rtscts=False
+	ser.dsrdtr=False
+	ser.timeout=1 
+
+	port serial redirigit al port 3333
