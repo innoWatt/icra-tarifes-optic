@@ -21,6 +21,8 @@ Dades Rasbperry: pi icrahopetayea
 * ip externa: 84.89.61.64
 * port serial redirigit al port 3333
 
+Dades de la connexió serial:
+
 	ser.port = "/dev/ttyUSB0"
 	ser.baudrate=9600
 	ser.bytesize=8
