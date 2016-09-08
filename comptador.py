@@ -90,6 +90,7 @@ class Comptador:
             print('')
 
 def decodificaObjecte(self,valor):
+
     if type(valor) != int:
         raise RuntimeError("tipus objecte no es int")
 
@@ -240,20 +241,31 @@ def decodificaASDU(self,valor):
     return dic[valor]
 
 def decodificaC(self, valor):
-    cadena1 = ''
-    cadena2 = ''
-    cadena3 = ''
 
     if type(valor) != int:
         raise RuntimeError('valor no es un int')
 
+    # "valor" és un byte (8 7 6 5 4 3 2 1)
+
+    cadena1 = ''
+    cadena2 = ''
+    cadena3 = ''
+
+
+    #mirar si el bit 7 es igual a 1
     if (valor) & 64 == 64:
-        if valor& 0b1111 == 0:
+
+        #comprovar els 4 bits (LSB)
+        if valor & 0b1111 == 0:
             cadena1 = 'El Master diu: Reposicion del enlace remoto'
+
+        #comprovar els 3 bits (LSB)
         elif valor& 0b1111 == 3:
             cadena1 = 'El Master diu: Envio de datos de usuario'
+
         elif (valor) & 0b1111 == 9:
             cadena1 = 'El Master diu: Solicitud de estado del enlace'
+
         elif (valor) & 0b1111 == 11:
             cadena1 = 'El Master diu: Solicitud de datos clase 2'
         elif (valor) & 64 == 0:
@@ -285,10 +297,7 @@ def calculChecksum(self,trama):
     checksum = 0
     if len(trama)==6:
         for i in range(1,4):
-            if type(trama[i]) == str:
-                checksum = checksum + (trama[i])
-            elif type(trama[1]) == int:
-                checksum = checksum + trama[i]
+            checksum += trama[i]
     else:
         for i in range(4,len(trama)-2):
             checksum = checksum + trama[i]
@@ -428,8 +437,6 @@ def desmontaTrama(self, trama):
 
 def enviaTrama(self, trama):
     for i in range(len(trama)):
-        if trama[i]==None:
-        print('ERROR: Es vol enviar una trama incomplerta:', trama)
         time.sleep(1000000)
         sock.send(bytes(trama))
         sock.flush() # it is buffering. required to get the data out *now
