@@ -1,47 +1,30 @@
 
-
 '''
-
         import comptador
         com = comptador.Comptador()
-
-        import mysocket
-	#new socket
-	sock=mysocket.mysocket()
-	sock.connect('192.168.103.63',3333)
-	sock.mysend('hola')
-	print sock.myreceive()
-
-
 '''
+
 import socket
+import sys
+
 sock=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.connect(("192.168.103.63",3333))
 
-#6.1.1 direccion control
-# start - longi - longi - start - control - direccion - 2 octetos - asdu - checksum - end
-# 1B      1B     1B     1B      1B        1B          2B          var.   1B         1B 
-start     = 0x68
-longi     = 1+1+0 # 1 + num bytes direccion + num bytes asdu
-control   = 0b01111001
-direccion = 0x1
-octetos   = 0
-asdu      = 0
-checksum  = start+longi+longi+start+control+direccion+octetos+asdu
-end       = 0x16
-trama=[start,longi,longi,start,control,direccion,octetos,asdu,checksum,end]
+#envia una trama i rep la resposta
+trama=[16,73,1,0,74,22]
 
-#ENVIA
-for i in trama: sock.send(bytes(i))
+sock.send(str(trama))
 
-msg=""
+chunks = []
+bytes_recd = 0
+
+
 while 1:
-    print('pre')
     chunk = sock.recv(1024)
-    print 'post'
-    if not chunk: 
-        break
-    msg = msg + chunk
-    msg = str(msg, 'UTF-8')
+    if chunk == '': break
+    chunks.append(chunk)
+    bytes_recd = bytes_recd + len(chunk)
+    sys.stdout.write('.')
 
-print('Received:', unpack(msg))
+print(" Received "+str(bytes_recd)+" bytes")
+print(chunks)
