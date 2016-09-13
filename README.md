@@ -1,8 +1,8 @@
 # icra-tarifes-optic
 
-DOCUMENTACIÓ PROGRAMA ICRA – TARIFES – OPTIC
+DOCUMENTACIÓ ICRA – TARIFES – OPTIC
 
-Tenim una Raspberry Pi connectada a un comptador Actaris SL761 amb un sensor òptic. 
+Tenim una Raspberry Pi connectada a un comptador Actaris SL761 amb un sensor òptic (port serial)
 
 El protocol implementat es el "iec 870-5-102"
 
@@ -31,4 +31,6 @@ En un futur hi haurà TCP, 'script "server/tcp_serial_redirect.py" al raspberry:
 ```
 python tcp_serial_redirect.py --parity E -P 3333 /dev/ttyUSB0 9600
 ```
+
+En desenvolupament
 
