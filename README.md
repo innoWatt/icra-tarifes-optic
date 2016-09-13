@@ -4,22 +4,15 @@ DOCUMENTACIÓ PROGRAMA ICRA – TARIFES – OPTIC
 
 Tenim una Raspberry Pi connectada a un comptador Actaris SL761 amb un sensor òptic. 
 
-El protocol implementat es el "IEC870-5"
-descripció: http://www.edpenergia.es/recursosedp/doc/distribucion-gas/20130814/telemedida/definicion-protocolo.pdf
+El protocol implementat es el "iec 870-5-102"
 
-PROVAR!: https://github.com/Ebolon/iec104
-
-Cal executar l'script "server/tcp_serial_redirect.py" al raspberry:
-
-```
-python tcp_serial_redirect.py --parity E -P 3333 /dev/ttyUSB0 9600
-```
+http://www.aperca.org/temppdf/Articulo%20Contadores.pdf
+https://github.com/Ebolon/iec104
 
 Dades Rasbperry: pi icrahopetayea 
 
 * ip local:   192.168.103.63
 * ip externa: 84.89.61.64:22
-* port serial redirigit al port 3333
 
 Dades de la connexió serial:
 
@@ -32,3 +25,10 @@ Dades de la connexió serial:
 	ser.rtscts=False
 	ser.dsrdtr=False
 	ser.timeout=1 
+
+En un futur hi haurà TCP, 'script "server/tcp_serial_redirect.py" al raspberry:
+
+```
+python tcp_serial_redirect.py --parity E -P 3333 /dev/ttyUSB0 9600
+```
+

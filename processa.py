@@ -3,7 +3,7 @@
 
 '''
 	Protocol IEC 60870-5-102
-	Autor: Lluis Bosch
+	Autor: Lluis Bosch (lbosch@icra.cat) & Felix Hill (fhill@icra.cat)
 
 	Modul per processar missatges (peticions i respostes)
 	Testejat amb un comptador Actaris SL761
