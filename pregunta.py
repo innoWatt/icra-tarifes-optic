@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import serial
 import processa as Pro
+import re
 
 #obre serial
 ser=serial.Serial()
@@ -22,8 +23,9 @@ def pregunta(trama):
 	print("RESPOSTA...")
 	ser.write(bytearray(trama))
 	resposta=ser.readlines()
-	print(resposta)
-	Pro.processa(resposta[0])
+	respostaTotal=""
+	for i in range(len(resposta)): respostaTotal+=re.sub('\n$','',resposta[i]) #cal treure el caràcter \n a final de trama
+	Pro.processa(respostaTotal)
 
 pregunta('\x68\x15\x15\x68\x73\x01\x00\x7A\x01\x06\x01\x00\x0B\x01\x02\x01\x00\x12\x09\x09\x00\x00\x13\x09\x09\x4e\x16')
 '''
