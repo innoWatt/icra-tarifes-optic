@@ -1,7 +1,7 @@
 '''
-		* Crea un serial
-		* Envia una trama
-		* Rep la resposta
+	* Crea un serial
+	* Envia una trama
+	* Rep la resposta
 '''
 import serial
 
