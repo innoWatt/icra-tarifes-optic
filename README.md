@@ -7,6 +7,7 @@ Tenim una Raspberry Pi connectada a un comptador Actaris SL761 amb un sensor òp
 El protocol implementat es el "iec 870-5-102"
 
 http://www.aperca.org/temppdf/Articulo%20Contadores.pdf
+
 https://github.com/Ebolon/iec104
 
 * Per indentar un arxiu xml de resultat:

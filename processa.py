@@ -7,10 +7,16 @@
 	Mòdul per traduir a nivell llegible missatges (peticions i respostes)
 	Testejat amb un comptador Actaris SL761
 
+	Exemple de com fer servir:
+
+		import processa as Pro
+		Pro.processa('\x10\x49\x01\x00\x4a\x16')
+
+
 	Bibliografia: #TODO
 
 	Els missatge provenen de la comanda serial.readlines()
-	normalment sera un array de tamany 1
+	normalment sera un array de tamany 1 però pot ser més llarg
 
 	Estructura global:
 
@@ -72,9 +78,9 @@ def processaTramaFixa(buf):
 	'''comprova checksum'''
 	checksum = (buf[1]+buf[2]+buf[3])%256
 	if(checksum==buf[4]):    
-		print("  Checksum correcte ("+hex(buf[4])+" = "+str(buf[4])+")")
+		print("  Checksum correcte ("+hex(buf[4])+"="+str(buf[4])+")")
 	else:
-		raise RuntimeError('Checksum erroni '+str(checksum)+'=/='+str(buf[4]))
+		raise RuntimeError('Checksum incorrecte: '+str(checksum)+'=/='+str(buf[4]))
 
 	print("  Trama de tipus FIXE [inici (0x10), control, direccio1, direccio2, checksum, fi (0x16)]")
 
@@ -116,9 +122,9 @@ def processaTramaVariable(buf):
 		checksum += buf[i]
 	checksum%=256
 	if checksum == buf[n-2]: 
-		print("  Checksum correcte ("+hex(buf[n-2])+" = "+str(buf[n-2])+")")
+		print("  Checksum correcte ("+hex(buf[n-2])+"="+str(buf[n-2])+")")
 	else:
-		raise RuntimeError("Checksum incorrecte: "+str(buf[n-2])+" =/= "+str(checksum))
+		raise RuntimeError("Checksum incorrecte: "+str(buf[n-2])+"=/="+str(checksum))
 
 	print("  La trama es de tipus VARIABLE [inici (0x68), L, L, inici (0x68), ASDU, checksum, final (0x16)]")
 

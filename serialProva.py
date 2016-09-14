@@ -1,7 +1,8 @@
 '''
-	FUNCIONA
+		* Crea un serial
+		* Envia una trama
+		* Rep la resposta
 '''
-
 import serial
 
 #obre serial
@@ -18,8 +19,8 @@ ser.timeout=1
 ser.open()
 
 #munta trama test
-trama=[0x10,0x49,0x01,0x00,0x4a,0x16]
-print("enviant: "+str(trama))
+trama='\x10\x49\x01\x00\x4a\x16'
+print("Enviant: "+str(trama))
 
 #envia
 ser.write(bytearray(trama))
@@ -27,9 +28,8 @@ ser.flush()
 
 #resposta
 resposta=ser.readlines()
-ser.close()
 
 #print resposta
-print("resposta:")
+print("Resposta:")
 print(type(resposta))
 print(resposta)
