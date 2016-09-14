@@ -33,10 +33,9 @@ def processa(missatge):
 	'''comptar numero de bytes del buffer'''
 	n=len(buf) 
 
-	print("<missatge>\n  Longitud "+str(n)+" bytes")
+	print("<missatge>\n  "+str(n)+" bytes:"),
 
 	'''mostra tots els bytes del missatge'''
-	print(' '), 
 	for i in range(n): print hex(buf[i])[2:4], 
 	print('')
 	
@@ -48,7 +47,7 @@ def processa(missatge):
 	else:
 		raise RuntimeError('Tipus de trama desconegut')
 
-	print('</missatge>\n\n')
+	print('</missatge>\n')
 '''fi'''
 
 '''processa una trama fixa de 6 bytes'''
@@ -77,7 +76,7 @@ def processaTramaFixa(buf):
 	else:
 		raise RuntimeError('Checksum erroni')
 
-	print("  La trama es de tipus FIXE [inici (0x10) - control - direccio1 - direccio2 - checksum - fi (0x16)]")
+	print("  La trama es de tipus FIXE [inici (0x10), control, direccio1, direccio2, checksum, fi (0x16)]")
 
 	'''processa el byte de control'''
 	control=buf[1]
@@ -117,7 +116,7 @@ def processaTramaVariable(buf):
 	else:
 		raise RuntimeError("Checksum incorrecte")
 
-	print("  La trama es de tipus VARIABLE [inici (0x68) - L - L - inici (0x68) - ASDU - checksum - final (0x16)]")
+	print("  La trama es de tipus VARIABLE [inici (0x68), L, L, inici (0x68), ASDU, checksum, final (0x16)]")
 
 	'''byte de control'''
 	control=buf[4]
@@ -191,10 +190,10 @@ def campControl(control):
 
 	if(prm):
 		print({
-			 0:"    [Funció 0] [Petició : RESET DEL LINK REMOT]",
-			 3:"    [Funció 3] [Petició : ENVIAMENT DE DADES D'USUARI]",
-			 9:"    [Funció 9] [Petició : SOL·LICITUD DE L'ESTAT DEL LINK]",
-			11:"    [Funció 11] [Petició : SOL·LICITUD DE DADES DE CLASSE 2]",
+			 0:"    [Funció 0] [Petició: RESET DEL LINK REMOT]",
+			 3:"    [Funció 3] [Petició: ENVIAMENT DE DADES D'USUARI]",
+			 9:"    [Funció 9] [Petició: SOL·LICITUD DE L'ESTAT DEL LINK]",
+			11:"    [Funció 11] [Petició: SOL·LICITUD DE DADES DE CLASSE 2]",
 		}[fun])
 	else:
 		print({
@@ -224,7 +223,13 @@ def campIUD(iud):
 	'''
 	n=len(iud)
 	print("    <iud>")
-	print("      iud ("+str(n)+" bytes) [idt, qev, cdt, dco]:")
+	print("      "+str(n)+" bytes: [idt, qev, cdt, dco]:"),
+
+	'''mostra tots els bytes'''
+	for i in range(n): print hex(iud[i])[2:4],
+	print('')
+
+	'''agafa els bytes'''
 	idt=iud[0]
 	qev=iud[1]
 	cdt=iud[2]
@@ -337,8 +342,8 @@ def campIUD(iud):
       
 	''' mostra informació de tot el iud desglossat'''
 	print("      idt: "+hex(idt)+" = tipus "+str(idt)+" : "+dicc_idt[idt])
-	print("      qev: "+hex(qev)+" = "+bin(qev)+": [SQ="+str(SQ)+", N = "+str(N)+" objectes d'informació]")
-	print("      cdt: "+hex(cdt)+": [Test? "+str(T)+", PN="+str(PN)+", causa="+str(causa)+" : "+dicc_causa[causa]+"]")
+	print("      qev: "+hex(qev)+" = "+bin(qev)+": [SQ="+str(SQ)+", N="+str(N)+" objectes d'informació]")
+	print("      cdt: "+hex(cdt)+": [T="+str(T)+", PN="+str(PN)+", causa="+str(causa)+" : "+dicc_causa[causa]+"]")
 	print("      dco (3 bytes): [punt mesura (2 bytes), direccio registre (1 byte)] = "+str(map(hex,dco)))
 	print("        * punt mesura: "+str(dco_punt_mesura))
 	print("        * direccio registre: "+str(dco_registre)+" = "+dicc_registre[dco_registre])
@@ -358,7 +363,7 @@ def campASDU(ASDU):
 	'''
 	n=len(ASDU)
 	print("  <asdu>")
-	print('    ASDU ('+str(n)+' bytes):'),
+	print('    '+str(n)+' bytes:'),
 	for i in range(len(ASDU)): print hex(ASDU[i])[2:4], 
 	print('')
 
@@ -388,7 +393,7 @@ def campObjsInfo(objsInfo):
 		+----------+---------------+-------------------+
 	'''
 	n=len(objsInfo)
-	print("    <objectes info>\n      objs ("+str(n)+" bytes):"),
+	print("    <objectesInfo>\n      "+str(n)+" bytes:"),
 
 	'''mostra tots els bytes'''
 	for i in range(n): print hex(objsInfo[i])[2:4],
@@ -406,7 +411,7 @@ def campObjsInfo(objsInfo):
 		if(longitud_etiqueta==7): print("      Amb Etiqueta comuna de 7 bytes (tipus b)")
 		if(longitud_etiqueta not in [5,7]): raise RuntimeError('Etiqueta erronia')
 	else:
-		print("      Sense etiqueta")
+		print("      Sense etiqueta comuna de temps")
 
 	'''itera els elements'''
 	for i in range(N):
@@ -416,14 +421,12 @@ def campObjsInfo(objsInfo):
 		campObjInfo(objInfo)
 
 	'''processa etiqueta si n'hi ha'''
-	campEtiquetaTemps()
+	if(longitud_etiqueta):
+		etiquetaTemps=objsInfo[n-longitud_etiqueta:n]
+		campEtiquetaTemps(etiquetaTemps)
 
-	print("    </objectes info>")
+	print("    </objectesInfo>")
 	'''fi'''
-
-def campEtiquetaTemps():
-	print("Etiqueta no implementada")
-	'''comprova si es 5 o 7 bytes'''
 
 '''mostra un sol element d'informació'''
 def campObjInfo(objInfo):
@@ -467,37 +470,121 @@ def campObjInfo(objInfo):
 	}
 	print("        Direccio "+hex(direccio)[2:4]+": "+dicc_direccio[direccio])
 
-	'''4 bytes per energia: suma'ls '''
-	nrg       = objInfo[1:5]
-	nrg_valor = nrg[3] << 32 | nrg[2] << 16 | nrg[1] << 8 | nrg[0]
-	# cal sumar aquests bytes!!!!!
-	print("        Energia: "+str(nrg_valor)+" (kWh o kVARh)")
+	'''si tipus ASDU==8, 4 bytes per energia: suma'ls '''
+	'''
+	idt=[    A S D      ][iud][idt] '''
+	idt=buf[7:len(buf)-2][0:6][ 0 ]
 
-	'''byte cualificador: 8 bits '''
-	cualificador = objInfo[5]
-	IV = cualificador & 0b10000000 == 128 # la lectura es vàlida?
-	CA = cualificador & 0b01000000 == 64  # el comptador està sincronitzat?
-	CY = cualificador & 0b00100000 == 32  # overflow?
-	VH = cualificador & 0b00010000 == 16  # verificació horària durant el període?
-	MP = cualificador & 0b00001000 == 8   # modificació de paràmetres durant el període?
-	IN = cualificador & 0b00000100 == 4   # hi ha hagut intrusió durant el període?
-	AL = cualificador & 0b00000010 == 2   # període incomplet per fallo d'alimentació durant el període?
-	RES= cualificador & 0b00000001 == 1   # bit de reserva
-	print("        byte Cualificador: [IV="+str(IV)+",CA="+str(CA)+",CY="+str(CY)+",VH="+str(VH)+",MP="+str(MP)+",IN="+str(IN)+",AL="+str(AL)+",RES="+str(RES)+"]")
+	if(idt==8):
+		nrg       = objInfo[1:5]
+		nrg_valor = nrg[3] << 32 | nrg[2] << 16 | nrg[1] << 8 | nrg[0]
+		# cal sumar aquests bytes!!!!!
+		print("        Energia: "+str(nrg_valor)+" (kWh o kVARh)")
+		'''byte cualificador: 8 bits '''
+		cualificador = objInfo[5]
+		IV = cualificador & 0b10000000 == 128 # la lectura es vàlida?
+		CA = cualificador & 0b01000000 == 64  # el comptador està sincronitzat?
+		CY = cualificador & 0b00100000 == 32  # overflow?
+		VH = cualificador & 0b00010000 == 16  # verificació horària durant el període?
+		MP = cualificador & 0b00001000 == 8   # modificació de paràmetres durant el període?
+		IN = cualificador & 0b00000100 == 4   # hi ha hagut intrusió durant el període?
+		AL = cualificador & 0b00000010 == 2   # període incomplet per fallo d'alimentació durant el període?
+		RES= cualificador & 0b00000001 == 1   # bit de reserva
+		print("        byte Cualificador: "+hex(cualificador)+" : [IV="+str(IV)+",CA="+str(CA)+",CY="+str(CY)+",VH="+str(VH)+",MP="+str(MP)+",IN="+str(IN)+",AL="+str(AL)+",RES="+str(RES)+"]")
+	elif(idt==122):
+		direccio2=objInfo[1]
+		print("        Direccio última: "+str(direccio2)+": "+dicc_direccio[direccio2])
+
+		'''etiqueta de temps inicial'''
+		etiquetaInicial = objInfo[2:7]
+		campEtiquetaTemps(etiquetaInicial)
+		'''etiqueta de temps final'''
+		etiquetaFinal = objInfo[7:12]
+		campEtiquetaTemps(etiquetaFinal)
+
+	else:
+		print("        **** tipus no implementat encara")
+
 
 	print("      </objecte>")
 	'''fi'''
 
+def campEtiquetaTemps(etiqueta):
+	'''
+		etiqueta: classe bytearray
+		pot ser de tipus a (5 bytes) o tipus b (7 bytes)
+	'''
+	n=len(etiqueta)
+
+	'''comprova el tipus d'etiqueta de temps'''
+	if(n==5): tipus="a"
+	elif(n==7): tipus="b"
+	else: raise RuntimeError("Etiqueta de temps desconeguda")
+
+	if tipus=="b":
+		print("          Etiqueta Tipus b encara no implementada")
+		return
+
+	'''mostra l'etiqueta'''
+	print("        <etiqueta> tipus "+tipus+" ("+str(n)+" bytes):"),
+	for i in range(n): print hex(etiqueta[i])[2:4],
+	print('')
+
+	'''desglossa els 5 bytes = 40 bits'''
+	'''
+			 1-6     7     8   9-13   14-15   16    17-21     22-24     25-28   29-30   31-32   33-39    40
+		+-------+-----+----+------+-------+----+--------+-----------+-------+-------+-------+-------+------+
+    | minut | TIS | IV | hora |  RES1 | SU | diames | diasemana |  mes  |  ETI  |  PTI  |  year | RES2 |
+    +-------+-----+----+------+-------+----+--------+-----------+-------+-------+-------+-------+------+
+	'''
+	minut     = etiqueta[0] & 0b11111100 >> 2 
+	TIS       = etiqueta[0] & 0b00000010 == 2
+	IV        = etiqueta[0] & 0b00000001 
+	hora      = etiqueta[1] & 0b11111000 >> 3
+	RES1      = etiqueta[1] & 0b00000110 >> 1
+	SU        = etiqueta[1] & 0b00000001
+	diames    = etiqueta[2] & 0b11111000 >> 3
+	diasemana = etiqueta[2] & 0b00000111 
+	mes       = etiqueta[3] & 0b11110000 >> 4
+	ETI       = etiqueta[3] & 0b00001100 >> 2
+	PTI       = etiqueta[3] & 0b00000011
+	year      = etiqueta[4] & 0b11111110 >> 1
+	RES2      = etiqueta[4] & 0b00000001
+
+	'''completa l'any'''
+	year+=2000
+
+	'''posa un zero davant els dies, mesos, hores i minuts més petits de 10'''
+	if(diames<10): diames="0"+str(diames)
+	if(mes<10):    mes="0"+str(mes)
+	if(hora<10): hora="0"+str(hora)
+	if(minut<10): minut="0"+str(minut)
+
+	'''mostra'''
+	print("          Data: "+str(diames)+"/"+str(mes)+"/"+str(year)+", "+str(hora)+":"+str(minut))
+	print("        </etiqueta>")
+
 #==# #==# #==# #==# #==# #==# #==#
-'''TEST trames de prova'''
-'''Trames fixes
+'''TRAMES TEST'''
+'''FIXES 
 pregunta='\x10\x49\x01\x00\x4a\x16'; processa(pregunta)
 resposta='\x10\x0b\x01\x00\x0c\x16'; processa(resposta)
 '''
 
-'''Trames variables
+'''VARIABLES'''
+
+'''integrados totales
 '''
 pregunta='\x68\x15\x15\x68\x73\x58\x1B\x7A\x01\x06\x01\x00\x0B\x01\x08\x00\x0B\x07\x02\x0A\x00\x11\x0A\x02\x0A\xC1\x16'
 processa(pregunta)
+'''
 resposta='\x68\x3E\x3E\x68\x08\x58\x1B\x08\x08\x05\x01\x00\x0B\x01\x18\x01\x00\x00\x00\x02\x6E\x1F\x03\x00\x00\x03\x04\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x05\xCC\xBE\x00\x00\x00\x06\x98\x0D\x00\x00\x00\x07\x00\x00\x00\x00\x80\x08\x00\x00\x00\x00\x80\x00\x81\xB2\x09\x09\xE1\x16'
 processa(resposta)
+'''
+
+'''lecturas de cierre
+pregunta='\x68\x13\x13\x68\x73\x58\x1B\x86\x01\x06\x01\x00\x88\x00\x00\x01\x0A\x09\x00\x00\x01\x02\x0A\x1D\x16'
+processa(pregunta)
+resposta='\x68\x48\x48\x68\x08\x58\x1B\x88\x01\x05\x01\x00\x88\x14\x61\x71\x00\x00\xE4\x25\x00\x00\x00\x0B\x47\x00\x00\x88\x09\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x54\x00\x00\x00\x00\x0E\xBA\x0C\x08\x00\x00\x00\x00\x00\x80\x00\x00\x21\x0C\x08\x00\x00\x81\x01\x09\xD4\x16'
+processa(resposta)
+'''

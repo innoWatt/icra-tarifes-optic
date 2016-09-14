@@ -9,6 +9,12 @@ El protocol implementat es el "iec 870-5-102"
 http://www.aperca.org/temppdf/Articulo%20Contadores.pdf
 https://github.com/Ebolon/iec104
 
+* Per indentar un arxiu xml de resultat:
+
+```
+  xmllint --format arxiu.xml
+```
+
 Dades Rasbperry: pi icrahopetayea 
 
 * ip local:   192.168.103.63
