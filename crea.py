@@ -60,14 +60,14 @@ def creaASDU122(direccio_inici,direccio_final,data_inici,data_final):
 		+---------------+-------------------------------+
 	'''
 	asdu=[None]*18
-	asdu[ 0]=122 #idt identificador de tipo
-	asdu[ 1]=1   #qev: byte [SQ=0 (1 bit), N=1 (7 bits)] 00000001
-	asdu[ 2]=6   #cdt: causa=activación (6)
-	asdu[ 3]=(1 & 0x00ff) #punt mesura (2 bytes)
-	asdu[ 4]=(1 & 0xff00)>>8 #punt mesura (2 bytes)
-	asdu[ 5]=11  #direccio registre: 11: Totales integrados con período de integración 1 (curva de carga)
-	asdu[ 6]=direccio_inici
-	asdu[ 7]=direccio_final
+	asdu[0]=122 #idt identificador de tipo
+	asdu[1]=1   #qev: byte [SQ=0 (1 bit), N=1 (7 bits)] 00000001
+	asdu[2]=6   #cdt: causa=activación (6)
+	asdu[3]=1   #punt mesura (1 bytes)
+	asdu[4]=(11&0x00ff)    #direccio registre (2 bytes)
+	asdu[5]=(11&0xff00)>>8 #direccio registre: 11: Totales integrados con período de integración 1 (curva de carga)
+	asdu[6]=direccio_inici
+	asdu[7]=direccio_final
 	asdu[8:13]=data_inici
 	asdu[13:18]=data_final
 	return bytearray(asdu)
@@ -86,9 +86,9 @@ def creaASDU134(data_inici,data_final):
 	asdu[ 0]=134 #idt identificador de tipo
 	asdu[ 1]=1   #qev: byte [SQ=0 (1 bit), N=1 (7 bits)] 00000001
 	asdu[ 2]=5   #cdt: causa=peticion o solicitada (5)
-	asdu[ 3]=(1 & 0x00ff)    #punt mesura (2 bytes)
-	asdu[ 4]=(1 & 0xff00)>>8 #punt mesura (2 bytes)
-	asdu[ 5]=136  #direccio registre: 136: Información de Tarificación relativa al Contrato III
+	asdu[ 3]=1   #punt mesura (1 bytes)
+	asdu[ 4]=(136&0x00ff)    #direccio registre (2 bytes)
+	asdu[ 5]=(136&0xff00)>>8 #direccio registre: 136: Información de Tarificación relativa al Contrato III
 	asdu[ 6:11] = data_inici
 	asdu[11:16] = data_final
 	return bytearray(asdu)
@@ -107,9 +107,10 @@ def creaASDU183(clau):
 	asdu[0]=183 #idt identificador de tipo
 	asdu[1]=1   #qev: byte [SQ=0 (1 bit), N=1 (7 bits)] 00000001
 	asdu[2]=6   #cdt: causa=activación (6)
-	asdu[3]=(1 & 0x00ff)    #punt mesura (2 bytes)
-	asdu[4]=(1 & 0xff00)>>8 #punt mesura (2 bytes)
-	asdu[5]=0   #direccio registre
+	asdu[3]=1   #punt mesura (1 bytes)
+	asdu[4]=(0&0x00ff)    #direccio registre (2 bytes)
+	asdu[5]=(0&0xff00)>>8 #direccio registre: 0 : cap registre
+
 	asdu[6]=(clau & 0x000000ff)
 	asdu[7]=(clau & 0x0000ff00)>>8
 	asdu[8]=(clau & 0x00ff0000)>>16
@@ -125,9 +126,9 @@ def creaASDU187():
 	asdu[0]=187 #idt identificador de tipo
 	asdu[1]=0   #qev: byte [SQ=0 (1 bit), N=0 (7 bits)]
 	asdu[2]=6   #cdt: causa=activación (6)
-	asdu[3]=(1 & 0x00ff)    #punt mesura (2 bytes)
-	asdu[4]=(1 & 0xff00)>>8 #punt mesura (2 bytes)
-	asdu[5]=0   #direccio registre
+	asdu[3]=1   #punt mesura (1 bytes)
+	asdu[4]=(0&0x00ff)    #direccio registre (2 bytes)
+	asdu[5]=(0&0xff00)>>8 #direccio registre: 0 : cap registre
 	return bytearray(asdu)
 
 '''crea etiqueta de temps'''
@@ -173,6 +174,7 @@ def creaTemps(diames,mes,year,hora,minut):
 		creaASDU122(registre_inici,registre_final,data_inici,data_final)
 		creaASDU134(data_inici,data_final)
 		creaASDU183(clau)
+		creaASDU187()
 		creaTemps(diames,mes,year,hora,minut)
 '''
 

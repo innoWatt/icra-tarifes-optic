@@ -94,8 +94,8 @@ def processaTramaFixa(buf):
 	'''mostra els 2 bytes de direccio: byte swap i suma'ls'''
 	direccio = buf[3] << 8 | buf[2]
 
+	#print("  Direcció comptador: "+hex(direccio)+"="+str(direccio))
 	'''fi'''
-	print("  Direcció comptador: "+hex(direccio)+"="+str(direccio))
 
 '''processa una trama de longitud variable'''
 def processaTramaVariable(buf):
@@ -137,7 +137,7 @@ def processaTramaVariable(buf):
 
 	'''2 bytes de direccio: byte swap i suma'ls'''
 	direccio = buf[6] << 8 | buf[5]
-	print("  Direcció comptador: "+str(hex(direccio))+" = "+str(direccio))
+	#print("  Direcció comptador: "+str(hex(direccio))+" = "+str(direccio))
 
 	'''camp ASDU: del byte 6 fins al el n-3'''
 	ASDU=buf[7:n-2]
@@ -310,25 +310,25 @@ def campIUD(iud):
 	causa = cdt & 0b00111111
 
 	dicc_causa={
-			4 :'Inicializada',
-			5 :'Peticion o solicitada (request or requested)',
-			6 :'Activacion',
-			7 :'Confirmacion de activacion',
-			8 :'Desactivacion',
-			9 :'Desactivacion confirmada',
-			10:'Finalizacion de la activacion',
-			13:'Registro de datos solicitado no disponible',
-			14:'Tipo de ASDU solicitado no disponible',
-			15:'Número de registro en el ASDU enviado por CM desconocido',
-			16:'Especificacion de direccion en el ASDU enviado por CM desconocida',
-			17:'Objeto de informacion no disponible',
-			18:'Periodo de integracion no disponible',
+			4 :'INICIALIZADA',
+			5 :'PETICION O SOLICITADA (REQUEST OR REQUESTED)',
+			6 :'ACTIVACION',
+			7 :'CONFIRMACION DE ACTIVACION',
+			8 :'DESACTIVACION',
+			9 :'DESACTIVACION CONFIRMADA',
+			10:'FINALIZACION DE LA ACTIVACION',
+			13:'REGISTRO DE DATOS SOLICITADO NO DISPONIBLE',
+			14:'TIPO DE ASDU SOLICITADO NO DISPONIBLE',
+			15:'NÚMERO DE REGISTRO EN EL ASDU ENVIADO POR CM DESCONOCIDO',
+			16:'ESPECIFICACION DE DIRECCION EN EL ASDU ENVIADO POR CM DESCONOCIDA',
+			17:'OBJETO DE INFORMACION NO DISPONIBLE',
+			18:'PERIODO DE INTEGRACION NO DISPONIBLE',
 	}
 	print("      cdt: "+hex(cdt)+": [T="+str(T)+", PN="+str(PN)+", Causa de transmissió "+str(causa)+": "+dicc_causa[causa]+"]")
 
-	'''direccio comuna (DCO) (3 bytes). Estructura : [punt_mesura (2 bytes), registre (1 byte) ]'''
-	dco_punt_mesura = dco[1] << 8 | dco[0]
-	dco_registre    = dco[2]
+	'''direccio comuna (DCO) (3 bytes). Estructura : [punt_mesura (1 bytes), registre (2 byte) ]'''
+	dco_punt_mesura = dco[0] 
+	dco_registre    = (dco[2]<<8) | dco[1]
 
 	dicc_registre = {
 			  0 :"Dirección de defecto",
