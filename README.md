@@ -6,17 +6,41 @@ Tenim una Raspberry Pi connectada a un comptador Actaris SL761 amb un sensor òp
 
 El protocol implementat es el "iec 870-5-102"
 
-http://www.aperca.org/temppdf/Articulo%20Contadores.pdf
+Abstracció, idea global:
 
-https://github.com/Ebolon/iec104
+	+====================+      crea.py     : l'usuari crea una trama                                    
+	|      USUARI        |      processa.py : la trama és traduïda a llenguatge humà         
+	+====================+      pregunta.py : la trama és enviada al comptador, i aquest respon
+		|               ^        
+		|               |        
+		v               |
+	crea.py           |
+		|               |
+		|               |
+		v               |
+	TRAMA------->processa.py
+		|               ^
+		|               |
+		v               |
+	pregunta.py     TRAMA
+		|               ^
+		|               |
+		v               |
+	+====================+
+	|     COMPTADOR      |
+	+====================+
 
-* Per indentar un arxiu xml de resultat:
+L'arxiu processa.py crea un xml que llavors es pot interpretar. 
+
+Per indentar un arxiu xml de resultat:
 
 ```
   xmllint --format arxiu.xml
 ```
 
-Dades Rasbperry: pi icrahopetayea 
+ASDUS implementats (peticions): 122, 134, 183
+
+Dades Rasbperry: pi, icrahopetayea 
 
 * ip local:   192.168.103.63
 * ip externa: 84.89.61.64:22
@@ -40,4 +64,9 @@ python tcp_serial_redirect.py --parity E -P 3333 /dev/ttyUSB0 9600
 ```
 
 En desenvolupament
+
+Referències:
+
+* https://github.com/Ebolon/iec104
+* http://www.aperca.org/temppdf/Articulo%20Contadores.pdf
 
