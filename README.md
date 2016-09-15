@@ -8,9 +8,9 @@ El protocol implementat es el "iec 870-5-102"
 
 Abstracció, idea global:
 
-		+=-----------------=+      crea.py     : l'usuari crea una trama                                    
+		+-------------------+      crea.py     : l'usuari crea una trama                                    
 		|      USUARI       |      processa.py : la trama és traduïda a llenguatge humà         
-		+=-----------------=+      pregunta.py : la trama és enviada al comptador, i aquest respon
+		+-------------------+      pregunta.py : la trama és enviada al comptador, i aquest respon
 		  |               ^        
 		  |               |        
 		  v               |
@@ -25,9 +25,9 @@ Abstracció, idea global:
 		 pregunta.py    TRAMA
 		  |               ^
 		  v               |
-		+=-----------------=+
+		+-------------------+
 		|     COMPTADOR     |
-		+=-----------------=+
+		+-------------------+
 
 L'arxiu processa.py crea un xml que llavors es pot interpretar. 
 
