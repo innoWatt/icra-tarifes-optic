@@ -10,7 +10,7 @@ import processa as Pro
 	etiquetes de temps
 '''
 
-def creaTramaFixa(control,direccio):
+def creaTramaFix(control,direccio):
 	trama=[None]*6
 	trama[0]=0x10     #inici
 	trama[1]=control  #byte control [RES,PRM,FCB,FCV,FUN]
@@ -20,13 +20,13 @@ def creaTramaFixa(control,direccio):
 	trama[5]=0x16
 	return bytearray(trama)
 	''' tests trames fixes
-		trama=creaTramaFixa(0b01001001,1) #solicitud d'estat d'enllaç
+		trama=creaTramaFix(0b01001001,1) #solicitud d'estat d'enllaç
 		Pro.processa(trama)
-		trama=creaTramaFixa(0b01000000,1) #reset d'enllaç remot
+		trama=creaTramaFix(0b01000000,1) #reset d'enllaç remot
 		Pro.processa(trama)
 	'''
 
-def creaTramaVariable(control,direccio,asdu):
+def creaTramaVar(control,direccio,asdu):
 	trama = [None]*8
 	trama[0]=0x68 #inici
 	trama[1]=0x00 #longitud
@@ -116,6 +116,20 @@ def creaASDU183(clau):
 	asdu[9]=(clau & 0xff000000)>>32
 	return bytearray(asdu)
 
+def creaASDU187():
+	'''
+		REQUEST de finalitzar sessió
+		ASDU buit, només té el camp IUD (6 bytes)
+	'''
+	asdu=[None]*6
+	asdu[0]=187 #idt identificador de tipo
+	asdu[1]=0   #qev: byte [SQ=0 (1 bit), N=0 (7 bits)]
+	asdu[2]=6   #cdt: causa=activación (6)
+	asdu[3]=(1 & 0x00ff)    #punt mesura (2 bytes)
+	asdu[4]=(1 & 0xff00)>>8 #punt mesura (2 bytes)
+	asdu[5]=0   #direccio registre
+	return bytearray(asdu)
+
 '''crea etiqueta de temps'''
 def creaTemps(diames,mes,year,hora,minut):
 	'''
@@ -154,17 +168,19 @@ def creaTemps(diames,mes,year,hora,minut):
 
 '''
 	Sintaxi:
-		creaTramaFixa(control,direccio)
-		creaTramaVariable(control,direccio,asdu)
+		creaTramaFix(control,direccio)
+		creaTramaVar(control,direccio,asdu)
 		creaASDU122(registre_inici,registre_final,data_inici,data_final)
 		creaASDU134(data_inici,data_final)
 		creaASDU183(clau)
+		creaTemps(diames,mes,year,hora,minut)
 '''
 
 '''tests
-trama=creaTramaFixa(0x49,1)
-trama=creaTramaVariable(0x73,1,creaASDU122(1,2,creaTemps(25,1,16,6,5),creaTemps(25,1,16,8,5)))
-trama=creaTramaVariable(0x73,1,creaASDU134(creaTemps(25,1,14,0,0),creaTemps(26,1,14,0,0)))
-trama=creaTramaVariable(0x73,1,creaASDU183(12345678))
+trama=creaTramaFix(0x49,1)
+trama=creaTramaVar(0x73,1,creaASDU122(1,2,creaTemps(25,1,16,6,5),creaTemps(25,1,16,8,5)))
+trama=creaTramaVar(0x73,1,creaASDU134(creaTemps(25,1,14,0,0),creaTemps(26,1,14,0,0)))
+trama=creaTramaVar(0x73,1,creaASDU183(12345678))
+trama=creaTramaVar(0x53,1,creaASDU187())
 Pro.processa(trama)
 '''

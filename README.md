@@ -67,6 +67,7 @@ En desenvolupament
 
 Referències:
 
-* https://github.com/Ebolon/iec104
+* http://www.ree.es/sites/default/files/01_ACTIVIDADES/Documentos/Documentacion-Simel/protoc_RMCM10042002.pdf
 * http://www.aperca.org/temppdf/Articulo%20Contadores.pdf
+* https://github.com/Ebolon/iec104
 

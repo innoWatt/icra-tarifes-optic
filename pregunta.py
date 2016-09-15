@@ -1,10 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+'''
+	Envia una trama per serial i mostra la resposta processada
+
+	Sintaxi:
+		pregunta(trama)
+
+'''
 import serial
 import processa as Pro
-'''
-	ENVIA UNA PREGUNTA PER SERIAL I MOSTRA LA RESPOSTA PROCESSADA
-'''
 
 #obre serial
 ser=serial.Serial()
@@ -20,7 +24,7 @@ ser.timeout=1
 ser.open()
 
 def pregunta(trama):
-	print("REQUEST")
+	print("REQUEST...")
 	Pro.processa(trama)
 	print("RESPOSTA...")
 	ser.write(bytearray(trama))
@@ -30,9 +34,10 @@ def pregunta(trama):
 	for i in range(len(resposta)): 
 		respostaTotal+=resposta[i]
 	Pro.processa(respostaTotal)
+	return respostaTotal
 
-#llista de preguntes
-pregunta('\x68\x0D\x0D\x68\x73\x01\x00\xB7\x01\x06\x01\x00\x00\x01\x00\x00\x00\x34\x16')
+#PREGUNTES TEST
+#pregunta('\x68\x0D\x0D\x68\x73\x01\x00\xB7\x01\x06\x01\x00\x00\x01\x00\x00\x00\x34\x16')
 #pregunta('\x68\x15\x15\x68\x73\x01\x00\x7A\x01\x06\x01\x00\x0B\x01\x02\x01\x00\x12\x09\x09\x00\x00\x13\x09\x09\x4e\x16')
 #pregunta("\x10\x5B\x01\x00\x5C\x16")
 #pregunta("\x10\x7B\x01\x00\x7C\x16")

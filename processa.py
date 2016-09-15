@@ -621,6 +621,16 @@ def campObjInfo(objInfo):
 		'''suma els 4 bytes de la clau d'accés'''
 		clau = clau[3]<<32 | clau[2]<<16 | clau[1]<<8 | clau[0]
 		print("        Clau d'accés: "+str(clau))
+	elif(idt==187):
+		'''A187: FINALIZAR SESIÓN'''
+		'''A187 és una petició de fi de sessió'''
+		'''
+				Exemple de A187:
+				in Lo Lo in Co Di Di [   ASDU==IUD   ] Cs Fi
+			  68 09 09 68 53 58 1B BB 00 06 01 00 00 88 16
+				és un objecte d'informació buit
+		'''
+		print("        Request de FINALITZAR SESSIÓ")
 	else:
 		raise RuntimeError("[!] ERROR: ASDU "+str(idt)+" ENCARA NO IMPLEMENTAT")
 
