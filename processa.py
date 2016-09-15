@@ -414,7 +414,13 @@ def campObjsInfo(objsInfo):
 	N=[     ASDU      ][IUD][QEV] & 7 bits    '''
 	N=buf[7:len(buf)-2][0:6][ 1 ] & 0b01111111
 
-	print("      N="+str(N)+" objectes d'informació ("+str(n/N)+" bytes cada un)")
+	if N>0:
+		print("      N="+str(N)+" objectes d'informació ("+str(n/N)+" bytes cada un)")
+	else:
+		'''ACABA AQUI SI N=0'''
+		print("      N=0 objectes d'informació")
+		print("    </objectesInfo>")
+		return
 
 	'''el residu entre n/N ens dona la llargada de l'etiqueta de temps comuna'''
 	longitud_etiqueta = n % N
