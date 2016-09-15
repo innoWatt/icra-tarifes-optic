@@ -127,20 +127,18 @@ def llegirInstantanis(self):
 
 	##====(22 i 23)
 	#REQUEST
-	valorsTrama=dict(tipus='v',ccc=0x73,direccioContador=direccioContador,idASDU=0x8D,SQN=0,causa=5,direccioPM=0,direccioRegistre=0,objecteInformacio1=[])
+	valorsTrama=dict(tipus='v',ccc=0x73,idASDU=0x8D,SQN=0,causa=5,direccioPM=0,direccioRegistre=0,objecteInformacio1=[])
 	valorsTrama = self.envia(valorsTrama, 0, 0)
 
 	#===(24 i 25)
 	#REQUEST
-	valorsTrama = dict(tipus = '', ccc = 0, direccioContador = 0, idASDU = 0, SQN = 0, causa = 0, direccioPM = 0, direccioRegistre = 0, objecteInformacio1 = [None])
-	valorsTrama['direccioContador'] = direccioContador
 	valorsTrama['tipus'] = 'f'
 	valorsTrama['ccc'] = 0x5B
 	valorsTrama = self.envia(valorsTrama, 0, 0)
 
 	##====(26 i 27)
 	#REQUEST
-	valorsTrama = dict(tipus = 'v', ccc = 0x73, direccioContador = direccioContador, idASDU = 0xBB, SQN = 0, causa = 6, direccioPM = 0, direccioRegistre = 0, objecteInformacio1 = [])
+	valorsTrama = dict(tipus = 'v', ccc = 0x73, idASDU = 0xBB, SQN = 0, causa = 6, direccioPM = 0, direccioRegistre = 0, objecteInformacio1 = [])
 	valorsTrama = self.envia(valorsTrama, 0, 0)
 
 	#===(28 i 29)
@@ -166,8 +164,8 @@ def llegirInstantanis(self):
 
 	##====(37 i 38) ::Read Instantaneous Values ccc=115, ASDU=162, causa=5, dir.reg=0, obj inf=192,193,194
 	#REQUEST
-	valorsTrama = dict(tipus = 'v', ccc = 0x73, direccioContador = direccioContador, idASDU = 0xA2, SQN = 3, causa = 5, direccioPM = 0, direccioRegistre = 0, objecteInformacio1 = [0xC0, 0XC1, 0xC2, 0x62, 0x16])
-	valorsTrama = self.envia(valorsTrama, 0, 0)
+	vT = dict(tipus='v',ccc=0x73,idASDU = 0xA2,SQN=3,causa=5,direccioPM=0,direccioRegistre=0,objecteInformacio1=[0xC0,0XC1,0xC2,0x62,0x16])
+	vT = self.envia(vT, 0, 0)
 
 	#===(39 i 40)
 	#REQUEST
@@ -175,7 +173,7 @@ def llegirInstantanis(self):
 	valorsTrama['ccc'] = 0x5B
 	valorsTrama = self.envia(valorsTrama, 0, 0)
 
-	print("Dins de la classe, accedim a data i hora: ",
+	print("accedim a data i hora: "),
 
 	#Objecte 1 (192) - A
 	temp = objInfo[1] + (objInfo[2] << 8) + (objInfo[3] << 16) + (((0b11111100 & objInfo[4]) >> 2) << 24)
@@ -274,23 +272,18 @@ def llegirInstantanis(self):
 
 	#Objecte 2 (193) - J
 	if (0b00100000 & objInfo[46]) == 0:
-	#print("La P. Activa Fase I es importada")
 	self.diccionari["La P. Activa Fase I es importada"] = 1
 	else:
-	#print("La P.Activa Fase I es exportada")
 	self.diccionari["La P. Activa Fase I es importada"] = 0
 
 	#Objecte 2 (193) - K
 	if (0b00010000 & objInfo[46]) == 0:
-	# print("P.Reactiva Fase I es Q1/Q2")
 	self.diccionari["P.Reactiva Fase I es Q1/Q2"] = 1
 	else:
-	#print("P.Reactiva Fase I es Q3/Q4")
 	self.diccionari["P.Reactiva Fase I es Q1/Q2"] = 0
 
 	#Objecte 2 (193) - L
 	if (0b1 & objInfo[46]) == 1:
-	#print("P.Total Fase I invalides")
 	self.diccionari["Error de lectura en P.Total Fase I invalides"] = 1
 	else:
 	self.diccionari["Error de lectura en P.Total Fase I invalides"] = 0

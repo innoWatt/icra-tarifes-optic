@@ -326,9 +326,9 @@ def campIUD(iud):
 	}
 	print("      cdt: "+hex(cdt)+": [T="+str(T)+", PN="+str(PN)+", Causa de transmissió "+str(causa)+": "+dicc_causa[causa]+"]")
 
-	'''direccio comuna (DCO) (3 bytes). Estructura : [punt_mesura (1 bytes), registre (2 byte) ]'''
-	dco_punt_mesura = dco[0] 
-	dco_registre    = (dco[2]<<8) | dco[1]
+	'''direccio comuna (DCO) (3 bytes). Estructura : [punt_mesura (2 bytes), registre (1 byte) ]'''
+	dco_punt_mesura = (dco[1]<<8) | dco[0]
+	dco_registre    = dco[2]
 
 	dicc_registre = {
 			  0 :"Dirección de defecto",
@@ -355,9 +355,8 @@ def campIUD(iud):
 			138 :"Información de Tarificación relativa al Contrato Latente II",
 			139 :"Información de Tarificación relativa al Contrato Latente III",
 	}
-	print("      dco (3 bytes): [punt mesura (2 bytes), direccio registre (1 byte)] = "+str(map(hex,dco)))
-	print("        * punt mesura: "+str(dco_punt_mesura))
-	print("        * direccio registre: "+str(dco_registre)+" = "+dicc_registre[dco_registre])
+	print("      punt mesura (2 bytes): "+str(dco_punt_mesura))
+	print("      direccio registre (1 byte): "+str(dco_registre)+" = "+dicc_registre[dco_registre])
       
 	'''fi'''
 	print("    </iud>")
@@ -721,7 +720,7 @@ def campEtiquetaTemps(etiqueta):
 
 '''integrados totales'''
 #pregunta: ASDU 122
-#processa('\x68\x15\x15\x68\x73\x58\x1B\x7A\x01\x06\x01\x00\x0B\x01\x08\x00\x0B\x07\x02\x0A\x00\x11\x0A\x02\x0A\xC1\x16')
+processa('\x68\x15\x15\x68\x73\x58\x1B\x7A\x01\x06\x01\x00\x0B\x01\x08\x00\x0B\x07\x02\x0A\x00\x11\x0A\x02\x0A\xC1\x16')
 #resposta: ASDU 8
 #processa('\x68\x3E\x3E\x68\x08\x58\x1B\x08\x08\x05\x01\x00\x0B\x01\x18\x01\x00\x00\x00\x02\x6E\x1F\x03\x00\x00\x03\x04\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x05\xCC\xBE\x00\x00\x00\x06\x98\x0D\x00\x00\x00\x07\x00\x00\x00\x00\x80\x08\x00\x00\x00\x00\x80\x00\x81\xB2\x09\x09\xE1\x16')
 

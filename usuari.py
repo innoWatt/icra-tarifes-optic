@@ -24,9 +24,11 @@ import pregunta as P
 # EXEMPLE COMPLET DE ASDU 122
 d=1 # direccio comptador
 P.pregunta(C.creaTramaFix(0b01001001,d)) #request link status
+P.pregunta(C.creaTramaFix(0b01001001,d)) #request link status
 P.pregunta(C.creaTramaFix(0b01000000,d)) #request link reset
 P.pregunta(C.creaTramaVar(0b01110011,d,C.creaASDU183(1))) #request user data & send password
 P.pregunta(C.creaTramaFix(0b01011011,d)) #request class 2 data
+
 P.pregunta(C.creaTramaVar(0b01110011,d,C.creaASDU122(1,3,C.creaTemps(20,5,16,0,0),C.creaTemps(21,5,16,0,0))))
 P.pregunta(C.creaTramaFix(0b01011011,d)) #request class 2 data
 P.pregunta(C.creaTramaFix(0b01111011,d)) #request class 2 data (flip FCB)
