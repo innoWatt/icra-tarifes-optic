@@ -39,6 +39,9 @@ def processa(missatge):
 	'''comptar numero de bytes del buffer'''
 	n=len(buf) 
 
+	'''comprova trama buida'''
+	if n==0: raise RuntimeError("TRAMA BUIDA")
+
 	print("<missatge>\n  "+str(n)+" bytes:"),
 
 	'''mostra tots els bytes del missatge'''
@@ -92,7 +95,7 @@ def processaTramaFixa(buf):
 	direccio = buf[3] << 8 | buf[2]
 
 	'''fi'''
-	print("  Direcció comptador: "+hex(direccio)+" = "+str(direccio))
+	print("  Direcció comptador: "+hex(direccio)+"="+str(direccio))
 
 '''processa una trama de longitud variable'''
 def processaTramaVariable(buf):
@@ -141,7 +144,7 @@ def processaTramaVariable(buf):
 
 	'''Comprova si el byte de longitud coincideix amb la suma de control+direccio+asdu'''
 	if(buf[1]==1+2+len(ASDU)):
-		print("  Camp longitud correcte ("+hex(buf[1])+" = "+str(buf[1])+" = "+str(len(ASDU))+"+3)")
+		print("  Camp longitud correcte ("+hex(buf[1])+"="+str(buf[1])+"="+str(len(ASDU))+"+3)")
 	else:
 		raise RuntimeError("Camp Longitud ("+str(buf[1])+") incorrecte")
 	
@@ -167,7 +170,7 @@ def campControl(control):
 	'''
 
 	print("  <control>")
-	print("    Byte control: "+hex(control)+" = "+str(control)+" = "+bin(control))
+	print("    Byte control: "+hex(control)+"="+str(control)+"="+bin(control))
 	res = control & 0b10000000 == 128
 	prm = control & 0b01000000 == 64
 	fcb = control & 0b00100000 == 32 #tambe acd
@@ -494,7 +497,7 @@ def campObjInfo(objInfo):
 
 		'''byte 1: direccio de registre'''
 		direccio=objInfo[0]
-		print("        Direccio "+hex(direccio)[2:4]+": "+dicc_direccio[direccio])
+		print("        Direcció "+hex(direccio)[2:4]+": "+dicc_direccio[direccio])
 
 		'''4 bytes següents per energia (kwh o kvarh): cal byte swap i suma'''
 		nrg       = objInfo[1:5]
@@ -519,7 +522,7 @@ def campObjInfo(objInfo):
 
 		'''direccio inicial'''
 		direccio_inici=objInfo[0]
-		print("        Direccio inici: "+str(direccio_inici)+": "+dicc_direccio[direccio_inici])
+		print("        Direcció inici: "+str(direccio_inici)+": "+dicc_direccio[direccio_inici])
 
 		'''direccio final'''
 		direccio_final=objInfo[1]
@@ -653,25 +656,26 @@ def campEtiquetaTemps(etiqueta):
 
 	'''
 		Estructura dels 5 bytes == 40 bits
+		Cada byte s'ha de llegir al revés
 
 			 1-6     7     8   9-13   14-15   16    17-21     22-24     25-28   29-30   31-32   33-39    40
 		+-------+-----+----+------+-------+----+--------+-----------+-------+-------+-------+-------+------+
     | minut | TIS | IV | hora |  RES1 | SU | diames | diasemana |  mes  |  ETI  |  PTI  |  year | RES2 |
     +-------+-----+----+------+-------+----+--------+-----------+-------+-------+-------+-------+------+
 	'''
-	minut     = etiqueta[0] & 0b11111100 >> 2 
-	TIS       = etiqueta[0] & 0b00000010 == 2
-	IV        = etiqueta[0] & 0b00000001 
-	hora      = etiqueta[1] & 0b11111000 >> 3
-	RES1      = etiqueta[1] & 0b00000110 >> 1
-	SU        = etiqueta[1] & 0b00000001
-	diames    = etiqueta[2] & 0b11111000 >> 3
-	diasemana = etiqueta[2] & 0b00000111 
-	mes       = etiqueta[3] & 0b11110000 >> 4
-	ETI       = etiqueta[3] & 0b00001100 >> 2
-	PTI       = etiqueta[3] & 0b00000011
-	year      = etiqueta[4] & 0b11111110 >> 1
-	RES2      = etiqueta[4] & 0b00000001
+	minut     = (etiqueta[0] & 0b00111111)
+	TIS       = (etiqueta[0] & 0b01000000) == 64
+	IV        = (etiqueta[0] & 0b10000000) == 128
+	hora      = (etiqueta[1] & 0b00011111)
+	RES1      = (etiqueta[1] & 0b01100000) >> 5
+	SU        = (etiqueta[1] & 0b10000000) == 128
+	diames    = (etiqueta[2] & 0b00011111)
+	diasemana = (etiqueta[2] & 0b11100000) >> 5
+	mes       = (etiqueta[3] & 0b00001111)
+	ETI       = (etiqueta[3] & 0b00110000) >> 4
+	PTI       = (etiqueta[3] & 0b11000000) >> 6
+	year      = (etiqueta[4] & 0b01111111)
+	RES2      = (etiqueta[4] & 0b10000000) == 128
 
 	'''completa l'any'''
 	year+=2000

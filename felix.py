@@ -451,7 +451,6 @@ def muntaTrama(self,valors):
         trama[4] = self.calculChecksum(trama) #li afegim el checksum
         trama[5] = 0x16 #byte fi de trama
         return(trama)
-
     elif valors['tipus'] == 'v':
         trama = [None] * 13
         trama[0] = 0x68 #es una trama tipus variable
@@ -473,7 +472,6 @@ def muntaTrama(self,valors):
         trama[2] = trama[1]
         trama[len(trama) - 2] = self.calculChecksum(trama)
         return(trama)
-
     else:
         raise RuntimeError("valors['tipus'] erroni")
 
