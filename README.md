@@ -11,21 +11,21 @@ Abstracció, idea global:
 		+====================+      crea.py     : l'usuari crea una trama                                    
 		|      USUARI        |      processa.py : la trama és traduïda a llenguatge humà         
 		+====================+      pregunta.py : la trama és enviada al comptador, i aquest respon
-			|               ^        
-			|               |        
-			v               |
-		crea.py           |
-			|               |
-			|               |
-			v               |
-		TRAMA------->processa.py
-			|               ^
-			|               |
-			v               |
-		pregunta.py     TRAMA
-			|               ^
-			|               |
-			v               |
+		  |               ^        
+		  |               |        
+		  v               |
+		 crea.py          |
+		  |               |
+		  |               |
+		  v               |
+		 TRAMA------->processa.py
+		  |               ^
+		  |               |
+		  v               |
+		 pregunta.py     TRAMA
+		  |               ^
+		  |               |
+		  v               |
 		+====================+
 		|     COMPTADOR      |
 		+====================+
