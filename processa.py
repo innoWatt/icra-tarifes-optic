@@ -432,9 +432,12 @@ def campObjsInfo(objsInfo):
 
 	'''Troba si porta o no etiqueta comuna de temps'''
 	'''Si saps l'ASDU, perfecte, sinó, endevina-ho'''
-	if(idt in [122,8]):
+	if(idt in [8]):
 		print("      Amb Etiqueta comuna de temps tipus a (5 bytes)")
 		longitud_etiqueta=5
+	elif(idt in [122]):
+		print("      Sense Etiqueta comuna de temps")
+		longitud_etiqueta=0
 	else:
 		'''mira d'endevinar l'estructura'''
 		if(n%N!=0 and (n-5)%N==0 and (n-7)%N!=0):
@@ -449,7 +452,7 @@ def campObjsInfo(objsInfo):
 		else:
 			print("      WARNING: etiqueta no detectada, assumint no etiqueta")
 			longitud_etiqueta=0
-		
+
 	'''itera els elements'''
 	longitud_camp=(n-longitud_etiqueta)/N
 	for i in range(N):
@@ -470,12 +473,7 @@ def campObjsInfo(objsInfo):
 def campObjInfo(objInfo):
 	'''
 		objInfo: classe bytearray
-		estructura:
-			MOLT VARIABLE DEPENENT DE L'ASDU TRIAT (mirar byte idt)
-			implementats:
-				122
-				8
-
+		estructura: MOLT VARIABLE DEPENENT DE L'ASDU TRIAT (mirar byte idt)
 	'''
 	n=len(objInfo)
 	print("      <objecte>")
