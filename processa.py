@@ -81,11 +81,12 @@ def processaTramaFixa(buf):
 	'''comprova checksum'''
 	checksum = (buf[1]+buf[2]+buf[3])%256
 	if(checksum==buf[4]):    
-		print("  Checksum correcte ("+hex(buf[4])+"="+str(buf[4])+")")
+		#print("  Checksum correcte ("+hex(buf[4])+"="+str(buf[4])+")")
+		pass
 	else:
 		raise RuntimeError('Checksum incorrecte: '+str(checksum)+'=/='+str(buf[4]))
 
-	print("  Trama de tipus FIXE [inici (0x10), control, direccio1, direccio2, checksum, fi (0x16)]")
+	print("  Trama FIXE [inici (0x10), control, direccio1, direccio2, checksum, fi (0x16)]")
 
 	'''processa el byte de control'''
 	control=buf[1]
@@ -125,11 +126,12 @@ def processaTramaVariable(buf):
 		checksum += buf[i]
 	checksum%=256
 	if checksum == buf[n-2]: 
-		print("  Checksum correcte ("+hex(buf[n-2])+"="+str(buf[n-2])+")")
+		#print("  Checksum correcte ("+hex(buf[n-2])+"="+str(buf[n-2])+")")
+		pass
 	else:
 		raise RuntimeError("Checksum incorrecte: "+str(buf[n-2])+"=/="+str(checksum))
 
-	print("  La trama es de tipus VARIABLE [inici (0x68), L, L, inici (0x68), ASDU, checksum, final (0x16)]")
+	print("  Trama VARIABLE [inici (0x68), L, L, inici (0x68), control, D, D, ASDU, checksum, final (0x16)]")
 
 	'''byte de control'''
 	control=buf[4]
@@ -144,7 +146,8 @@ def processaTramaVariable(buf):
 
 	'''Comprova si el byte de longitud coincideix amb la suma de control+direccio+asdu'''
 	if(buf[1]==1+2+len(ASDU)):
-		print("  Camp longitud correcte ("+hex(buf[1])+"="+str(buf[1])+"="+str(len(ASDU))+"+3)")
+		#print("  Camp longitud correcte ("+hex(buf[1])+"="+str(buf[1])+"="+str(len(ASDU))+"+3)")
+		pass
 	else:
 		raise RuntimeError("Camp Longitud ("+str(buf[1])+") incorrecte")
 	
@@ -200,20 +203,21 @@ def campControl(control):
 			raise RuntimeError("    DFC = 1. ELS MISSATGES FUTURS CAUSARAN DATA OVERFLOW")
 
 	'''Mostra el text de la funcio "fun" (4 bits) '''
+	print("    bits FUN: "+bin(fun)),
 	if(prm):
 		print({
-			 0:"    [Funció 0] [Petició: RESET DEL LINK REMOT]",
-			 3:"    [Funció 3] [Petició: ENVIAMENT DE DADES D'USUARI]",
-			 9:"    [Funció 9] [Petició: SOL·LICITUD DE L'ESTAT DEL LINK]",
-			11:"    [Funció 11] [Petició: SOL·LICITUD DE DADES DE CLASSE 2]",
+			 0:"[Funció 0] [Petició: RESET DEL LINK REMOT]",
+			 3:"[Funció 3] [Petició: ENVIAMENT DE DADES D'USUARI]",
+			 9:"[Funció 9] [Petició: SOL·LICITUD DE L'ESTAT DEL LINK]",
+			11:"[Funció 11] [Petició: SOL·LICITUD DE DADES DE CLASSE 2]",
 		}[fun])
 	else:
 		print({
-			 0:"    [Funció 0] [Resposta: ACK]",
-			 1:"    [Funció 1] [Resposta: NACK. COMANDA NO ACCEPTADA]",
-			 8:"    [Funció 8] [Resposta: DADES DE L'USUARI]",
-			 9:"    [Funció 9] [Resposta: NACK. DADES DEMANADES NO DISPONIBLES]",
-			11:"    [Funció 11] [Resposta: ESTAT DEL LINK O DEMANDA D'ACCÉS]",
+			 0:"[Funció 0] [Resposta: ACK]",
+			 1:"[Funció 1] [Resposta: NACK. COMANDA NO ACCEPTADA]",
+			 8:"[Funció 8] [Resposta: DADES DE L'USUARI]",
+			 9:"[Funció 9] [Resposta: NACK. DADES DEMANADES NO DISPONIBLES]",
+			11:"[Funció 11] [Resposta: ESTAT DEL LINK O DEMANDA D'ACCÉS]",
 		}[fun])
 	'''fi'''
 	print("  </control>")
@@ -231,7 +235,7 @@ def campIUD(iud):
 		idt = identificador de tipus
 		qev = qualificador d'estructura variable
 		cdt = causa de transmissió
-		dco = direcció comuna
+		dco = direcció comuna (punt mesura + direccio registre)
 	'''
 	n=len(iud)
 	print("    <iud>")
@@ -355,8 +359,8 @@ def campIUD(iud):
 			138 :"Información de Tarificación relativa al Contrato Latente II",
 			139 :"Información de Tarificación relativa al Contrato Latente III",
 	}
-	print("      punt mesura (2 bytes): "+str(dco_punt_mesura))
-	print("      direccio registre (1 byte): "+str(dco_registre)+" = "+dicc_registre[dco_registre])
+	print("      dco->punt mesura:       "+hex(dco_punt_mesura)+"="+str(dco_punt_mesura)+" (2 bytes)")
+	print("      dco->direccio registre: "+hex(dco_registre)   +"="+str(dco_registre)   +" : "+dicc_registre[dco_registre])
       
 	'''fi'''
 	print("    </iud>")
@@ -428,7 +432,8 @@ def campObjsInfo(objsInfo):
 		if(longitud_etiqueta==7): print("      Amb Etiqueta comuna de 7 bytes (tipus b)")
 		if(longitud_etiqueta not in [5,7]): raise RuntimeError('Etiqueta erronia')
 	else:
-		print("      Sense etiqueta comuna de temps")
+		#print("      Sense etiqueta comuna de temps")
+		pass
 
 	'''itera els elements'''
 	for i in range(N):
@@ -460,7 +465,7 @@ def campObjInfo(objInfo):
 	print("      <objecte>")
 
 	'''mostra tots els bytes del camp'''
-	print("       "),
+	print("       "+str(n)+" bytes: "),
 	for i in range(n): print hex(objInfo[i])[2:4],
 	print("")
 

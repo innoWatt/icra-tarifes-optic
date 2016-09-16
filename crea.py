@@ -107,8 +107,8 @@ def creaASDU183(clau):
 	asdu[0]=183 #idt identificador de tipo
 	asdu[1]=1   #qev: byte [SQ=0 (1 bit), N=1 (7 bits)] 00000001
 	asdu[2]=6   #cdt: causa=activación (6)
-	asdu[3]=(0&0x00ff)    #punt mesura (2 bytes)
-	asdu[4]=(0&0xff00)>>8 #punt mesura (2 bytes)
+	asdu[3]=(1&0x00ff)    #punt mesura (2 bytes)
+	asdu[4]=(1&0xff00)>>8 #punt mesura (2 bytes)
 	asdu[5]=0 #direccio registre: 0: cap registre
 	asdu[6]=(clau & 0x000000ff)
 	asdu[7]=(clau & 0x0000ff00)>>8
