@@ -197,7 +197,8 @@ def campControl(control):
 		if(acd): 
 			print("    ACD=1: Es permet l'acces a les dades de classe 1")
 		else:
-			print("    ACD=0: No es permet l'acces a les dades de classe 1 (ignorat per reglament REE)")
+			#print("    ACD=0: No es permet l'acces a les dades de classe 1 (ignorat per reglament REE)")
+			pass
 
 		if(dfc): 
 			raise RuntimeError("    DFC = 1. ELS MISSATGES FUTURS CAUSARAN DATA OVERFLOW")
