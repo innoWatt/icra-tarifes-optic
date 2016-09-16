@@ -24,9 +24,9 @@ ser.timeout=1
 ser.open()
 
 def pregunta(trama):
-	print("\033[32mREQUEST...\033[0m")
+	print("\033[32mREQUEST\033[0m")
 	Pro.processa(trama)
-	print("\033[31mRESPOSTA...\033[0m")
+	print("\033[31mRESPOSTA\033[0m")
 	ser.write(bytearray(trama))
 	resposta=ser.readlines() #list
 	respostaTotal="" #ajunta tots els elements en un sol string
