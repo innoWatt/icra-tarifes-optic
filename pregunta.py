@@ -28,13 +28,10 @@ def pregunta(trama):
 	Pro.processa(trama)
 	print("\033[31mRESPOSTA...\033[0m")
 	ser.write(bytearray(trama))
-	resposta=ser.readlines() #list, per exemple ['\xaa\xbb\xee','\xcc']
-	'''ajunta tots els elements en un sol string'''
-	respostaTotal=""
-	for i in range(len(resposta)): 
-		respostaTotal+=resposta[i]
+	resposta=ser.readlines() #list
+	respostaTotal="" #ajunta tots els elements en un sol string
+	for i in range(len(resposta)): respostaTotal+=resposta[i]
 	Pro.processa(respostaTotal)
-	return respostaTotal
 
 #PREGUNTES TEST
 #pregunta('\x68\x0D\x0D\x68\x73\x01\x00\xB7\x01\x06\x01\x00\x00\x01\x00\x00\x00\x34\x16')
