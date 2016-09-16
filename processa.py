@@ -441,9 +441,11 @@ def campObjsInfo(objsInfo):
 		else:
 			print("      Sense etiqueta comuna de temps")
 			longitud_etiqueta=0
-
-	longitud_camp=(n-longitud_etiqueta)/N
+	else:
+		longitud_etiqueta=0
+		
 	'''itera els elements'''
+	longitud_camp=(n-longitud_etiqueta)/N
 	for i in range(N):
 		inici = 0+i*(longitud_camp) #posicio del byte inicial
 		final = longitud_camp*(i+1) #posició del byte final
