@@ -338,21 +338,21 @@ def campIUD(iud):
 	dicc_registre = {
 			  0 :"Dirección de defecto",
 			 11 :"Totales integrados con período de integración 1 (curva de carga)",
-			 12 :"RESERVA. [Posible uso futuro para Totales integrados con período de integración 2(curva de carga, habitualmente cuartohoraria)].  ",
-			 13 :"RESERVA. [Posible uso futuro para Totales integrados con período de integración 3(curva de carga)] ",
+			 12 :"RESERVA. [Posible uso futuro para Totales integrados con período de integración 2(curva de carga, habitualmente cuartohoraria)]",
+			 13 :"RESERVA. [Posible uso futuro para Totales integrados con período de integración 3(curva de carga)]",
 			 21 :"Totales integrados (valores diarios) con período de integración 1 (resumen diario)",
 			 22 :"RESERVA. [Posible uso futuro para Totales integrados (valores diarios) con período de integración 2 (resumen diario)]",
 			 23 :"RESERVA. [Posible uso futuro para Totales integrados (valores diarios) con período de integración 3 (resumen diario)] ",
-			 52 :"Información de evento (single-point), sección 1: incidencias de arranques y tensión bajo límites ",
-			 53 :"Información de evento (single-point), sección 2: incidencias de sincronización y cambio de hora ",
-			 54 :"Información de evento (single-point), sección 3: incidencias de cambio de parámetros ",
-			 55 :"Información de evento (single-point), sección 4: errores internos ",
-			128 :"Información de evento (single-point), sección 5: incidencias de intrusismo ",
-			129 :"Información de evento (single-point), sección 6: incidencias de comunicaciones ",
-			130 :"Información de evento (single-point), sección 7: incidencias de clave privada ",
-			131 :"Información de evento (single-point), sección 8: incidencias de Contrato I ",
-			132 :"Información de evento (single-point), sección 9: incidencias de Contrato II ",
-			133 :"Información de vento (single-point), sección 10: incidencias de Contrato III ",
+			 52 :"Información de evento (single-point), sección 1: incidencias de arranques y tensión bajo límites",
+			 53 :"Información de evento (single-point), sección 2: incidencias de sincronización y cambio de hora",
+			 54 :"Información de evento (single-point), sección 3: incidencias de cambio de parámetros",
+			 55 :"Información de evento (single-point), sección 4: errores internos",
+			128 :"Información de evento (single-point), sección 5: incidencias de intrusismo",
+			129 :"Información de evento (single-point), sección 6: incidencias de comunicaciones",
+			130 :"Información de evento (single-point), sección 7: incidencias de clave privada",
+			131 :"Información de evento (single-point), sección 8: incidencias de Contrato I",
+			132 :"Información de evento (single-point), sección 9: incidencias de Contrato II",
+			133 :"Información de vento (single-point), sección 10: incidencias de Contrato III",
 			134 :"Información de Tarificación relativa al Contrato I",
 			135 :"Información de Tarificación relativa al Contrato II",
 			136 :"Información de Tarificación relativa al Contrato III",
@@ -418,28 +418,35 @@ def campObjsInfo(objsInfo):
 	N=[     ASDU      ][IUD][QEV] & 7 bits    '''
 	N=buf[7:len(buf)-2][0:6][ 1 ] & 0b01111111
 
-	if N>0:
-		print("      N="+str(N)+" objectes d'informació ("+str(n/N)+" bytes cada un)")
-	else:
-		'''ACABA AQUI SI N=0'''
-		print("      N=0 objectes d'informació")
-		print("    </objectesInfo>")
+	'''si no hi ha objectes, ja hem acabat'''
+	if N==0:
+		print("      N=0 objectes d'informació\n    <objectesInfo>")
 		return
-
-	'''el residu entre n/N ens dona la llargada de l'etiqueta de temps comuna'''
-	longitud_etiqueta = n % N
-	if(longitud_etiqueta>0):
-		if(longitud_etiqueta==5): print("      Amb Etiqueta comuna de 5 bytes (tipus a)")
-		if(longitud_etiqueta==7): print("      Amb Etiqueta comuna de 7 bytes (tipus b)")
-		if(longitud_etiqueta not in [5,7]): raise RuntimeError('Etiqueta erronia')
 	else:
-		#print("      Sense etiqueta comuna de temps")
-		pass
+		print("      N="+str(N)+" objectes d'informació")
 
+	'''
+		* Comprova 3 possibilitats:
+			- sense etiqueta de temps
+			- amb etiqueta de temps tipus a
+			- amb etiqueta de temps tipus b
+	'''
+	if N>1:
+		if(n%N != 0 and (n-5)%N==0 and (n-7)%N!=0):
+			print("      Amb Etiqueta comuna de temps tipus a (5 bytes)")
+			longitud_etiqueta=5
+		elif(n%N != 0 and (n-5)%N!=0 and (n-7)%N==0):
+			print("      Amb Etiqueta comuna de temps tipus b (7 bytes)")
+			longitud_etiqueta=7
+		else:
+			print("      Sense etiqueta comuna de temps")
+			longitud_etiqueta=0
+
+	longitud_camp=(n-longitud_etiqueta)/N
 	'''itera els elements'''
 	for i in range(N):
-		inici = 0+i*(n/N) #posicio del byte inicial
-		final = n/N*(i+1) #posició del byte final
+		inici = 0+i*(longitud_camp) #posicio del byte inicial
+		final = longitud_camp*(i+1) #posició del byte final
 		objInfo=objsInfo[inici:final] #talla l'array
 		campObjInfo(objInfo)
 
@@ -466,7 +473,7 @@ def campObjInfo(objInfo):
 	print("      <objecte>")
 
 	'''mostra tots els bytes del camp'''
-	print("       "+str(n)+" bytes: "),
+	print("        "+str(n)+" bytes: "),
 	for i in range(n): print hex(objInfo[i])[2:4],
 	print("")
 
@@ -721,21 +728,19 @@ def campEtiquetaTemps(etiqueta):
 #processa('\x10\x49\x01\x00\x4a\x16')
 #resposta
 #processa('\x10\x0b\x01\x00\x0c\x16') 
-
 '''trames variables, 2 tipus: integrados i lecturas'''
-
 '''integrados totales'''
 #pregunta: ASDU 122
 #processa('\x68\x15\x15\x68\x73\x58\x1B\x7A\x01\x06\x01\x00\x0B\x01\x08\x00\x0B\x07\x02\x0A\x00\x11\x0A\x02\x0A\xC1\x16')
 #resposta: ASDU 8
 #processa('\x68\x3E\x3E\x68\x08\x58\x1B\x08\x08\x05\x01\x00\x0B\x01\x18\x01\x00\x00\x00\x02\x6E\x1F\x03\x00\x00\x03\x04\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x05\xCC\xBE\x00\x00\x00\x06\x98\x0D\x00\x00\x00\x07\x00\x00\x00\x00\x80\x08\x00\x00\x00\x00\x80\x00\x81\xB2\x09\x09\xE1\x16')
-
 '''lecturas de cierre '''
 #pregunta: ASDU 134
 #processa('\x68\x13\x13\x68\x73\x58\x1B\x86\x01\x06\x01\x00\x88\x00\x00\x01\x0A\x09\x00\x00\x01\x02\x0A\x1D\x16')
 #resposta: ASDU 136
 #processa('\x68\x48\x48\x68\x08\x58\x1B\x88\x01\x05\x01\x00\x88\x14\x61\x71\x00\x00\xE4\x25\x00\x00\x00\x0B\x47\x00\x00\x88\x09\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x54\x00\x00\x00\x00\x0E\xBA\x0C\x08\x00\x00\x00\x00\x00\x80\x00\x00\x21\x0C\x08\x00\x00\x81\x01\x09\xD4\x16')
-
 '''peticio de link i enviament de contrasenya'''
 #pregunta ASDU 183
 #processa("\x68\x0D\x0D\x68\x73\x58\x1B\xB7\x01\x06\x01\x00\x00\x4E\x61\xBC\x00\x10\x16")
+'''resposta real del comptador icra a A122 amb registre=21'''
+processa("\x68\x20\x20\x68\x08\x01\x00\x08\x03\x05\x01\x00\x15\x01\xe3\xc4\x7a\x00\x00\x02\x00\x00\x00\x00\x00\x03\xef\x9c\x08\x00\x00\x00\x80\xd5\x05\x10\x53\x16")
