@@ -435,7 +435,7 @@ def campObjsInfo(objsInfo):
 	if(idt in [8]):
 		print("      Amb Etiqueta comuna de temps tipus a (5 bytes)")
 		longitud_etiqueta=5
-	elif(idt in [122]):
+	elif(idt in [122,183]):
 		print("      Sense Etiqueta comuna de temps")
 		longitud_etiqueta=0
 	else:

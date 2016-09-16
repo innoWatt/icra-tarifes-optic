@@ -7,7 +7,7 @@
 		Sintaxi crea:
 			C.creaTramaFix(control,direccio)
 			C.creaTramaVar(control,direccio,asdu)
-			C.creaASDU122(registre_inici,registre_final,data_inici,data_final)
+			C.creaASDU122(registre,integrat_inici,integrat_final,data_inici,data_final)
 			C.creaASDU134(data_inici,data_final)
 			C.creaASDU183(pass)
 			C.creaASDU187()
@@ -31,7 +31,7 @@ P.pregunta(C.creaTramaFix(0b01001001,d)) #request link status
 P.pregunta(C.creaTramaFix(0b01000000,d)) #request link reset
 P.pregunta(C.creaTramaVar(0b01110011,d,C.creaASDU183(1))) #request user data & send password
 P.pregunta(C.creaTramaFix(0b01011011,d)) #request class 2 data
-P.pregunta(C.creaTramaVar(0b01110011,d,C.creaASDU122(1,1,C.creaTemps(20,5,16,0,0),C.creaTemps(23,5,16,0,0))))
+P.pregunta(C.creaTramaVar(0b01110011,d,C.creaASDU122(21,1,2,C.creaTemps(20,5,16,0,0),C.creaTemps(23,5,16,0,0))))
 P.pregunta(C.creaTramaFix(0b01011011,d)) #request class 2 data
 P.pregunta(C.creaTramaFix(0b01111011,d)) #request class 2 data (flip FCB)
 '''

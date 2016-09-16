@@ -47,7 +47,7 @@ def creaTramaVar(control,direccio,asdu):
 
 '''IMPLEMENTACIÓ DELS DIFERENTS TIPUS D'ASDU'''
 '''implementar ASDUS per peticions: 122,134,183 '''
-def creaASDU122(direccio_inici,direccio_final,data_inici,data_final):
+def creaASDU122(registre,integrat_inici,integrat_final,data_inici,data_final):
 	'''
 		direccio_inici = byte
 		direccio_final = byte
@@ -65,9 +65,9 @@ def creaASDU122(direccio_inici,direccio_final,data_inici,data_final):
 	asdu[2]=6   #cdt: causa=activación (6)
 	asdu[3]=(1&0x00ff)    #punt mesura (2 bytes)
 	asdu[4]=(1&0xff00)>>8 #punt mesura (2 bytes)
-	asdu[5]=21            #direccio registre: 11: Totales integrados con período de integración 1 (curva de carga)
-	asdu[6]=direccio_inici
-	asdu[7]=direccio_final
+	asdu[5]=registre #exemple:: 11: Totales integrados con período de integración 1 (curva de carga)
+	asdu[6]=integrat_inici
+	asdu[7]=integrat_final
 	asdu[8:13]=data_inici
 	asdu[13:18]=data_final
 	return bytearray(asdu)
@@ -170,7 +170,7 @@ def creaTemps(diames,mes,year,hora,minut):
 	Sintaxi:
 		creaTramaFix(control,direccio)
 		creaTramaVar(control,direccio,asdu)
-		creaASDU122(registre_inici,registre_final,data_inici,data_final)
+		creaASDU122(registre,direccio_inici,direccio_final,data_inici,data_final)
 		creaASDU134(data_inici,data_final)
 		creaASDU183(clau)
 		creaASDU187()
@@ -179,7 +179,7 @@ def creaTemps(diames,mes,year,hora,minut):
 
 '''tests
 trama=creaTramaFix(0x49,1)
-trama=creaTramaVar(0x73,1,creaASDU122(1,2,creaTemps(25,1,16,6,5),creaTemps(25,1,16,8,5)))
+trama=creaTramaVar(0x73,1,creaASDU122(21,1,2,creaTemps(25,1,16,6,5),creaTemps(25,1,16,8,5)))
 trama=creaTramaVar(0x73,1,creaASDU134(creaTemps(25,1,14,0,0),creaTemps(26,1,14,0,0)))
 trama=creaTramaVar(0x73,1,creaASDU183(12345678))
 trama=creaTramaVar(0x53,1,creaASDU187())
