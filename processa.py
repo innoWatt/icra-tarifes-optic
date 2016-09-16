@@ -426,23 +426,29 @@ def campObjsInfo(objsInfo):
 		print("      N="+str(N)+" objectes d'informació")
 
 	'''
-		* Comprova 3 possibilitats:
-			- sense etiqueta de temps
-			- amb etiqueta de temps tipus a
-			- amb etiqueta de temps tipus b
-	'''
-	if N>1:
-		if(n%N != 0 and (n-5)%N==0):
+	Comprova idt
+	idt=[     ASDU      ][IUD][idt] '''
+	idt=buf[7:len(buf)-2][0:6][ 0 ]
+
+	'''Troba si porta o no etiqueta comuna de temps'''
+	'''Si saps l'ASDU, perfecte, sinó, endevina-ho'''
+	if(idt in [122,8]):
+		print("      Amb Etiqueta comuna de temps tipus a (5 bytes)")
+		longitud_etiqueta=5
+	else:
+		'''mira d'endevinar l'estructura'''
+		if(n%N!=0 and (n-5)%N==0 and (n-7)%N!=0):
 			print("      Amb Etiqueta comuna de temps tipus a (5 bytes)")
 			longitud_etiqueta=5
-		elif(n%N != 0 and (n-7)%N==0):
+		elif(n%N!=0 and (n-5)%N!=0 and (n-7)%N==0):
 			print("      Amb Etiqueta comuna de temps tipus b (7 bytes)")
 			longitud_etiqueta=7
+		elif(n%N!=0 and (n-5)%N==0 and (n-7)%N==0):
+			print("      WARNING: etiqueta tipus a i b possibles, assumint tipus a (5 bytes)")
+			longitud_etiqueta=5
 		else:
-			print("      Sense etiqueta comuna de temps")
+			print("      WARNING: etiqueta no detectada, assumint no etiqueta")
 			longitud_etiqueta=0
-	else:
-		longitud_etiqueta=0
 		
 	'''itera els elements'''
 	longitud_camp=(n-longitud_etiqueta)/N
