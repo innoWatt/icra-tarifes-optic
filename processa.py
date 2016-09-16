@@ -131,7 +131,7 @@ def processaTramaVariable(buf):
 	else:
 		raise RuntimeError("Checksum incorrecte: "+str(buf[n-2])+"=/="+str(checksum))
 
-	print("  Trama VARIABLE [inici (0x68), L, L, inici (0x68), control, D, D, ASDU, checksum, final (0x16)]")
+	print("  Trama VARIABLE [inici (0x68), L, L, inici (0x68), control, direccio, asdu, checksum, final (0x16)]")
 
 	'''byte de control'''
 	control=buf[4]
@@ -214,13 +214,13 @@ def campControl(control):
 		}[fun])
 	else:
 		print({
-			 0:"[Funció 0] [Resposta: ACK]",
-			 1:"[Funció 1] [Resposta: NACK. COMANDA NO ACCEPTADA]",
+			 0:"\033[32m[Funció 0] [Resposta: ACK]\033[0m",
+			 1:"\033[31m[Funció 1] [Resposta: NACK. COMANDA NO ACCEPTADA]\033[0m",
 			 8:"[Funció 8] [Resposta: DADES DE L'USUARI]",
-			 9:"[Funció 9] [Resposta: NACK. DADES DEMANADES NO DISPONIBLES]",
+			 9:"\033[31m[Funció 9] [Resposta: NACK. DADES DEMANADES NO DISPONIBLES]\033[0m",
 			11:"[Funció 11] [Resposta: ESTAT DEL LINK O DEMANDA D'ACCÉS]",
 		}[fun])
-		'''Si hi ha un NACK para-ho tot?'''
+		'''Si hi ha un NACK para-ho tot ?'''
 		#if fun in [1,9]: raise Exception("NACK: Petició no acceptada")
 
 	'''fi'''
@@ -243,7 +243,7 @@ def campIUD(iud):
 	'''
 	n=len(iud)
 	print("    <iud>")
-	print("      "+str(n)+" bytes: [idt, qev, cdt, dco]:"),
+	print("      "+str(n)+" bytes:"),
 
 	'''mostra tots els bytes'''
 	for i in range(n): print hex(iud[i])[2:4],
@@ -298,7 +298,7 @@ def campIUD(iud):
 		189:"LEER BLOQUES DE TOTALES INTEGRADOS OPERACIONALES POR INTERVALO DE TIEMPO Y DIRECCIÓN",
 		190:"LEER BLOQUES DE TOTALES INTEGRADOS OPERACIONALES REPUESTOS PERIÓDICAMENTE POR INTERVALO DE TIEMPO Y DIRECCIÓN",
 	}
-	print("      idt: "+hex(idt)+": [ASDU "+str(idt)+": "+dicc_idt[idt]+"]")
+	print("      idt: "+hex(idt)+": [\033[33mASDU "+str(idt)+": "+dicc_idt[idt]+"\033[0m]")
 
 	'''byte qualificador estructura variable. Estructura: [SQ (1 bit), N (7 bits)]'''
 	'''
@@ -321,18 +321,18 @@ def campIUD(iud):
 			4 :'INICIALIZADA',
 			5 :'PETICION O SOLICITADA (REQUEST OR REQUESTED)',
 			6 :'ACTIVACION',
-			7 :'CONFIRMACION DE ACTIVACION',
+			7 :'\033[32mCONFIRMACION DE ACTIVACION\033[0m',
 			8 :'DESACTIVACION',
 			9 :'DESACTIVACION CONFIRMADA',
 			10:'FINALIZACION DE LA ACTIVACION',
-			13:'REGISTRO DE DATOS SOLICITADO NO DISPONIBLE',
-			14:'TIPO DE ASDU SOLICITADO NO DISPONIBLE',
-			15:'NÚMERO DE REGISTRO EN EL ASDU ENVIADO POR CM DESCONOCIDO',
-			16:'ESPECIFICACION DE DIRECCION EN EL ASDU ENVIADO POR CM DESCONOCIDA',
-			17:'OBJETO DE INFORMACION NO DISPONIBLE',
-			18:'PERIODO DE INTEGRACION NO DISPONIBLE',
+			13:'\033[31mREGISTRO DE DATOS SOLICITADO NO DISPONIBLE\033[0m',
+			14:'\033[31mTIPO DE ASDU SOLICITADO NO DISPONIBLE\033[0m',
+			15:'\033[31mNÚMERO DE REGISTRO EN EL ASDU ENVIADO POR CM DESCONOCIDO\033[0m',
+			16:'\033[31mESPECIFICACION DE DIRECCION EN EL ASDU ENVIADO POR CM DESCONOCIDA\033[0m',
+			17:'\033[31mOBJETO DE INFORMACION NO DISPONIBLE\033[0m',
+			18:'\033[31mPERIODO DE INTEGRACION NO DISPONIBLE\033[0m',
 	}
-	print("      cdt: "+hex(cdt)+": [T="+str(T)+", PN="+str(PN)+", Causa de transmissió "+str(causa)+": "+dicc_causa[causa]+"]")
+	print("      cdt: "+hex(cdt)+": [T="+str(T)+", PN="+str(PN)+", Causa de transmissió="+str(causa)+": "+dicc_causa[causa]+"]")
 
 	'''direccio comuna (DCO) (3 bytes). Estructura : [punt_mesura (2 bytes), registre (1 byte) ]'''
 	dco_punt_mesura = (dco[1]<<8) | dco[0]
@@ -438,8 +438,8 @@ def campObjsInfo(objsInfo):
 	if(idt in [8]):
 		print("      Amb Etiqueta comuna de temps tipus a (5 bytes)")
 		longitud_etiqueta=5
-	elif(idt in [122,183]):
-		print("      Sense Etiqueta comuna de temps")
+	elif(idt in [122,183,134]):
+		#print("      Sense etiqueta comuna de temps")
 		longitud_etiqueta=0
 	else:
 		'''mira d'endevinar l'estructura'''
@@ -542,7 +542,7 @@ def campObjInfo(objInfo):
 		IN = cualificador & 0b00000100 == 4   # hi ha hagut intrusió durant el període?
 		AL = cualificador & 0b00000010 == 2   # període incomplet per fallo d'alimentació durant el període?
 		RES= cualificador & 0b00000001 == 1   # bit de reserva
-		print("        byte Cualificador: "+hex(cualificador)+" : [IV="+str(IV)+",CA="+str(CA)+",CY="+str(CY)+",VH="+str(VH)+",MP="+str(MP)+",IN="+str(IN)+",AL="+str(AL)+",RES="+str(RES)+"]")
+		print("        byte Cualificador: "+hex(cualificador)+": [IV="+str(IV)+",CA="+str(CA)+",CY="+str(CY)+",VH="+str(VH)+",MP="+str(MP)+",IN="+str(IN)+",AL="+str(AL)+",RES="+str(RES)+"]")
 	elif(idt==122):
 		'''A122: LEER TOTALES INTEGRADOS OPERACIONALES POR INTERVALO DE TIEMPO Y RANGO DE DIRECCIONES'''
 		'''A122 és una petició de 4 elements: direcció inicial, direcció final, data inicial, data final'''
@@ -687,9 +687,8 @@ def campEtiquetaTemps(etiqueta):
 		return
 
 	'''mostra l'etiqueta'''
-	print("        <etiqueta> tipus "+tipus+" ("+str(n)+" bytes):"),
+	print("        [\033[34mETIQUETA\033[0m] tipus "+tipus+" ("+str(n)+" bytes):"),
 	for i in range(n): print hex(etiqueta[i])[2:4],
-	print('')
 
 	'''
 		Estructura dels 5 bytes == 40 bits
@@ -724,13 +723,10 @@ def campEtiquetaTemps(etiqueta):
 	if(minut <10): minut="0"+str(minut)
 
 	'''fi'''
-	print("          Data: "+str(diames)+"/"+str(mes)+"/"+str(year)+" "+str(hora)+":"+str(minut))
-	print("        </etiqueta>")
+	print("== Data: "+str(diames)+"/"+str(mes)+"/"+str(year)+" "+str(hora)+":"+str(minut))
 
 #==#==#==#==#==#==#==#==#==#==#==#
-#                                #
-#      T R A M E S  T E S T      #
-#                                #
+# . . .T R A M E S  T E S T. . . #
 #==#==#==#==#==#==#==#==#==#==#==#
 '''trames fixes: ok'''
 #pregunta
@@ -751,5 +747,7 @@ def campEtiquetaTemps(etiqueta):
 '''peticio de link i enviament de contrasenya'''
 #pregunta ASDU 183
 #processa("\x68\x0D\x0D\x68\x73\x58\x1B\xB7\x01\x06\x01\x00\x00\x4E\x61\xBC\x00\x10\x16")
+
 '''resposta real del comptador icra a A122 amb registre=21'''
 #processa("\x68\x20\x20\x68\x08\x01\x00\x08\x03\x05\x01\x00\x15\x01\xe3\xc4\x7a\x00\x00\x02\x00\x00\x00\x00\x00\x03\xef\x9c\x08\x00\x00\x00\x80\xd5\x05\x10\x53\x16")
+processa("\x68\x15\x15\x68\x08\x01\x00\x7a\x01\x07\x01\x00\x15\x01\x02\x80\x00\x14\x05\x10\x80\x00\x17\x05\x10\xf9\x16")
