@@ -220,6 +220,9 @@ def campControl(control):
 			 9:"[Funció 9] [Resposta: NACK. DADES DEMANADES NO DISPONIBLES]",
 			11:"[Funció 11] [Resposta: ESTAT DEL LINK O DEMANDA D'ACCÉS]",
 		}[fun])
+		'''Si hi ha un NACK para-ho tot?'''
+		#if fun in [1,9]: raise Exception("NACK: Petició no acceptada")
+
 	'''fi'''
 	print("  </control>")
 
@@ -361,7 +364,7 @@ def campIUD(iud):
 			139 :"Información de Tarificación relativa al Contrato Latente III",
 	}
 	print("      dco->punt mesura:       "+hex(dco_punt_mesura)+"="+str(dco_punt_mesura)+" (2 bytes)")
-	print("      dco->direccio registre: "+hex(dco_registre)   +"="+str(dco_registre)   +" : "+dicc_registre[dco_registre])
+	print("      dco->direccio registre: "+hex(dco_registre)   +"="+str(dco_registre)   +": "+dicc_registre[dco_registre])
       
 	'''fi'''
 	print("    </iud>")
