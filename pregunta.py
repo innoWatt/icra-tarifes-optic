@@ -5,10 +5,9 @@
 
 	Sintaxi:
 		pregunta(trama)
-
 '''
 import serial
-import processa as Pro
+import processa as P
 
 #obre serial
 ser=serial.Serial()
@@ -25,13 +24,13 @@ ser.open()
 
 def pregunta(trama):
 	print("\033[32mREQUEST\033[0m")
-	#Pro.processa(trama)
+	#P.processa(trama)
 	print("\033[31mRESPOSTA\033[0m")
 	ser.write(bytearray(trama))
 	resposta=ser.readlines() #list
 	respostaTotal="" #ajunta tots els elements en un sol string
 	for i in range(len(resposta)): respostaTotal+=resposta[i]
-	Pro.processa(respostaTotal)
+	P.processa(respostaTotal)
 
 #PREGUNTES TEST
 #pregunta('\x68\x0D\x0D\x68\x73\x01\x00\xB7\x01\x06\x01\x00\x00\x01\x00\x00\x00\x34\x16')

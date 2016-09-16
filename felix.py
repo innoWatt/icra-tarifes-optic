@@ -1,3 +1,7 @@
+'''
+	D'aquí he de treure com implementar ASDU 162 (valors instantanis)
+'''
+
 def init(self):
 		direccioContador = 1
 		psw = 1

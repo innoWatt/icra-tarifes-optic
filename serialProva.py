@@ -1,7 +1,8 @@
 '''
-	* Crea un serial
-	* Envia una trama
-	* Rep la resposta
+	Prova de mínims:
+		1. Crea un serial
+		2. Envia una trama
+		3. Rep la resposta
 '''
 import serial
 
