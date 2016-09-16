@@ -432,10 +432,10 @@ def campObjsInfo(objsInfo):
 			- amb etiqueta de temps tipus b
 	'''
 	if N>1:
-		if(n%N != 0 and (n-5)%N==0 and (n-7)%N!=0):
+		if(n%N != 0 and (n-5)%N==0):
 			print("      Amb Etiqueta comuna de temps tipus a (5 bytes)")
 			longitud_etiqueta=5
-		elif(n%N != 0 and (n-5)%N!=0 and (n-7)%N==0):
+		elif(n%N != 0 and (n-7)%N==0):
 			print("      Amb Etiqueta comuna de temps tipus b (7 bytes)")
 			longitud_etiqueta=7
 		else:

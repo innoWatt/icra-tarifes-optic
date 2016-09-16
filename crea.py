@@ -65,7 +65,7 @@ def creaASDU122(direccio_inici,direccio_final,data_inici,data_final):
 	asdu[2]=6   #cdt: causa=activación (6)
 	asdu[3]=(1&0x00ff)    #punt mesura (2 bytes)
 	asdu[4]=(1&0xff00)>>8 #punt mesura (2 bytes)
-	asdu[5]=11            #direccio registre: 11: Totales integrados con período de integración 1 (curva de carga)
+	asdu[5]=21            #direccio registre: 11: Totales integrados con período de integración 1 (curva de carga)
 	asdu[6]=direccio_inici
 	asdu[7]=direccio_final
 	asdu[8:13]=data_inici
