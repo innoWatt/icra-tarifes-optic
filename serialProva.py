@@ -21,7 +21,7 @@ ser.open()
 
 #munta trama test
 trama='\x10\x49\x01\x00\x4a\x16'
-print("Enviant: "+str(trama))
+print("Enviant: "+str([trama])) #si 'trama' no està dins un array no es veuen els caràcters
 
 #envia
 ser.write(bytearray(trama))
