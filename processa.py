@@ -58,6 +58,7 @@ def processa(missatge):
 
 	'''fi'''
 	print('</missatge>\n')
+	detectaError(buf)
 
 '''processa una trama de longitud fixa (sempre són 6 bytes)'''
 def processaTramaFixa(buf):
@@ -741,6 +742,39 @@ def campEtiquetaTemps(etiqueta):
 	'''fi'''
 	print("== Data: "+str(diames)+"/"+str(mes)+"/"+str(year)+" "+str(hora)+":"+str(minut))
 
+def detectaError(trama):
+	'''
+		Detectar errors dins el protocol. Sempre analitzem respostes, no peticions
+		trama: bytearray
+	'''
+	n=len(trama)
+	#comprova els bytes inicials
+	if trama[0]==0x10:
+		tipus="fix"
+		control=trama[1]
+	elif trama[0]==0x68 and trama[3]==0x68:
+		tipus="var"
+		control=trama[4]
+	else:
+		raise RuntimeError("bytes inicials incorrectes")
+	#agafa el byte control, i mira si PRM=1. Ha de ser 0 (només mirem respostes)
+	prm=control & 0b01000000 == 64
+	if prm: return
+	#agafa el byte control, i mira els 4 primers bits
+	fun=control & 0b00001111
+	if   fun==1: raise RuntimeError("NACK. COMANDA NO ACCEPTADA")
+	elif fun==9: raise RuntimeError("NACK. DADES DEMANADES NO DISPONIBLES")
+	#si la trama és fixa ja estem
+	if tipus=="fix": return
+	#si la trama és variable hem de mirar la causa de transmissió
+	cdt=trama[7:n-2][0:6][2] & 0b00111111
+	if   cdt==13: raise RuntimeError("REGISTRO DE DATOS SOLICITADO NO DISPONIBLE")
+	elif cdt==14: raise RuntimeError("TIPO DE ASDU SOLICITADO NO DISPONIBLE")
+	elif cdt==15: raise RuntimeError("NÚMERO DE REGISTRO EN EL ASDU ENVIADO POR CM DESCONOCIDO")
+	elif cdt==16: raise RuntimeError("ESPECIFICACION DE DIRECCION EN EL ASDU ENVIADO POR CM DESCONOCIDA")
+	elif cdt==17: raise RuntimeError("OBJETO DE INFORMACION NO DISPONIBLE")
+	elif cdt==18: raise RuntimeError("PERIODO DE INTEGRACION NO DISPONIBLE")
+
 #==#==#==#==#==#==#==#==#==#==#==#
 #     T R A M E S   T E S T      #
 #==#==#==#==#==#==#==#==#==#==#==#
@@ -749,10 +783,10 @@ def campEtiquetaTemps(etiqueta):
 #processa('\x10\x0b\x01\x00\x0c\x16') 
 '''trames variables, 2 tipus: integrados i lecturas'''
 '''peticio de link i enviament de contrasenya'''
-#processa("\x68\x0D\x0D\x68\x73\x58\x1B\xB7\x01\x06\x01\x00\x00\x4E\x61\xBC\x00\x10\x16")
+processa("\x68\x0D\x0D\x68\x73\x58\x1B\xB7\x01\x06\x01\x00\x00\x4E\x61\xBC\x00\x10\x16")
 '''integrados totales'''
-#processa('\x68\x15\x15\x68\x73\x58\x1B\x7A\x01\x06\x01\x00\x0B\x01\x08\x00\x0B\x07\x02\x0A\x00\x11\x0A\x02\x0A\xC1\x16')
-#processa('\x68\x3E\x3E\x68\x08\x58\x1B\x08\x08\x05\x01\x00\x0B\x01\x18\x01\x00\x00\x00\x02\x6E\x1F\x03\x00\x00\x03\x04\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x05\xCC\xBE\x00\x00\x00\x06\x98\x0D\x00\x00\x00\x07\x00\x00\x00\x00\x80\x08\x00\x00\x00\x00\x80\x00\x81\xB2\x09\x09\xE1\x16')
+processa('\x68\x15\x15\x68\x73\x58\x1B\x7A\x01\x06\x01\x00\x0B\x01\x08\x00\x0B\x07\x02\x0A\x00\x11\x0A\x02\x0A\xC1\x16')
+processa('\x68\x3E\x3E\x68\x08\x58\x1B\x08\x08\x05\x01\x00\x0B\x01\x18\x01\x00\x00\x00\x02\x6E\x1F\x03\x00\x00\x03\x04\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x05\xCC\xBE\x00\x00\x00\x06\x98\x0D\x00\x00\x00\x07\x00\x00\x00\x00\x80\x08\x00\x00\x00\x00\x80\x00\x81\xB2\x09\x09\xE1\x16')
 '''lecturas de cierre '''
 #processa('\x68\x13\x13\x68\x73\x58\x1B\x86\x01\x06\x01\x00\x88\x00\x00\x01\x0A\x09\x00\x00\x01\x02\x0A\x1D\x16')
 #processa('\x68\x48\x48\x68\x08\x58\x1B\x88\x01\x05\x01\x00\x88\x14\x61\x71\x00\x00\xE4\x25\x00\x00\x00\x0B\x47\x00\x00\x88\x09\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x54\x00\x00\x00\x00\x0E\xBA\x0C\x08\x00\x00\x00\x00\x00\x80\x00\x00\x21\x0C\x08\x00\x00\x81\x01\x09\xD4\x16')
