@@ -40,7 +40,7 @@ def detectaError(trama):
 	trama=bytearray(trama)
 	n=len(trama)
 	#comprova el byte final
-	if trama[n]!=0x16: raise RuntimeError("byte final de trama incorrecte")
+	if trama[n-1]!=0x16: raise RuntimeError("byte final de trama incorrecte")
 	#comprova els bytes inicials
 	if trama[0]==0x10:
 		tipus="var"
