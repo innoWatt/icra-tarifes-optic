@@ -43,6 +43,22 @@ def creaTramaVar(control,direccio,asdu):
 	return bytearray(trama)
 
 '''IMPLEMENTACIÓ DELS DIFERENTS TIPUS D'ASDU'''
+def creaASDU101(registre):
+	'''
+		101: READ RECORD OF SINGLE POINT INFORMATION WITH TIME TAG
+		+---------------+
+		| IUD (6 bytes) | Objecte buit
+		+---------------+
+	'''
+	asdu=[None]*6
+	asdu[0]=101 #idt identificador de tipo
+	asdu[1]=0   #qev: byte [SQ=0 (1 bit), N=0 (7 bits)] 00000000
+	asdu[2]=6   #cdt: causa=activación (6)
+	asdu[3]=(1&0x00ff)    #punt mesura (2 bytes)
+	asdu[4]=(1&0xff00)>>8 #punt mesura (2 bytes)
+	asdu[5]=registre #exemple:: 11: Totales integrados con período de integración 1 (curva de carga)
+	return bytearray(asdu)
+	
 def creaASDU102(registre,data_inici,data_final):
 	'''
 		data_inici = bytearray
@@ -195,5 +211,6 @@ trama=creaTramaVar(0x73,1,creaASDU134(creaTemps(25,1,14,0,0),creaTemps(26,1,14,0
 trama=creaTramaVar(0x73,1,creaASDU183(12345678))
 trama=creaTramaVar(0x53,1,creaASDU187())
 trama=creaTramaVar(0x73,1,creaASDU102(11,creaTemps(25,1,16,6,5),creaTemps(25,1,16,8,5)))
+trama=creaTramaVar(0x73,1,creaASDU101(11))
 Pro.processa(trama)
 '''

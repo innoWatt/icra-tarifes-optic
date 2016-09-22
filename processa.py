@@ -368,7 +368,7 @@ def campIUD(iud):
 			139 :"Información de Tarificación relativa al Contrato Latente III",
 	}
 	print("      dco->punt mesura:       "+hex(dco_punt_mesura)+"="+str(dco_punt_mesura)+" (2 bytes)")
-	print("      dco->direccio registre: "+hex(dco_registre)   +"="+str(dco_registre)   +": "+dicc_registre[dco_registre])
+	print("      dco->registre: \033[33m"+hex(dco_registre)   +"="+str(dco_registre)   +": "+dicc_registre[dco_registre]+"\033[0m")
       
 	'''fi'''
 	print("    </iud>")
