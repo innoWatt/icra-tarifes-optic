@@ -3,11 +3,8 @@
 import processa as Pro
 '''
 	funcions que permeten crear trames (format bytearray) 
-	trama fixa o variable 
-	asdu122
-	asdu134
-	asdu183
-	etiquetes de temps
+	fixes i variables
+	i també etiquetes de temps
 '''
 
 def creaTramaFix(control,direccio):
@@ -46,7 +43,26 @@ def creaTramaVar(control,direccio,asdu):
 	return bytearray(trama)
 
 '''IMPLEMENTACIÓ DELS DIFERENTS TIPUS D'ASDU'''
-'''implementar ASDUS per peticions: 122,134,183 '''
+def creaASDU102(registre,data_inici,data_final):
+	'''
+		data_inici = bytearray
+		data_final = bytearray
+
+		     16-11          10-6           5-1        
+		+---------------+------------+------------+
+		| IUD (6 bytes) | data inici | data final |
+		+---------------+------------+------------+
+	'''
+	asdu=[None]*16
+	asdu[0]=102 #idt identificador de tipo
+	asdu[1]=1   #qev: byte [SQ=0 (1 bit), N=1 (7 bits)] 00000001
+	asdu[2]=6   #cdt: causa=activación (6)
+	asdu[3]=(1&0x00ff)    #punt mesura (2 bytes)
+	asdu[4]=(1&0xff00)>>8 #punt mesura (2 bytes)
+	asdu[5]=registre #exemple:: 11: Totales integrados con período de integración 1 (curva de carga)
+	asdu[6:11]=data_inici
+	asdu[11:16]=data_final
+	return bytearray(asdu)
 def creaASDU122(registre,integrat_inici,integrat_final,data_inici,data_final):
 	'''
 		direccio_inici = byte
@@ -71,7 +87,6 @@ def creaASDU122(registre,integrat_inici,integrat_final,data_inici,data_final):
 	asdu[8:13]=data_inici
 	asdu[13:18]=data_final
 	return bytearray(asdu)
-
 def creaASDU134(data_inici,data_final):
 	'''
 		A134: LEER INFORMACIÓN DE TARIFICACIÓN (VALORES MEMORIZADOS)
@@ -92,7 +107,6 @@ def creaASDU134(data_inici,data_final):
 	asdu[6:11]=data_inici
 	asdu[11:16]=data_final
 	return bytearray(asdu)
-
 def creaASDU183(clau):
 	'''
 		A183: INICIAR SESIÓN Y ENVIAR CLAVE DE ACCESO
@@ -115,7 +129,6 @@ def creaASDU183(clau):
 	asdu[8]=(clau & 0x00ff0000)>>16
 	asdu[9]=(clau & 0xff000000)>>32
 	return bytearray(asdu)
-
 def creaASDU187():
 	'''
 		REQUEST de finalitzar sessió
@@ -129,8 +142,6 @@ def creaASDU187():
 	asdu[4]=(1&0xff00)>>8 #punt mesura (2 bytes)
 	asdu[5]=0 #direccio registre: 0: cap registre
 	return bytearray(asdu)
-
-'''crea etiqueta de temps'''
 def creaTemps(diames,mes,year,hora,minut):
 	'''
 		minut:int, hora:int, diames:int, mes:int, year:int (0-99)
@@ -183,5 +194,6 @@ trama=creaTramaVar(0x73,1,creaASDU122(21,1,2,creaTemps(25,1,16,6,5),creaTemps(25
 trama=creaTramaVar(0x73,1,creaASDU134(creaTemps(25,1,14,0,0),creaTemps(26,1,14,0,0)))
 trama=creaTramaVar(0x73,1,creaASDU183(12345678))
 trama=creaTramaVar(0x53,1,creaASDU187())
+trama=creaTramaVar(0x73,1,creaASDU102(11,creaTemps(25,1,16,6,5),creaTemps(25,1,16,8,5)))
 Pro.processa(trama)
 '''
