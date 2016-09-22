@@ -15,7 +15,7 @@ def creaTramaFix(control,direccio):
 	trama[0]=0x10     #inici
 	trama[1]=control  #byte control [RES,PRM,FCB,FCV,FUN]
 	trama[2]=direccio & 0xff
-	trama[3]=direccio & 0xff00
+	trama[3]=(direccio & 0xff00)>>8
 	trama[4]=(trama[1]+trama[2]+trama[3])%256
 	trama[5]=0x16
 	return bytearray(trama)
