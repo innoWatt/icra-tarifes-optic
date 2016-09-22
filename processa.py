@@ -241,7 +241,7 @@ def campIUD(iud):
 		dco = direcció comuna (punt mesura + direccio registre)
 	'''
 	n=len(iud)
-	print("    <iud>")
+	print("    <iud> [idt,qev,cdt,dco]")
 	print("      "+str(n)+" bytes:"),
 
 	'''mostra tots els bytes'''
@@ -286,6 +286,7 @@ def campIUD(iud):
 		146:"MODIFICACIÓN DE POTENCIAS DE CONTRATO.",
 		147:"LECTURAS DE DÍAS FESTIVOS.",
 		148:"ENVÍO DE DÍAS FESTIVOS",
+		162:"LLEGIR INSTANTANIS",
 		180:"MODIFICACIÓN DE DÍAS FESTIVOS",
 		181:"LEER FIRMA ELECTRÓNICA DE LOS TOTALES INTEGRADOS POR INTERVALO DE TIEMPO (LECTURAS) CAMBIAR FECHA Y HORA",
 		182:"LEER LOS PARÁMETROS DEL PUNTO DE MEDIDA",
@@ -336,6 +337,9 @@ def campIUD(iud):
 	'''direccio comuna (DCO) (3 bytes). Estructura : [punt_mesura (2 bytes), registre (1 byte) ]'''
 	dco_punt_mesura = (dco[1]<<8) | dco[0]
 	dco_registre    = dco[2]
+
+	'''i si el punt de mesura val 1 byte enlloc de 2?'''
+	
 
 	dicc_registre = {
 			  0 :"Dirección de defecto",
@@ -725,7 +729,7 @@ def campEtiquetaTemps(etiqueta):
 	print("== Data: "+str(diames)+"/"+str(mes)+"/"+str(year)+" "+str(hora)+":"+str(minut))
 
 #==#==#==#==#==#==#==#==#==#==#==#
-# . . .T R A M E S  T E S T. . . #
+#     T R A M E S   T E S T      #
 #==#==#==#==#==#==#==#==#==#==#==#
 '''trames fixes: ok'''
 #processa('\x10\x49\x01\x00\x4a\x16')
@@ -762,4 +766,7 @@ def campEtiquetaTemps(etiqueta):
 #processa("\x68\x20\x20\x68\x08\x01\x00\x08\x03\x05\x01\x00\x15\x01\xe3\xc4\x7a\x00\x00\x02\x00\x00\x00\x00\x00\x03\xef\x9c\x08\x00\x00\x00\x80\xd5\x05\x10\x53\x16")
 #processa("\x68\x15\x15\x68\x08\x01\x00\x7a\x01\x07\x01\x00\x15\x01\x02\x80\x00\x14\x05\x10\x80\x00\x17\x05\x10\xf9\x16")
 '''arxiu DSET'''
-#processa("\x68\x0D\x0D\x68\x73\x13\xBF\xB7\x01\x06\x01\x00\x00\x01\x00\x00\x00\x05\x16")
+#processa("\x68\x0D\x0D\x68\x73\x13\xBF\xB7\x01\x06\x01\x00\x00\x01\x00\x00\x00\x05\x16") #inici sessio
+#processa("\x68\x0C\x0C\x68\x73\x13\xBF\xA2\x03\x05\x01\x00\x00\xC0\xC1\xC2\x33\x16") #asdu162
+#processa("\x68\x0A\x0A\x68\x73\x13\xBF\x96\x01\x05\x01\x00\x86\xC5\x2D\x16") #llegir tarif period
+#processa("\x68\x0B\x0B\x68\x73\x13\xBF\x9C\x02\x05\x01\x00\x00\xC3\xC4\x70\x16")

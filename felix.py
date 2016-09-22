@@ -11,40 +11,6 @@ def init(self):
 		valorsTrama = dict(tipus = '', ccc = 0, direccioContador = 0, idASDU = 0, SQN = 0, causa = 0, direccioPM = 0, direccioRegistre = 0, objecteInformacio1 = [None])
 		tempsImpres = False
 
-def decodificaC(self, valor):
-    '''"valor" és un byte (8 7 6 5 4 3 2 1)'''
-    #mirar si el bit 7 es igual a 1
-    if (valor) & 64 == 64:
-        #comprovar els 4 bits (LSB)
-        if valor & 0b1111 == 0:
-            cadena1 = 'El Master diu: Reposicion del enlace remoto'
-        #comprovar els 3 bits (LSB)
-        elif valor& 0b1111 == 3:
-            cadena1 = 'El Master diu: Envio de datos de usuario'
-        elif (valor) & 0b1111 == 9:
-            cadena1 = 'El Master diu: Solicitud de estado del enlace'
-        elif (valor) & 0b1111 == 11:
-            cadena1 = 'El Master diu: Solicitud de datos clase 2'
-        elif (valor) & 64 == 0:
-            if (valor) & 0b1111 == 0:
-                cadena1 = 'L\'esclau diu: ACK. Reconeixament positiu'
-            elif (valor) & 0b1111 == 1:
-                cadena1 = 'L\'esclau diu: NACK. Comanda no acceptada'
-            elif (valor) & 0b1111 == 8:
-                cadena1 = 'L\'esclau diu: Datos de usuario'
-            elif (valor) & 0b1111 == 9:
-                cadena1 = 'L\'esclau diu: NACK. Datos solicitados no disponibles'
-            elif (valor) & 0b1111 == 11:
-                cadena1 = 'L\'esclau diu: Estado de enlace o demanda de acceso'
-    if (valor) & 16 == 16:
-        cadena2 = 'FCV=1/DFC=1 Els futurs missatges caursaran Overflow'
-    else:
-        cadena2 = 'FCV=0/DFC=0 S\'accepten futurs missatges'
-    if (valor) & 32 == 32:
-        cadena3 = 'FCB=1(bit alternant per cada transisio del master)/DFC=1 Acces a dades classe 1'
-    else:
-        cadena3 = 'FCB=0(bit alternant per cada transisio del master)/DFC=0 No acces a dades de classe 1'
-
 def llegirInstantanis(self):
 
 	self.diccionari = {
@@ -97,23 +63,6 @@ def llegirInstantanis(self):
 			"Error de Lectura de les mesures de la Fase III":0,
 	}
 
-	#====(12 i 13)
-	#REQUEST
-	valorsTrama['tipus']='f'
-	valorsTrama['ccc']=0x49
-	valorsTrama=self.envia(valorsTrama,0,0)
-
-	#REQUEST
-	valorsTrama['tipus']='f'
-	valorsTrama['ccc']=0x49
-	valorsTrama=self.envia(valorsTrama,0,0)
-
-	#====(14)
-	#REQUEST
-	valorsTrama['tipus']='f'
-	valorsTrama['ccc']=0x40
-	valorsTrama=self.envia(valorsTrama,0,0)
-
 	##====(17 i 18) enviar contrasenya
 	#REQUEST
 	unitats = psw & 0xFF
@@ -123,32 +72,14 @@ def llegirInstantanis(self):
 	valorsTrama=dict(tipus='v',ccc=0x73,idASDU=0xB7,SQN=0x01,causa=0x06,direccioRegistre=0,objecteInformacio1=[unitats,desenes,centenes,milers])
 	valorsTrama=self.envia(valorsTrama,0,0)
 
-	#====(19 i 20)
-	#REQUEST
-	valorsTrama['tipus']='f'
-	valorsTrama['ccc']=0x5B
-	valorsTrama=self.envia(valorsTrama,0,0)
-
 	##====(22 i 23)
 	#REQUEST
 	valorsTrama=dict(tipus='v',ccc=0x73,idASDU=0x8D,SQN=0,causa=5,direccioPM=0,direccioRegistre=0,objecteInformacio1=[])
 	valorsTrama = self.envia(valorsTrama, 0, 0)
 
-	#===(24 i 25)
-	#REQUEST
-	valorsTrama['tipus'] = 'f'
-	valorsTrama['ccc'] = 0x5B
-	valorsTrama = self.envia(valorsTrama, 0, 0)
-
 	##====(26 i 27)
 	#REQUEST
 	valorsTrama = dict(tipus = 'v', ccc = 0x73, idASDU = 0xBB, SQN = 0, causa = 6, direccioPM = 0, direccioRegistre = 0, objecteInformacio1 = [])
-	valorsTrama = self.envia(valorsTrama, 0, 0)
-
-	#===(28 i 29)
-	#REQUEST
-	valorsTrama['tipus'] = 'f'
-	valorsTrama['ccc'] = 0x5B
 	valorsTrama = self.envia(valorsTrama, 0, 0)
 
 	##====(32 i 33)
@@ -170,12 +101,6 @@ def llegirInstantanis(self):
 	#REQUEST
 	vT = dict(tipus='v',ccc=0x73,idASDU = 0xA2,SQN=3,causa=5,direccioPM=0,direccioRegistre=0,objecteInformacio1=[0xC0,0XC1,0xC2,0x62,0x16])
 	vT = self.envia(vT, 0, 0)
-
-	#===(39 i 40)
-	#REQUEST
-	valorsTrama['tipus'] = 'f'
-	valorsTrama['ccc'] = 0x5B
-	valorsTrama = self.envia(valorsTrama, 0, 0)
 
 	print("accedim a data i hora: "),
 

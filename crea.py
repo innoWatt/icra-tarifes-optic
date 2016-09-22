@@ -64,7 +64,7 @@ def creaASDU122(registre,integrat_inici,integrat_final,data_inici,data_final):
 	asdu[1]=1   #qev: byte [SQ=0 (1 bit), N=1 (7 bits)] 00000001
 	asdu[2]=6   #cdt: causa=activación (6)
 	asdu[3]=(1&0x00ff)    #punt mesura (2 bytes)
-	asdu[4]=(1&0xff00)>>8 #punt mesura (2 bytes)
+	asdu[4]=registre #(1&0xff00)>>8 #punt mesura (2 bytes)
 	asdu[5]=registre #exemple:: 11: Totales integrados con período de integración 1 (curva de carga)
 	asdu[6]=integrat_inici
 	asdu[7]=integrat_final
