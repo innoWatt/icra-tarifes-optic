@@ -94,8 +94,7 @@ def processaTramaFixa(buf):
 
 	'''mostra els 2 bytes de direccio: byte swap i suma'ls'''
 	direccio = buf[3] << 8 | buf[2]
-
-	#print("  Direcció comptador: "+hex(direccio)+"="+str(direccio))
+	print("  Direcció comptador: "+hex(direccio)+"="+str(direccio))
 	'''fi'''
 
 '''processa una trama de longitud variable'''
@@ -139,7 +138,7 @@ def processaTramaVariable(buf):
 
 	'''2 bytes de direccio: byte swap i suma'ls'''
 	direccio = buf[6] << 8 | buf[5]
-	#print("  Direcció comptador: "+str(hex(direccio))+" = "+str(direccio))
+	print("  Direcció comptador: "+str(hex(direccio))+" = "+str(direccio))
 
 	'''camp ASDU: del byte 6 fins al el n-3'''
 	ASDU=buf[7:n-2]
@@ -762,3 +761,5 @@ def campEtiquetaTemps(etiqueta):
 '''resposta real del comptador icra a A122 amb registre=21'''
 #processa("\x68\x20\x20\x68\x08\x01\x00\x08\x03\x05\x01\x00\x15\x01\xe3\xc4\x7a\x00\x00\x02\x00\x00\x00\x00\x00\x03\xef\x9c\x08\x00\x00\x00\x80\xd5\x05\x10\x53\x16")
 #processa("\x68\x15\x15\x68\x08\x01\x00\x7a\x01\x07\x01\x00\x15\x01\x02\x80\x00\x14\x05\x10\x80\x00\x17\x05\x10\xf9\x16")
+'''arxiu DSET'''
+processa("\x68\x0D\x0D\x68\x73\x13\xBF\xB7\x01\x06\x01\x00\x00\x01\x00\x00\x00\x05\x16")
