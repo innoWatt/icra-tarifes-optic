@@ -23,7 +23,6 @@ import pregunta as P
 #ESTIC FENT PROVES AMB ASDU 122. Només funciona direccio de registre=21 :(
 d=48915; psw=1 #direccio comptador i password
 
-#P.pregunta(C.creaTramaFix(0b01000000,d)) #request link reset
 P.pregunta(C.creaTramaVar(0b01110011,d,C.creaASDU183(psw))) #request user data & send password
 P.pregunta(C.creaTramaFix(0b01011011,d)) #request class 2 data
 P.pregunta(C.creaTramaVar(0b01110011,d,C.creaASDU122(21,1,2,C.creaTemps(20,5,16,0,0),C.creaTemps(23,5,16,0,0))))
