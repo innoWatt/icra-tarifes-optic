@@ -28,7 +28,7 @@ P.pregunta(C.creaTramaVar(0b01110011,d,C.creaASDU183(psw))) #request user data &
 P.pregunta(C.creaTramaFix(0b01011011,d)) #request class 2 data
 
 #prova asdu 101
-P.pregunta(C.creaTramaVar(0x01110011,d,C.creaASDU101(11)))
+P.pregunta(C.creaTramaVar(0b01110011,d,C.creaASDU101(11)))
 P.pregunta(C.creaTramaFix(0b01011011,d)) #request class 2 data
 
 #P.pregunta(C.creaTramaVar(0x73,1,C.creaASDU101(11,C.creaTemps(25,1,16,6,5),C.creaTemps(25,1,16,8,5))))

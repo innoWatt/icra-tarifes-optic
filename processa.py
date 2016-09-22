@@ -5,7 +5,7 @@
 	Autor: Lluis Bosch (lbosch@icra.cat) & Felix Hill (fhill@icra.cat)
 
 	Mòdul per traduir a nivell llegible missatges (peticions i respostes)
-	Testejat amb un comptador Actaris SL761
+	Testejat amb un comptador Actaris SL762B
 
 	Exemple de com fer servir:
 
