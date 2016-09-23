@@ -67,6 +67,30 @@ def creaASDU102(registre,data_inici,data_final):
 	asdu[6:11]=data_inici
 	asdu[11:16]=data_final
 	return bytearray(asdu)
+def creaASDU123(registre,integrat_inici,integrat_final,data_inici,data_final):
+	'''
+		direccio_inici = byte
+		direccio_final = byte
+		data_inici = bytearray
+		data_final = bytearray
+
+		18 bytes
+		+---------------+-------------------------------+
+		| IUD (6 bytes) | objecte informacio (12 bytes) |
+		+---------------+-------------------------------+
+	'''
+	asdu=[None]*18
+	asdu[0]=123 #idt identificador de tipo
+	asdu[1]=1   #qev: byte [SQ=0 (1 bit), N=1 (7 bits)] 00000001
+	asdu[2]=6   #cdt: causa=activación (6)
+	asdu[3]=(1&0x00ff)    #punt mesura (2 bytes)
+	asdu[4]=(1&0xff00)>>8 #punt mesura (2 bytes)
+	asdu[5]=registre #exemple:: 11: Totales integrados con período de integración 1 (curva de carga)
+	asdu[6]=integrat_inici
+	asdu[7]=integrat_final
+	asdu[8:13]=data_inici
+	asdu[13:18]=data_final
+	return bytearray(asdu)
 def creaASDU122(registre,integrat_inici,integrat_final,data_inici,data_final):
 	'''
 		direccio_inici = byte
