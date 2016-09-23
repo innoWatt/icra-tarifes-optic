@@ -2,70 +2,42 @@
 # -*- coding: utf-8 -*-
 import processa as Pro
 '''
-	funcions que permeten crear trames (format bytearray) 
+	Funcions que permeten crear trames (format bytearray) 
 	fixes i variables
 	i també etiquetes de temps
+
+	Coses trobades fent proves:
+		ASDU 115: no disponible (esborrat del codi)
+		ASDU 118: no disponible (idem)
 '''
 
-'''IMPLEMENTACIÓ DELS DIFERENTS TIPUS D'ASDU'''
-def creaASDU115(registre,integrat_inici,integrat_final,data):
+'''IMPLEMENTACIÓ DELS TIPUS D'ASDU'''
+def creaASDU190(registre,objecte,data_inici,data_final):
 	'''
-		ASDU 115: READ OPERATIONAL INTEGRATED TOTALS OF A SPECIFIC PAST INTEGRATION AND OF A SELECTED RANGE OF ADDRESSES
-		direccio_inici = byte
-		direccio_final = byte
-		data_inici = bytearray
-		data_final = bytearray
+		registre = 11(curva carga) o 21(resumen diario)
+		objecte = (9,10,11)
+			"La dirección de objeto selecciona la obtención de bloques de puntos de medida genéricos con reservas (9), 
+				bloques de puntos de medida genéricos sin reservas (10) 
+				o bloques de puntos de medida de consumo sin reservas (11)"
 
-		18 bytes
-		+---------------+-------------------------------+
-		| IUD (6 bytes) | objecte informacio (12 bytes) |
-		+---------------+-------------------------------+
+		data_inici = bytearray (tipus a)
+		data_final = bytearray (tipus a)
+
+		 17-12           11        10-6         5-1
+		+---------------+---------+------------+------------+
+		| IUD (6 bytes) | objecte | data inici | data final |
+		+---------------+---------+------------+------------+
 	'''
-	asdu=[None]*13
-	asdu[0]=115 #idt identificador de tipo
+	asdu=[None]*18
+	asdu[0]=123 #idt identificador de tipo
 	asdu[1]=1   #qev: byte [SQ=0 (1 bit), N=1 (7 bits)] 00000001
 	asdu[2]=6   #cdt: causa=activación (6)
 	asdu[3]=(1&0x00ff)    #punt mesura (2 bytes)
 	asdu[4]=(1&0xff00)>>8 #punt mesura (2 bytes)
 	asdu[5]=registre #exemple:: 11: Totales integrados con período de integración 1 (curva de carga)
-	asdu[6]=integrat_inici
-	asdu[7]=integrat_final
-	asdu[8:13]=data
-	return bytearray(asdu)
-def creaASDU101(registre):
-	'''
-		101: READ RECORD OF SINGLE POINT INFORMATION WITH TIME TAG
-		+---------------+
-		| IUD (6 bytes) | Objecte buit
-		+---------------+
-	'''
-	asdu=[None]*6
-	asdu[0]=101 #idt identificador de tipo
-	asdu[1]=0   #qev: byte [SQ=0 (1 bit), N=0 (7 bits)] 00000000
-	asdu[2]=6   #cdt: causa=activación (6)
-	asdu[3]=(1&0x00ff)    #punt mesura (2 bytes)
-	asdu[4]=(1&0xff00)>>8 #punt mesura (2 bytes)
-	asdu[5]=registre #exemple:: 11: Totales integrados con período de integración 1 (curva de carga)
-	return bytearray(asdu)
-def creaASDU102(registre,data_inici,data_final):
-	'''
-		data_inici = bytearray
-		data_final = bytearray
-
-		     16-11          10-6           5-1        
-		+---------------+------------+------------+
-		| IUD (6 bytes) | data inici | data final |
-		+---------------+------------+------------+
-	'''
-	asdu=[None]*16
-	asdu[0]=102 #idt identificador de tipo
-	asdu[1]=1   #qev: byte [SQ=0 (1 bit), N=1 (7 bits)] 00000001
-	asdu[2]=6   #cdt: causa=activación (6)
-	asdu[3]=(1&0x00ff)    #punt mesura (2 bytes)
-	asdu[4]=(1&0xff00)>>8 #punt mesura (2 bytes)
-	asdu[5]=registre #exemple:: 11: Totales integrados con período de integración 1 (curva de carga)
-	asdu[6:11]=data_inici
-	asdu[11:16]=data_final
+	asdu[6]=objecte
+	asdu[7:12]=data_inici
+	asdu[12:17]=data_final
 	return bytearray(asdu)
 def creaASDU123(registre,integrat_inici,integrat_final,data_inici,data_final):
 	'''
@@ -241,24 +213,11 @@ def creaTramaVar(control,direccio,asdu):
 	trama[2]=3+len(asdu)
 	return bytearray(trama)
 
-'''
-	Sintaxi:
-		creaTramaFix(control,direccio)
-		creaTramaVar(control,direccio,asdu)
-		creaASDU122(registre,direccio_inici,direccio_final,data_inici,data_final)
-		creaASDU134(data_inici,data_final)
-		creaASDU183(clau)
-		creaASDU187()
-		creaTemps(diames,mes,year,hora,minut)
-'''
-
 '''tests
 trama=creaTramaFix(0x49,1)
 trama=creaTramaVar(0x73,1,creaASDU122(21,1,2,creaTemps(25,1,16,6,5),creaTemps(25,1,16,8,5)))
 trama=creaTramaVar(0x73,1,creaASDU134(creaTemps(25,1,14,0,0),creaTemps(26,1,14,0,0)))
 trama=creaTramaVar(0x73,1,creaASDU183(12345678))
 trama=creaTramaVar(0x53,1,creaASDU187())
-trama=creaTramaVar(0x73,1,creaASDU102(11,creaTemps(25,1,16,6,5),creaTemps(25,1,16,8,5)))
-trama=creaTramaVar(0x73,1,creaASDU101(11))
 Pro.processa(trama)
 '''

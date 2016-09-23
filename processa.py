@@ -370,7 +370,7 @@ def campIUD(iud):
 			138 :"Información de Tarificación relativa al Contrato Latente II",
 			139 :"Información de Tarificación relativa al Contrato Latente III",
 	}
-	print("      dco->punt mesura:       "+hex(dco_punt_mesura)+"="+str(dco_punt_mesura)+" (2 bytes)")
+	print("      dco->punt mesura: "+hex(dco_punt_mesura)+"="+str(dco_punt_mesura)+" (2 bytes)")
 	print("      dco->registre: \033[33m"+hex(dco_registre)   +"="+str(dco_registre)   +": "+dicc_registre[dco_registre]+"\033[0m")
       
 	'''fi'''
@@ -525,21 +525,7 @@ def campObjInfo(objInfo):
 
 	'''IMPLEMENTACIÓ DELS DIFERENTS TIPUS D'ASDU'''
 	'''si no està implementat, dóna un runtime error'''
-	if(idt==115):
-		'''A115: LEER TOTALES INTEGRADOS OPERACIONALES POR TIEMPO CONCRETO Y RANGO DE DIRECCIONES'''
-
-		'''direccio inicial'''
-		direccio_inici=objInfo[0]
-		print("        Direcció inici: "+str(direccio_inici)+": "+dicc_direccio[direccio_inici])
-
-		'''direccio final'''
-		direccio_final=objInfo[1]
-		print("        Direcció final: "+str(direccio_final)+": "+dicc_direccio[direccio_final])
-
-		'''etiqueta de temps inicial'''
-		etiquetaInicial = objInfo[2:7]
-		campEtiquetaTemps(etiquetaInicial)
-	elif(idt in [8,11]):
+	if(idt in [8,11]):
 		'''A8: TOTALES INTEGRADOS OPERACIONALES, 4 OCTETOS (LECTURAS DE CONTADORES ABSOLUTOS EN KWH O KVARH)'''
 		'''A8 és una resposta a la petició A122'''
 		'''A11 és una resposta a A123'''
@@ -584,6 +570,16 @@ def campObjInfo(objInfo):
 
 		'''etiqueta de temps final'''
 		etiquetaFinal = objInfo[7:12]
+		campEtiquetaTemps(etiquetaFinal)
+	elif(idt in [189,190]):
+		'''direccion objecto'''
+		objecte=objInfo[0]
+		print("        Direcció objecte: "+str(objecte))
+		'''etiqueta de temps inicial'''
+		etiquetaInicial = objInfo[1:6]
+		campEtiquetaTemps(etiquetaInicial)
+		'''etiqueta de temps final'''
+		etiquetaFinal = objInfo[6:11]
 		campEtiquetaTemps(etiquetaFinal)
 	elif(idt==134):
 		'''A134: LEER INFORMACIÓN DE TARIFICACIÓN (VALORES MEMORIZADOS)'''
@@ -681,17 +677,6 @@ def campObjInfo(objInfo):
 				és un objecte d'informació buit
 		'''
 		print("        Request de FINALITZAR SESSIÓ")
-	elif(idt==101):
-		'''A101: READ RECORD OF SINGLE POINT INFORMATION WITH TIME TAG'''
-		'''A101 és una petició '''
-		print("        A101 és un Request BUIT")
-	elif(idt==102):
-		'''A102: READ RECORD OF SINGLE POINT INFORMATION WITH TIME TAG OF SELECTED TIME RANGE'''
-		'''A102 és una petició '''
-		dataInici=objInfo[0:5]
-		dataFinal=objInfo[5:10]
-		campEtiquetaTemps(dataInici)
-		campEtiquetaTemps(dataFinal)
 	else:
 		print("      </objecte>")
 		raise RuntimeError("[!] ERROR: ASDU "+str(idt)+" ENCARA NO IMPLEMENTAT")
