@@ -539,9 +539,10 @@ def campObjInfo(objInfo):
 		'''etiqueta de temps inicial'''
 		etiquetaInicial = objInfo[2:7]
 		campEtiquetaTemps(etiquetaInicial)
-	elif(idt==8):
+	elif(idt in [8,11]):
 		'''A8: TOTALES INTEGRADOS OPERACIONALES, 4 OCTETOS (LECTURAS DE CONTADORES ABSOLUTOS EN KWH O KVARH)'''
 		'''A8 és una resposta a la petició A122'''
+		'''A11 és una resposta a A123'''
 
 		'''byte 1: direccio de registre'''
 		direccio=objInfo[0]
