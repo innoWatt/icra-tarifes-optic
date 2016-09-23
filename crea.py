@@ -142,7 +142,6 @@ def creaASDU187():
 	asdu[4]=(1&0xff00)>>8 #punt mesura (2 bytes)
 	asdu[5]=0 #direccio registre: 0: cap registre
 	return bytearray(asdu)
-
 def creaTemps(diames,mes,year,hora,minut):
 	'''
 		minut:int, hora:int, diames:int, mes:int, year:int (0-99)
@@ -177,7 +176,6 @@ def creaTemps(diames,mes,year,hora,minut):
 	trama[3] = mes
 	trama[4] = year
 	return bytearray(trama)
-
 def creaTramaFix(control,direccio):
 	trama=[None]*6
 	trama[0]=0x10     #inici
@@ -193,7 +191,6 @@ def creaTramaFix(control,direccio):
 		trama=creaTramaFix(0b01000000,1) #reset d'enllaç remot
 		Pro.processa(trama)
 	'''
-
 def creaTramaVar(control,direccio,asdu):
 	trama=[None]*8
 	trama[0]=0x68 #inici
