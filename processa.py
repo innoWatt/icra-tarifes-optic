@@ -341,11 +341,9 @@ def campIUD(iud):
 	dco_punt_mesura = (dco[1]<<8) | dco[0]
 	dco_registre    = dco[2]
 
-	'''i si el punt de mesura val 1 byte enlloc de 2?'''
-	
-
 	dicc_registre = {
 			  0 :"Dirección de defecto",
+				1 :"Record address of integrated totals from the start of the accounting period",
 			 11 :"Totales integrados con período de integración 1 (curva de carga)",
 			 12 :"RESERVA. [Posible uso futuro para Totales integrados con período de integración 2(curva de carga, habitualmente cuartohoraria)]",
 			 13 :"RESERVA. [Posible uso futuro para Totales integrados con período de integración 3(curva de carga)]",
@@ -777,18 +775,18 @@ def detectaError(trama):
 	if prm: return
 	#agafa el byte control, i mira els 4 primers bits
 	fun=control & 0b00001111
-	if   fun==1: raise RuntimeError("NACK. COMANDA NO ACCEPTADA")
-	elif fun==9: raise RuntimeError("NACK. DADES DEMANADES NO DISPONIBLES")
+	if   fun==1: quit("NACK. COMANDA NO ACCEPTADA")
+	elif fun==9: quit("NACK. DADES DEMANADES NO DISPONIBLES")
 	#si la trama és fixa ja estem
 	if tipus=="fix": return
 	#si la trama és variable hem de mirar la causa de transmissió
 	cdt=trama[7:n-2][0:6][2] & 0b00111111
-	if   cdt==13: raise RuntimeError("REGISTRO DE DATOS SOLICITADO NO DISPONIBLE")
-	elif cdt==14: raise RuntimeError("TIPO DE ASDU SOLICITADO NO DISPONIBLE")
-	elif cdt==15: raise RuntimeError("NÚMERO DE REGISTRO EN EL ASDU ENVIADO POR CM DESCONOCIDO")
-	elif cdt==16: raise RuntimeError("ESPECIFICACION DE DIRECCION EN EL ASDU ENVIADO POR CM DESCONOCIDA")
-	elif cdt==17: raise RuntimeError("OBJETO DE INFORMACION NO DISPONIBLE")
-	elif cdt==18: raise RuntimeError("PERIODO DE INTEGRACION NO DISPONIBLE")
+	if   cdt==13: quit("REGISTRO DE DATOS SOLICITADO NO DISPONIBLE")
+	elif cdt==14: quit("TIPO DE ASDU SOLICITADO NO DISPONIBLE")
+	elif cdt==15: quit("NÚMERO DE REGISTRO EN EL ASDU ENVIADO POR CM DESCONOCIDO")
+	elif cdt==16: quit("ESPECIFICACION DE DIRECCION EN EL ASDU ENVIADO POR CM DESCONOCIDA")
+	elif cdt==17: quit("OBJETO DE INFORMACION NO DISPONIBLE")
+	elif cdt==18: quit("PERIODO DE INTEGRACION NO DISPONIBLE")
 
 #==#==#==#==#==#==#==#==#==#==#==#
 #     T R A M E S   T E S T      #
