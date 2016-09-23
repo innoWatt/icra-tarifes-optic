@@ -1,22 +1,22 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 '''
-	Protocol IEC 60870-5-102
+	Intèrpret Protocol IEC 60870-5-102
 	Autor: Lluis Bosch (lbosch@icra.cat) & Felix Hill (fhill@icra.cat)
 
 	Mòdul per traduir a nivell llegible missatges (peticions i respostes)
 	Testejat amb un comptador Actaris SL762B
 
 	Exemple de com fer servir:
-
 		import processa as Pro
 		Pro.processa('\x10\x49\x01\x00\x4a\x16')
-
 
 	Bibliografia: #TODO
 
 	Els missatge provenen de la comanda serial.readlines()
 	normalment sera un array de tamany 1 però pot ser més llarg
+	
+	S'ha fet servir la classe "bytearray"
 
 	Estructura global:
 
@@ -445,7 +445,7 @@ def campObjsInfo(objsInfo):
 	if(idt in [8,11]):
 		print("      Amb Etiqueta comuna de temps tipus a (5 bytes)")
 		longitud_etiqueta=5
-	elif(idt in [122,183,134,102]):
+	elif(idt in [122,183,134,139,140]):
 		#print("      Sense etiqueta comuna de temps")
 		longitud_etiqueta=0
 	else:
@@ -498,7 +498,7 @@ def campObjInfo(objInfo):
 	idt=[    A S D      ][iud][idt] '''
 	idt=buf[7:len(buf)-2][0:6][ 0 ]
 
-	'''diccionari de direccio de registre útil per asdu 8, 122, etc'''
+	'''diccionari de direccio d'objecte útil per asdu 8, 122, etc'''
 	dicc_direccio={
 		 1:"Totales Integrados de Activa Entrante",
 		 2:"Totales Integrados de Activa Saliente",
@@ -529,28 +529,11 @@ def campObjInfo(objInfo):
 		'''A8: TOTALES INTEGRADOS OPERACIONALES, 4 OCTETOS (LECTURAS DE CONTADORES ABSOLUTOS EN KWH O KVARH)'''
 		'''A8 és una resposta a la petició A122'''
 		'''A11 és una resposta a A123'''
-
-		'''byte 1: direccio de registre'''
-		direccio=objInfo[0]
+		'''byte 1: direccio de l'objecte'''
+		direccio=totalIntegrat[0]
 		print("        Registre "+hex(direccio)+"="+str(direccio)+": "+dicc_direccio[direccio])
-
-		'''4 bytes següents per energia (kwh o kvarh): cal byte swap i suma'''
-		nrg       = objInfo[1:5]
-		nrg_valor = nrg[3] << 32 | nrg[2] << 16 | nrg[1] << 8 | nrg[0]
-
-		print("        Energia: "+str(nrg_valor)+" (kWh o kVARh)")
-
-		'''byte cualificador: 8 bits '''
-		cualificador = objInfo[5]
-		IV = cualificador & 0b10000000 == 128 # la lectura es vàlida?
-		CA = cualificador & 0b01000000 == 64  # el comptador està sincronitzat?
-		CY = cualificador & 0b00100000 == 32  # overflow?
-		VH = cualificador & 0b00010000 == 16  # verificació horària durant el període?
-		MP = cualificador & 0b00001000 == 8   # modificació de paràmetres durant el període?
-		IN = cualificador & 0b00000100 == 4   # hi ha hagut intrusió durant el període?
-		AL = cualificador & 0b00000010 == 2   # període incomplet per fallo d'alimentació durant el període?
-		RES= cualificador & 0b00000001 == 1   # bit de reserva
-		print("        byte Cualificador: "+hex(cualificador)+": [IV="+str(IV)+",CA="+str(CA)+",CY="+str(CY)+",VH="+str(VH)+",MP="+str(MP)+",IN="+str(IN)+",AL="+str(AL)+",RES="+str(RES)+"]")
+		'''bytes 2 a 6: total integrat'''
+		campTotalIntegrat(objInfo[1:6],'Energia')
 	elif(idt in [122,123]):
 		'''A122 i A123: LEER TOTALES INTEGRADOS OPERACIONALES POR INTERVALO DE TIEMPO Y RANGO DE DIRECCIONES'''
 		'''A122 és una petició de 4 elements: direcció inicial, direcció final, data inicial, data final'''
@@ -581,6 +564,25 @@ def campObjInfo(objInfo):
 		'''etiqueta de temps final'''
 		etiquetaFinal = objInfo[6:11]
 		campEtiquetaTemps(etiquetaFinal)
+	elif(idt in [139,140]):
+		'''direccion objecto'''
+		n=len(objInfo)
+		objecte=objInfo[0]
+		print("        Direcció objecte: "+str(objecte))
+
+		if objecte==9 : N=8
+		if objecte==10: N=6
+		if objecte==11: N=3
+
+		for i in range(N):
+			byte_inici = 1+i*5
+			byte_final = 6+i*5
+			nom=dicc_direccio[i+1]
+			campTotalIntegrat(objInfo[byte_inici:byte_final],nom)
+
+		'''etiqueta de temps'''
+		temps=objInfo[n-5:n]
+		campEtiquetaTemps(temps)
 	elif(idt==134):
 		'''A134: LEER INFORMACIÓN DE TARIFICACIÓN (VALORES MEMORIZADOS)'''
 		'''A134 és una petició dels valors de la tarifa. la resposta és un A136'''
@@ -745,6 +747,26 @@ def campEtiquetaTemps(etiqueta):
 	'''fi'''
 	print("== Data: "+str(diames)+"/"+str(mes)+"/"+str(year)+" "+str(hora)+":"+str(minut))
 
+def campTotalIntegrat(totalIntegrat,nom):
+
+	'''4 bytes següents per energia (kwh o kvarh): cal byte swap i suma'''
+	nrg       = totalIntegrat[0:4]
+	nrg_valor = nrg[3] << 32 | nrg[2] << 16 | nrg[1] << 8 | nrg[0]
+
+	print("        "+nom+": "+str(nrg_valor)+" (kWh o kVARh)")
+
+	'''byte cualificador: 8 bits '''
+	cualificador = totalIntegrat[4]
+	IV = cualificador & 0b10000000 == 128 # la lectura es vàlida?
+	CA = cualificador & 0b01000000 == 64  # el comptador està sincronitzat?
+	CY = cualificador & 0b00100000 == 32  # overflow?
+	VH = cualificador & 0b00010000 == 16  # verificació horària durant el període?
+	MP = cualificador & 0b00001000 == 8   # modificació de paràmetres durant el període?
+	IN = cualificador & 0b00000100 == 4   # hi ha hagut intrusió durant el període?
+	AL = cualificador & 0b00000010 == 2   # període incomplet per fallo d'alimentació durant el període?
+	RES= cualificador & 0b00000001 == 1   # bit de reserva
+	print("        byte Cualificador: "+hex(cualificador)+": [IV="+str(IV)+",CA="+str(CA)+",CY="+str(CY)+",VH="+str(VH)+",MP="+str(MP)+",IN="+str(IN)+",AL="+str(AL)+",RES="+str(RES)+"]")
+
 def detectaError(trama):
 	'''
 		Detectar errors dins el protocol. Sempre analitzem respostes, no peticions
@@ -794,15 +816,8 @@ def detectaError(trama):
 '''lecturas de cierre '''
 #processa('\x68\x13\x13\x68\x73\x58\x1B\x86\x01\x06\x01\x00\x88\x00\x00\x01\x0A\x09\x00\x00\x01\x02\x0A\x1D\x16')
 #processa('\x68\x48\x48\x68\x08\x58\x1B\x88\x01\x05\x01\x00\x88\x14\x61\x71\x00\x00\xE4\x25\x00\x00\x00\x0B\x47\x00\x00\x88\x09\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x54\x00\x00\x00\x00\x0E\xBA\x0C\x08\x00\x00\x00\x00\x00\x80\x00\x00\x21\x0C\x08\x00\x00\x81\x01\x09\xD4\x16')
-'''conversa entre PC i Comptaodr (document Abella)'''
-#processa("\x68\x0D\x0D\x68\x73\x58\x1B\xB7\x01\x06\x01\x00\x00\x07\x00\x00\x00\xac\x16")
-#processa("\x68\x0D\x0D\x68\x08\x58\x1B\xB7\x01\x07\x01\x00\x00\x07\x00\x00\x00\x42\x16")
-#processa("\x68\x15\x15\x68\x73\x58\x1B\x7A\x01\x06\x01\x00\x0B\x01\x08\x01\x00\x12\x09\x09\x00\x00\x13\x09\x09\xC6\x16")
-#processa("\x68\x15\x15\x68\x08\x58\x1B\x7A\x01\x07\x01\x00\x0B\x01\x08\x01\x00\x12\x09\x09\x00\x00\x13\x09\x09\x5C\x16")
-#processa("\x68\x3E\x3E\x68\x08\x58\x1B\x08\x08\x05\x01\x00\x0B\x01\x18\x01\x00\x00\x00\x02\x6E\x1F\x03\x00\x00\x03\x04\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x05\xCC\xBE\x00\x00\x00\x06\x98\x0D\x00\x00\x00\x07\x00\x00\x00\x00\x80\x08\x00\x00\x00\x00\x80\x00\x81\xB2\x09\x09\xE1\x16")
-#processa("\x68\x3E\x3E\x68\x08\x58\x1B\x08\x08\x05\x01\x00\x0B\x01\x18\x01\x00\x00\x00\x02\x6E\x1F\x03\x00\x00\x03\x04\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x05\xCC\xBE\x00\x00\x00\x06\x98\x0D\x00\x00\x00\x07\x00\x00\x00\x00\x80\x08\x00\x00\x00\x00\x80\x00\x82\xB2\x09\x09\xE2\x16")
 '''resposta real del comptador icra a A122 amb registre=21'''
 #processa("\x68\x20\x20\x68\x08\x01\x00\x08\x03\x05\x01\x00\x15\x01\xe3\xc4\x7a\x00\x00\x02\x00\x00\x00\x00\x00\x03\xef\x9c\x08\x00\x00\x00\x80\xd5\x05\x10\x53\x16")
 #processa("\x68\x15\x15\x68\x08\x01\x00\x7a\x01\x07\x01\x00\x15\x01\x02\x80\x00\x14\x05\x10\x80\x00\x17\x05\x10\xf9\x16")
 '''resposta real ASDU 140 TODO'''
-processa("\x68\xef\xef\x68\x08\x01\x00\x8c\x05\x05\x01\x00\x0b\x09\x49\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x16\x00\x00\x00\x00\x00\x00\x00\x00\x80\x00\x00\x00\x00\x80\x00\x81\xd5\x05\x10\x09\x50\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x80\x00\x00\x00\x00\x80\x00\x82\xd5\x05\x10\x09\x4b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14\x00\x00\x00\x00\x00\x00\x00\x00\x80\x00\x00\x00\x00\x80\x00\x83\xd5\x05\x10\x09\x4b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x000000000000000000001300000000000000008000000000800084d50510094d0000000000000000000000000000000000000000000000001300000000000000008000000000800085d50510d816")
+processa("\x68\xef\xef\x68\x08\x01\x00\x8c\x05\x05\x01\x00\x0b\x09\x49\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x16\x00\x00\x00\x00\x00\x00\x00\x00\x80\x00\x00\x00\x00\x80\x00\x81\xd5\x05\x10\x09\x50\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x80\x00\x00\x00\x00\x80\x00\x82\xd5\x05\x10\x09\x4b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14\x00\x00\x00\x00\x00\x00\x00\x00\x80\x00\x00\x00\x00\x80\x00\x83\xd5\x05\x10\x09\x4b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x00\x80\x00\x00\x00\x00\x80\x00\x84\xd5\x05\x10\x09\x4d\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x00\x80\x00\x00\x00\x00\x80\x00\x85\xd5\x05\x10\xd8\x16")

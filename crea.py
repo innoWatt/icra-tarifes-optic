@@ -14,6 +14,10 @@ import processa as Pro
 '''IMPLEMENTACIÓ DELS TIPUS D'ASDU'''
 def creaASDU190(registre,objecte,data_inici,data_final):
 	'''
+		A190:"LEER BLOQUES DE TOTALES INTEGRADOS OPERACIONALES REPUESTOS PERIÓDICAMENTE POR INTERVALO DE TIEMPO Y DIRECCIÓN",
+		la resposta és un A140
+		és germà del A189
+
 		registre = 11(curva carga) o 21(resumen diario)
 		objecte = (9,10,11)
 			"La dirección de objeto selecciona la obtención de bloques de puntos de medida genéricos con reservas (9), 
