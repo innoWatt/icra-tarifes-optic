@@ -87,7 +87,7 @@ def processaTramaFixa(buf):
 	else:
 		raise RuntimeError('Checksum incorrecte: '+str(checksum)+'=/='+str(buf[4]))
 
-	print("  Trama FIXE [inici (0x10), control, direccio1, direccio2, checksum, fi (0x16)]")
+	#print("  Trama FIXE [inici (0x10), control, direccio1, direccio2, checksum, fi (0x16)]")
 
 	'''processa el byte de control'''
 	control=buf[1]
@@ -131,7 +131,7 @@ def processaTramaVariable(buf):
 	else:
 		raise RuntimeError("Checksum incorrecte: "+str(buf[n-2])+"=/="+str(checksum))
 
-	print("  Trama VARIABLE [inici (0x68), L, L, inici (0x68), control, direccio, asdu, checksum, final (0x16)]")
+	#print("  Trama VARIABLE [inici (0x68), L, L, inici (0x68), control, direccio, asdu, checksum, final (0x16)]")
 
 	'''byte de control'''
 	control=buf[4]
@@ -442,7 +442,7 @@ def campObjsInfo(objsInfo):
 
 	'''Troba si porta o no etiqueta comuna de temps'''
 	'''Si saps l'ASDU, perfecte, sinó, endevina-ho'''
-	if(idt in [8]):
+	if(idt in [8,11]):
 		print("      Amb Etiqueta comuna de temps tipus a (5 bytes)")
 		longitud_etiqueta=5
 	elif(idt in [122,183,134,102]):
@@ -451,10 +451,10 @@ def campObjsInfo(objsInfo):
 	else:
 		'''mira d'endevinar l'estructura'''
 		if(n%N!=0 and (n-5)%N==0 and (n-7)%N!=0):
-			print("      Amb Etiqueta comuna de temps tipus a (5 bytes)")
+			print("      Detectada etiqueta comuna de temps tipus a (5 bytes)")
 			longitud_etiqueta=5
 		elif(n%N!=0 and (n-5)%N!=0 and (n-7)%N==0):
-			print("      Amb Etiqueta comuna de temps tipus b (7 bytes)")
+			print("      Detectada etiqueta comuna de temps tipus b (7 bytes)")
 			longitud_etiqueta=7
 		elif(n%N!=0 and (n-5)%N==0 and (n-7)%N==0):
 			print("      WARNING: etiqueta tipus a i b possibles, assumint tipus a (5 bytes)")
