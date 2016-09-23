@@ -523,7 +523,21 @@ def campObjInfo(objInfo):
 
 	'''IMPLEMENTACIÓ DELS DIFERENTS TIPUS D'ASDU'''
 	'''si no està implementat, dóna un runtime error'''
-	if(idt==8):
+	if(idt==115):
+		'''A115: LEER TOTALES INTEGRADOS OPERACIONALES POR TIEMPO CONCRETO Y RANGO DE DIRECCIONES'''
+
+		'''direccio inicial'''
+		direccio_inici=objInfo[0]
+		print("        Direcció inici: "+str(direccio_inici)+": "+dicc_direccio[direccio_inici])
+
+		'''direccio final'''
+		direccio_final=objInfo[1]
+		print("        Direcció final: "+str(direccio_final)+": "+dicc_direccio[direccio_final])
+
+		'''etiqueta de temps inicial'''
+		etiquetaInicial = objInfo[2:7]
+		campEtiquetaTemps(etiquetaInicial)
+	elif(idt==8):
 		'''A8: TOTALES INTEGRADOS OPERACIONALES, 4 OCTETOS (LECTURAS DE CONTADORES ABSOLUTOS EN KWH O KVARH)'''
 		'''A8 és una resposta a la petició A122'''
 
