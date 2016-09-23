@@ -564,9 +564,10 @@ def campObjInfo(objInfo):
 		AL = cualificador & 0b00000010 == 2   # període incomplet per fallo d'alimentació durant el període?
 		RES= cualificador & 0b00000001 == 1   # bit de reserva
 		print("        byte Cualificador: "+hex(cualificador)+": [IV="+str(IV)+",CA="+str(CA)+",CY="+str(CY)+",VH="+str(VH)+",MP="+str(MP)+",IN="+str(IN)+",AL="+str(AL)+",RES="+str(RES)+"]")
-	elif(idt==122):
-		'''A122: LEER TOTALES INTEGRADOS OPERACIONALES POR INTERVALO DE TIEMPO Y RANGO DE DIRECCIONES'''
+	elif(idt in [122,123]):
+		'''A122 i A123: LEER TOTALES INTEGRADOS OPERACIONALES POR INTERVALO DE TIEMPO Y RANGO DE DIRECCIONES'''
 		'''A122 és una petició de 4 elements: direcció inicial, direcció final, data inicial, data final'''
+		'''A123 és incremental'''
 
 		'''direccio inicial'''
 		direccio_inici=objInfo[0]
