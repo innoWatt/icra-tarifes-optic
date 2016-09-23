@@ -2,15 +2,6 @@
 	D'aquí he de treure com implementar ASDU 162 (valors instantanis)
 '''
 
-def init(self):
-		direccioContador = 1
-		psw = 1
-		tFixaNoms=['Inici','Control C','Direccio 1','Direccio 2','checksum','fi']
-		tVariableNoms=['Inici1','Longitud1','Longitud2','Inici2','Control C','Direccio 1','Direccio 2','Id.Tipo','SQ N','Causa','PM 1','PM 2','dir.reg','         ', '         ', '         ', '         ', '         ', '         ', '         ', '      ', '      ', '      ', '      ', '      ', '      ', '      ', '      ', '      ', '      ', '      ', '         ', '         ', '         ', '         ', '         ', '         ', '      ', '      ', '      ', '      ', '      ', '      ', '      ', '      ', '      ', '      ', '      ', '         ', '         ', '         ', '      ', '      ', '      ', '      ', '      ', '      ', '      ', '      ', '      ', '      ', '      ', '         ', '         ', '         ', '         ', '         ', '         ', '      ', '      ', '      ', '      ', '      ', '      ', '      ', '      ', '      ', '      ', '      ']
-		tVariableNomsClauAcces=['Inici1','Longitud1','Longitud2','Inici2','Control C','Direccio 1','Direccio 2','Id.Tipo','SQ N','Causa','P.Medida','dir.reg1','dir.reg2','X Clau1','X Clau2','Clau3','Clau4','checksum','fi']
-		valorsTrama = dict(tipus = '', ccc = 0, direccioContador = 0, idASDU = 0, SQN = 0, causa = 0, direccioPM = 0, direccioRegistre = 0, objecteInformacio1 = [None])
-		tempsImpres = False
-
 def llegirInstantanis(self):
 
 	self.diccionari = {
@@ -63,46 +54,10 @@ def llegirInstantanis(self):
 			"Error de Lectura de les mesures de la Fase III":0,
 	}
 
-	##====(17 i 18) enviar contrasenya
-	#REQUEST
-	unitats = psw & 0xFF
-	desenes = (psw & 0xFF00) >> 8
-	centenes = (psw & 0xFF0000) >> 16
-	milers = (psw & 0xFF000000) >> 24
-	valorsTrama=dict(tipus='v',ccc=0x73,idASDU=0xB7,SQN=0x01,causa=0x06,direccioRegistre=0,objecteInformacio1=[unitats,desenes,centenes,milers])
-	valorsTrama=self.envia(valorsTrama,0,0)
-
-	##====(22 i 23)
-	#REQUEST
-	valorsTrama=dict(tipus='v',ccc=0x73,idASDU=0x8D,SQN=0,causa=5,direccioPM=0,direccioRegistre=0,objecteInformacio1=[])
-	valorsTrama = self.envia(valorsTrama, 0, 0)
-
-	##====(26 i 27)
-	#REQUEST
-	valorsTrama = dict(tipus = 'v', ccc = 0x73, idASDU = 0xBB, SQN = 0, causa = 6, direccioPM = 0, direccioRegistre = 0, objecteInformacio1 = [])
-	valorsTrama = self.envia(valorsTrama, 0, 0)
-
-	##====(32 i 33)
-	#REQUEST
-	unitats = psw & 0xFF
-	desenes = (psw & 0xFF00) >> 8
-	centenes = (psw & 0xFF0000) >> 16
-	milers = (psw & 0xFF000000) >> 24
-	valorsTrama = dict(tipus = 'v', direccioContador = direccioContador, ccc = 0x73, idASDU = 0xB7, SQN = 0x01, causa = 0x06, direccioRegistre = 0, objecteInformacio1 = [unitats, desenes, centenes, milers])
-	valorsTrama = self.envia(valorsTrama, 0, 0)
-
-	#===(34 i 35)
-	#REQUEST
-	valorsTrama['tipus'] = 'f'
-	valorsTrama['ccc'] = 0x5B
-	valorsTrama = self.envia(valorsTrama, 0, 0)
-
 	##====(37 i 38) ::Read Instantaneous Values ccc=115, ASDU=162, causa=5, dir.reg=0, obj inf=192,193,194
 	#REQUEST
 	vT = dict(tipus='v',ccc=0x73,idASDU = 0xA2,SQN=3,causa=5,direccioPM=0,direccioRegistre=0,objecteInformacio1=[0xC0,0XC1,0xC2,0x62,0x16])
 	vT = self.envia(vT, 0, 0)
-
-	print("accedim a data i hora: "),
 
 	#Objecte 1 (192) - A
 	temp = objInfo[1] + (objInfo[2] << 8) + (objInfo[3] << 16) + (((0b11111100 & objInfo[4]) >> 2) << 24)

@@ -7,42 +7,31 @@ import processa as Pro
 	i també etiquetes de temps
 '''
 
-def creaTramaFix(control,direccio):
-	trama=[None]*6
-	trama[0]=0x10     #inici
-	trama[1]=control  #byte control [RES,PRM,FCB,FCV,FUN]
-	trama[2]=direccio & 0xff
-	trama[3]=(direccio & 0xff00)>>8
-	trama[4]=(trama[1]+trama[2]+trama[3])%256
-	trama[5]=0x16
-	return bytearray(trama)
-	''' tests trames fixes
-		trama=creaTramaFix(0b01001001,1) #solicitud d'estat d'enllaç
-		Pro.processa(trama)
-		trama=creaTramaFix(0b01000000,1) #reset d'enllaç remot
-		Pro.processa(trama)
-	'''
-
-def creaTramaVar(control,direccio,asdu):
-	trama=[None]*8
-	trama[0]=0x68 #inici
-	trama[1]=0x00 #longitud
-	trama[2]=0x00 #longitud
-	trama[3]=0x68 #inici
-	trama[4]=control
-	trama[5]=direccio & 0xff
-	trama[6]=direccio & 0xff00
-	trama[7:7+len(asdu)]=asdu
-	checksum=0
-	for i in range(4,len(trama)): checksum+=trama[i]
-	checksum%=256
-	trama.append(checksum)
-	trama.append(0x16)
-	trama[1]=3+len(asdu)
-	trama[2]=3+len(asdu)
-	return bytearray(trama)
-
 '''IMPLEMENTACIÓ DELS DIFERENTS TIPUS D'ASDU'''
+def creaASDU115(registre,integrat_inici,integrat_final,data):
+	'''
+		ASDU 115: READ OPERATIONAL INTEGRATED TOTALS OF A SPECIFIC PAST INTEGRATION AND OF A SELECTED RANGE OF ADDRESSES
+		direccio_inici = byte
+		direccio_final = byte
+		data_inici = bytearray
+		data_final = bytearray
+
+		18 bytes
+		+---------------+-------------------------------+
+		| IUD (6 bytes) | objecte informacio (12 bytes) |
+		+---------------+-------------------------------+
+	'''
+	asdu=[None]*13
+	asdu[0]=115 #idt identificador de tipo
+	asdu[1]=1   #qev: byte [SQ=0 (1 bit), N=1 (7 bits)] 00000001
+	asdu[2]=6   #cdt: causa=activación (6)
+	asdu[3]=(1&0x00ff)    #punt mesura (2 bytes)
+	asdu[4]=(1&0xff00)>>8 #punt mesura (2 bytes)
+	asdu[5]=registre #exemple:: 11: Totales integrados con período de integración 1 (curva de carga)
+	asdu[6]=integrat_inici
+	asdu[7]=integrat_final
+	asdu[8:13]=data
+	return bytearray(asdu)
 def creaASDU101(registre):
 	'''
 		101: READ RECORD OF SINGLE POINT INFORMATION WITH TIME TAG
@@ -58,7 +47,6 @@ def creaASDU101(registre):
 	asdu[4]=(1&0xff00)>>8 #punt mesura (2 bytes)
 	asdu[5]=registre #exemple:: 11: Totales integrados con período de integración 1 (curva de carga)
 	return bytearray(asdu)
-	
 def creaASDU102(registre,data_inici,data_final):
 	'''
 		data_inici = bytearray
@@ -158,6 +146,7 @@ def creaASDU187():
 	asdu[4]=(1&0xff00)>>8 #punt mesura (2 bytes)
 	asdu[5]=0 #direccio registre: 0: cap registre
 	return bytearray(asdu)
+
 def creaTemps(diames,mes,year,hora,minut):
 	'''
 		minut:int, hora:int, diames:int, mes:int, year:int (0-99)
@@ -191,6 +180,41 @@ def creaTemps(diames,mes,year,hora,minut):
 	trama[2] = diames
 	trama[3] = mes
 	trama[4] = year
+	return bytearray(trama)
+
+def creaTramaFix(control,direccio):
+	trama=[None]*6
+	trama[0]=0x10     #inici
+	trama[1]=control  #byte control [RES,PRM,FCB,FCV,FUN]
+	trama[2]=direccio & 0xff
+	trama[3]=(direccio & 0xff00)>>8
+	trama[4]=(trama[1]+trama[2]+trama[3])%256
+	trama[5]=0x16
+	return bytearray(trama)
+	''' tests trames fixes
+		trama=creaTramaFix(0b01001001,1) #solicitud d'estat d'enllaç
+		Pro.processa(trama)
+		trama=creaTramaFix(0b01000000,1) #reset d'enllaç remot
+		Pro.processa(trama)
+	'''
+
+def creaTramaVar(control,direccio,asdu):
+	trama=[None]*8
+	trama[0]=0x68 #inici
+	trama[1]=0x00 #longitud
+	trama[2]=0x00 #longitud
+	trama[3]=0x68 #inici
+	trama[4]=control
+	trama[5]=direccio & 0xff
+	trama[6]=direccio & 0xff00
+	trama[7:7+len(asdu)]=asdu
+	checksum=0
+	for i in range(4,len(trama)): checksum+=trama[i]
+	checksum%=256
+	trama.append(checksum)
+	trama.append(0x16)
+	trama[1]=3+len(asdu)
+	trama[2]=3+len(asdu)
 	return bytearray(trama)
 
 '''
