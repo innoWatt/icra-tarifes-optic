@@ -1,36 +1,64 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import processa as Pro
 '''
 	Funcions que permeten crear trames (format bytearray) 
-	fixes i variables
-	i també etiquetes de temps
 
-	Coses trobades fent proves:
-		ASDU 115: no disponible (esborrat del codi)
-		ASDU 118: no disponible (idem)
+	ASDUS:
+		ASDU 190: permet llegir curva carga (kW) (registre 11) en bloc
+		ASDU 123: permet llegir curva carga (kW) (registre 11)
+		ASDU 122: permet llegir acumulats (energia, kWh)
+		ASDU 183: inici sessió
+		ASDU 187: final sessió
+
+	Els asdus es creen i es posen dins les funcions:
+		creaTramaFix: crea trames fixes (6 bytes)
+		creaTramaVar: crea trames variables (n bytes)
+
+	Utilitats:
+		creaTemps: crea etiquetes de temps (5 bytes)
 '''
 
-'''IMPLEMENTACIÓ DELS TIPUS D'ASDU'''
+'''TIPUS ASDU implementats'''
+def creaASDU162():
+	'''
+		A162: Read Instantaneous Values causa=5, obj inf=192,193,194
+		#REQUEST
+		vT = direccioRegistre=0,objecteInformacio1=[0xC0,0XC1,0xC2,0x62,0x16])
+		vT = self.envia(vT, 0, 0)
+
+		la resposta és un A163
+	'''
+	asdu=[None]*9
+	asdu[0]=162 #idt identificador de tipo
+	asdu[1]=3   #qev: byte [SQ=0 (1 bit), N=3 (7 bits)] 00000011
+	asdu[2]=5   #cdt: causa=petición (5)
+	asdu[3]=(1&0x00ff)    #punt mesura (2 bytes)
+	asdu[4]=(1&0xff00)>>8 #punt mesura (2 bytes)
+	asdu[5]=0   #registre=0
+	asdu[6]=192 #Elem. Info.: Totalizadores de energías (Agrup: V / Dir. Obj.: 192)
+	asdu[7]=193 #Elem. Info.: Potencias activas (Agrup: V / Dir. Obj.: 193)
+	asdu[8]=194 #Contiene los valores instantáneos de las tensiones y corrientes, referidos a valores secundarios..
+	return bytearray(asdu)
 def creaASDU190(registre,objecte,data_inici,data_final):
 	'''
 		A190:"LEER BLOQUES DE TOTALES INTEGRADOS OPERACIONALES REPUESTOS PERIÓDICAMENTE POR INTERVALO DE TIEMPO Y DIRECCIÓN",
-		la resposta és un A140
-		és germà del A189
+		la resposta és un A140. És germà del A189
 
-		registre = 11(curva carga) o 21(resumen diario)
-		objecte = (9,10,11)
-			"La dirección de objeto selecciona la obtención de bloques de puntos de medida genéricos con reservas (9), 
-				bloques de puntos de medida genéricos sin reservas (10) 
-				o bloques de puntos de medida de consumo sin reservas (11)"
-
-		data_inici = bytearray (tipus a)
-		data_final = bytearray (tipus a)
-
+		Estructura:
 		 17-12           11        10-6         5-1
 		+---------------+---------+------------+------------+
 		| IUD (6 bytes) | objecte | data inici | data final |
 		+---------------+---------+------------+------------+
+
+		* registre = 11(curva carga) o 21(resumen diario)
+		* objecte = (9,10,11)
+				La dirección de objeto selecciona la obtención de:
+					9: bloques de puntos de medida genéricos con reservas 
+					10: bloques de puntos de medida genéricos sin reservas 
+					11: bloques de puntos de medida de consumo sin reservas"
+
+		data_inici = bytearray (tipus a)
+		data_final = bytearray (tipus a)
 	'''
 	asdu=[None]*17
 	asdu[0]=190 #idt identificador de tipo
@@ -38,22 +66,25 @@ def creaASDU190(registre,objecte,data_inici,data_final):
 	asdu[2]=6   #cdt: causa=activación (6)
 	asdu[3]=(1&0x00ff)    #punt mesura (2 bytes)
 	asdu[4]=(1&0xff00)>>8 #punt mesura (2 bytes)
-	asdu[5]=registre #exemple:: 11: Totales integrados con período de integración 1 (curva de carga)
+	asdu[5]=registre
 	asdu[6]=objecte
 	asdu[7:12]=data_inici
 	asdu[12:17]=data_final
 	return bytearray(asdu)
 def creaASDU123(registre,integrat_inici,integrat_final,data_inici,data_final):
 	'''
-		direccio_inici = byte
-		direccio_final = byte
+		A123:"LEER TOTALES INTEGRADOS OPERACIONALES REPUESTOS PERIÓDICAMENTE POR INTERVALO DE TIEMPO Y RANGO DE DIRECCIONES",
+
+		registre = byte. 11:curva de carga, 21: resumen diario
+		integrat_inici = byte. l'interessant es l'integrat 1.
+		integrat_final = byte
 		data_inici = bytearray
 		data_final = bytearray
 
-		18 bytes
-		+---------------+-------------------------------+
-		| IUD (6 bytes) | objecte informacio (12 bytes) |
-		+---------------+-------------------------------+
+		 18-13           12               11               10-6         5-1 
+		+---------------+----------------+----------------+------------+------------+
+		| IUD (6 bytes) | integrat inici | integrat final | data inici | data final |
+		+---------------+----------------+----------------+------------+------------+
 	'''
 	asdu=[None]*18
 	asdu[0]=123 #idt identificador de tipo
@@ -69,15 +100,17 @@ def creaASDU123(registre,integrat_inici,integrat_final,data_inici,data_final):
 	return bytearray(asdu)
 def creaASDU122(registre,integrat_inici,integrat_final,data_inici,data_final):
 	'''
-		direccio_inici = byte
-		direccio_final = byte
-		data_inici = bytearray
-		data_final = bytearray
+		122:"LEER TOTALES INTEGRADOS OPERACIONALES POR INTERVALO DE TIEMPO Y RANGO DE DIRECCIONES",
 
-		18 bytes
-		+---------------+-------------------------------+
-		| IUD (6 bytes) | objecte informacio (12 bytes) |
-		+---------------+-------------------------------+
+		 18-13           12               11               10-6         5-1 
+		+---------------+----------------+----------------+------------+------------+
+		| IUD (6 bytes) | integrat inici | integrat final | data inici | data final |
+		+---------------+----------------+----------------+------------+------------+
+
+		integrat inici: byte (l'interessant és l'1)
+		integrat final: byte
+		data inici: etiqueta temps tipus a (5 bytes)
+		data final: etiqueta temps tipus a (5 bytes)
 	'''
 	asdu=[None]*18
 	asdu[0]=122 #idt identificador de tipo
@@ -94,12 +127,14 @@ def creaASDU122(registre,integrat_inici,integrat_final,data_inici,data_final):
 def creaASDU134(data_inici,data_final):
 	'''
 		A134: LEER INFORMACIÓN DE TARIFICACIÓN (VALORES MEMORIZADOS)
-		és una petició dels valors de la tarifa. 
-		la resposta és un A136
-		16 bytes
+		És una petició dels valors de la tarifa.  la resposta és un A136
+
+		 16 bytes
 		+---------------+----------------------+----------------------+
 		| IUD (6 bytes) | data inici (5 bytes) | data final (5 bytes) |
 		+---------------+----------------------+----------------------+
+		
+		data inici i data final són etiquetes de temps tipus a (5 bytes)
 	'''
 	asdu=[None]*16
 	asdu[0]=134 #idt identificador de tipo
@@ -114,9 +149,9 @@ def creaASDU134(data_inici,data_final):
 def creaASDU183(clau):
 	'''
 		A183: INICIAR SESIÓN Y ENVIAR CLAVE DE ACCESO
-		A183 és una petició d'inici de sessió
+		És una petició
 
-		10 bytes
+		 10 bytes
 		+---------------+----------------+
 		| IUD (6 bytes) | clau (4 bytes) |
 		+---------------+----------------+
@@ -135,7 +170,7 @@ def creaASDU183(clau):
 	return bytearray(asdu)
 def creaASDU187():
 	'''
-		REQUEST de finalitzar sessió
+		A187: Finalitzar sessió (request)
 		ASDU buit, només té el camp IUD (6 bytes)
 	'''
 	asdu=[None]*6
@@ -174,7 +209,7 @@ def creaTemps(diames,mes,year,hora,minut):
 		RES2      = (etiqueta[4] & 0b10000000) == 128
 	'''
 	trama=[None]*5
-	trama[0] = minut + 128 # IV=1
+	trama[0] = minut
 	trama[1] = hora
 	trama[2] = diames
 	trama[3] = mes
@@ -182,12 +217,12 @@ def creaTemps(diames,mes,year,hora,minut):
 	return bytearray(trama)
 def creaTramaFix(control,direccio):
 	trama=[None]*6
-	trama[0]=0x10     #inici
-	trama[1]=control  #byte control [RES,PRM,FCB,FCV,FUN]
+	trama[0]=0x10 #inici            1   1   1   1   4   (bits)
+	trama[1]=control #byte control [RES,PRM,FCB,FCV,FUN]
 	trama[2]=direccio & 0xff
 	trama[3]=(direccio & 0xff00)>>8
-	trama[4]=(trama[1]+trama[2]+trama[3])%256
-	trama[5]=0x16
+	trama[4]=(trama[1]+trama[2]+trama[3])%256 #checksum
+	trama[5]=0x16 #fi
 	return bytearray(trama)
 	''' tests trames fixes
 		trama=creaTramaFix(0b01001001,1) #solicitud d'estat d'enllaç
@@ -214,11 +249,11 @@ def creaTramaVar(control,direccio,asdu):
 	trama[2]=3+len(asdu)
 	return bytearray(trama)
 
-'''tests
-trama=creaTramaFix(0x49,1)
-trama=creaTramaVar(0x73,1,creaASDU122(21,1,2,creaTemps(25,1,16,6,5),creaTemps(25,1,16,8,5)))
-trama=creaTramaVar(0x73,1,creaASDU134(creaTemps(25,1,14,0,0),creaTemps(26,1,14,0,0)))
-trama=creaTramaVar(0x73,1,creaASDU183(12345678))
-trama=creaTramaVar(0x53,1,creaASDU187())
-Pro.processa(trama)
-'''
+'''tests'''
+import processa as Pro
+#trama=creaTramaFix(0x49,1)
+#trama=creaTramaVar(0x73,1,creaASDU122(21,1,2,creaTemps(25,1,16,6,5),creaTemps(25,1,16,8,5)))
+#trama=creaTramaVar(0x73,1,creaASDU134(creaTemps(25,1,14,0,0),creaTemps(26,1,14,0,0)))
+#trama=creaTramaVar(0x73,1,creaASDU183(12345678))
+#trama=creaTramaVar(0x53,1,creaASDU187())
+#Pro.processa(trama)

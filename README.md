@@ -2,9 +2,14 @@
 
 DOCUMENTACIÓ ICRA – TARIFES – OPTIC
 
+Autors: Lluis Bosch (lbosch@icra.cat) & Felix Hill (fhill@icra.cat)
+
+Aquest paquet inclou:
+ * Intèrpret de trames del Protocol IEC 60870-5-102
+
 Tenim una Raspberry Pi connectada a un comptador Actaris SL761 amb un sensor òptic (port serial)
 
-El protocol implementat es el "iec 870-5-102"
+El protocol implementat es el "iec 60870-5-102"
 
 Abstracció, idea global:
 
@@ -29,13 +34,6 @@ Abstracció, idea global:
 		|     COMPTADOR     |
 		+-------------------+
 
-L'arxiu processa.py crea un xml que llavors es pot interpretar. 
-
-Per indentar un arxiu xml de resultat:
-
-```
-  xmllint --format arxiu.xml
-```
 
 ASDUS implementats (peticions): 122, 134, 183
 
@@ -56,19 +54,18 @@ Dades de la connexió serial:
 	ser.dsrdtr=False
 	ser.timeout=1 
 
-En un futur hi haurà TCP, 'script "server/tcp_serial_redirect.py" al raspberry:
+En un futur es podria configurar un servidor TCP, 'script "server/tcp_serial_redirect.py" al raspberry:
 
 ```
 python tcp_serial_redirect.py --parity E -P 3333 /dev/ttyUSB0 9600
 ```
 
-En desenvolupament
+EN DESENVOLUPAMENT
 
 Referències:
 
 * http://www.ree.es/sites/default/files/01_ACTIVIDADES/Documentos/Documentacion-Simel/protoc_RMCM10042002.pdf
 * http://www.aperca.org/temppdf/Articulo%20Contadores.pdf
-* https://github.com/Ebolon/iec104
 
 Pendent:
 
@@ -95,6 +92,13 @@ def flipFCB(trama):
 
 	return trama
 ``` 
+L'arxiu processa.py crea un xml que llavors es pot interpretar. 
 
-Exemple GIF
+Per indentar un arxiu xml de resultat:
+
+```
+	xmllint --format arxiu.xml
+```
+
+Exemple GIF (creat amb ffmpeg)
 ![](https://raw.githubusercontent.com/holalluis/icra-tarifes-optic/master/gif/serialProva.gif)

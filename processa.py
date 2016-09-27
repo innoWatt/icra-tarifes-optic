@@ -1,58 +1,69 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 '''
-	Intèrpret Protocol IEC 60870-5-102
-	Autor: Lluis Bosch (lbosch@icra.cat) & Felix Hill (fhill@icra.cat)
+	Intèrpret de trames del Protocol IEC 60870-5-102
 
 	Mòdul per traduir a nivell llegible missatges (peticions i respostes)
 	Testejat amb un comptador Actaris SL762B
 
+	El missatge que s'ha de passar ha de ser de la forma
+	bytestring, com per exemple: ('\x10\x49\x01\x00\x4a\x16')
+
 	Exemple de com fer servir:
-		import processa as Pro
-		Pro.processa('\x10\x49\x01\x00\x4a\x16')
 
-	Bibliografia: #TODO
+	processa(trama)
+	processa('\x10\x49\x01\x00\x4a\x16')
 
-	Els missatge provenen de la comanda serial.readlines()
-	normalment sera un array de tamany 1 però pot ser més llarg
-	
-	S'ha fet servir la classe "bytearray"
+	Dins de la funció es tradueix el bytestring a la classe "bytearray"
 
 	Estructura global:
 
-		* Processa missatge
-			* trama fixe
-				* camp control
-			* trama variable
-				* camp control
-				* asdu
-					* iud
-					* objectes
+	* Processa missatge
+		* trama fixe
+			* camp control
+		* trama variable
+			* camp control
+			* asdu
+				* iud
+				* objectes
 '''
+
 def processa(missatge):
 	'''
-		missatge: byte string com ara: '\x10\x49\x01\x00\x4a\x16', s'ha de passar a bytearray
+		Analitza la trama i crea un format llegible, semblant a HTML, com ara:
+			<missatge>
+				<control>
+					[...]
+				</control>
+				<asdu>
+					[...]
+				</asdu>
+			</missatge>
+
+		missatge: bytestring com ara: '\x10\x49\x01\x00\x4a\x16'
 	'''
-	global buf #disponible a totes les funcions per agafar bits d'altres camps
+	global buf #global perquè altres funcions agafen bits d'altres camps
+
+	'''transformar a bytearray'''
 	buf=bytearray(missatge)
 
 	'''comptar numero de bytes del buffer'''
 	n=len(buf) 
 
 	'''comprova trama buida'''
-	if n==0: raise RuntimeError("TRAMA BUIDA")
+	if n==0: quit("TRAMA BUIDA")
 
-	print("<missatge>\n  "+str(n)+" bytes:"),
 
 	'''mostra tots els bytes del missatge'''
+	print("<missatge>\n  "+str(n)+" bytes:"),
 	for i in range(n): print hex(buf[i])[2:4], 
 	print('')
 	
 	'''primer pas: descobrir si la trama es fixa o variable, mirant bytes d'inici (0x10 ò 0x68) i final (0x16)'''
 	if(buf[0]==0x10 and buf[n-1]==0x16):
-		processaTramaFixa(buf)
+		processaTramaFixa(buf) #trama fixa (6 bytes)
 	elif(buf[0]==0x68 and buf[n-1]==0x16):
-		processaTramaVariable(buf)
+		processaTramaVariable(buf) #trama variable
 	else:
 		raise RuntimeError('Tipus de trama desconegut')
 
@@ -60,30 +71,30 @@ def processa(missatge):
 	print('</missatge>\n')
 	detectaError(buf)
 
-'''processa una trama de longitud fixa (sempre són 6 bytes)'''
+'''Processa una trama de longitud fixa (sempre són 6 bytes)'''
 def processaTramaFixa(buf):
 	''' 
 		buf: objecte bytearray
 
-		estructura:
-				6        5      4   3      2        1
+		estructura (6 bytes):
+
+		  6       5         4-3     2          1
 		+-------+---------+-------+----------+----+
 		| inici | control | direc | checksum | fi |
 		+-------+---------+-------+----------+----+
 	'''
 	n=len(buf)
 
-	'''comprovacions'''
-	if(n!=6): raise RuntimeError('La trama no te longitud 6')
-
+	'''comprova longitud i bytes inicials'''
+	if(n!=6): 
+		raise RuntimeError('La trama no te longitud 6')
 	if(buf[0]!=0x10 and buf[n-1]!=0x16): 
 		raise RuntimeError('Bytes inici (0x10) i final (0x16) erronis')
 
-	'''comprova checksum'''
-	checksum = (buf[1]+buf[2]+buf[3])%256
+	'''calcula checksum'''
+	checksum=(buf[1]+buf[2]+buf[3])%256
 	if(checksum==buf[4]):    
-		#print("  Checksum correcte ("+hex(buf[4])+"="+str(buf[4])+")")
-		pass
+		pass #print("  Checksum correcte ("+hex(buf[4])+"="+str(buf[4])+")")
 	else:
 		raise RuntimeError('Checksum incorrecte: '+str(checksum)+'=/='+str(buf[4]))
 
@@ -98,68 +109,69 @@ def processaTramaFixa(buf):
 	print("  Direcció comptador: "+hex(direccio)+"="+str(direccio))
 	'''fi'''
 
-'''processa una trama de longitud variable'''
+'''Processa una trama de longitud variable'''
 def processaTramaVariable(buf):
 	'''
 		buf: objecte bytearray
 
-		estructura:
+		estructura en bytes:
 
-           1          1      1           1          1        2     ?        1            1
+      1              1      1      1              1         2     var    1          1
 		+--------------+------+------+--------------+---------+-----+------+----------+--------------+
 		| Inici (0x68) | Long | Long | Inici (0x68) | Control | A A | ASDU | Checksum | Final (0x16) |
 		+--------------+------+------+--------------+---------+-----+------+----------+--------------+
 	'''
+
+	'''longitud'''
 	n=len(buf)
 
 	'''comprova bytes inici i final'''
 	if(buf[0]!=0x68 and buf[3]!=0x68 and buf[n-1]!=0x16): 
 		raise RuntimeError("Bytes inici i final erronis")
 
-	'''comprova que els dos bytes de longitud (Long) siguin iguals'''
+	'''comprova que els dos bytes de longitud duplicats (Long) siguin iguals'''
 	if(buf[1]!=buf[2]): 
 		raise RuntimeError("Els bytes de longitud (2n i 3r) son diferents")
 
-	'''comprova checksum (penúltim byte)'''
+	'''calcula i comprova checksum (penúltim byte)'''
 	checksum=0
 	for i in range(4,n-2): 
 		checksum += buf[i]
 	checksum%=256
 	if checksum == buf[n-2]: 
-		#print("  Checksum correcte ("+hex(buf[n-2])+"="+str(buf[n-2])+")")
-		pass
+		pass #print("  Checksum correcte ("+hex(buf[n-2])+"="+str(buf[n-2])+")")
 	else:
 		raise RuntimeError("Checksum incorrecte: "+str(buf[n-2])+"=/="+str(checksum))
 
 	#print("  Trama VARIABLE [inici (0x68), L, L, inici (0x68), control, direccio, asdu, checksum, final (0x16)]")
 
-	'''byte de control'''
+	'''processa byte de control'''
 	control=buf[4]
 	campControl(control)
 
 	'''2 bytes de direccio: byte swap i suma'ls'''
-	direccio = buf[6] << 8 | buf[5]
+	direccio = (buf[6]<<8) | buf[5]
 	print("  Direcció comptador: "+str(hex(direccio))+" = "+str(direccio))
 
-	'''camp ASDU: del byte 6 fins al el n-3'''
+	'''camp ASDU: del byte 6 fins al el n-3 inclòs'''
 	ASDU=buf[7:n-2]
 
 	'''Comprova si el byte de longitud coincideix amb la suma de control+direccio+asdu'''
 	if(buf[1]==1+2+len(ASDU)):
-		#print("  Camp longitud correcte ("+hex(buf[1])+"="+str(buf[1])+"="+str(len(ASDU))+"+3)")
-		pass
+		pass #print("  Camp longitud correcte ("+hex(buf[1])+"="+str(buf[1])+"="+str(len(ASDU))+"+3)")
 	else:
-		raise RuntimeError("Camp Longitud ("+str(buf[1])+") incorrecte")
+		raise RuntimeError("Byte Longitud ("+str(buf[1])+") incorrecte")
 	
-	'''fi'''
+	'''només queda processar camp asdu'''
 	campASDU(ASDU)
+	'''fi'''
 
 '''processa el byte Control'''
 def campControl(control):
 	'''
 		control: un byte (0-255) = 8 bits
 
-		estructura:
+		estructura (bits):
 			 8     7     6     5     4   3   2   1
 		+-----+-----+-----+-----+-----------------+
 		| RES | PRM | FCB | FCV |       FUN       | (si PRM=1)
@@ -185,8 +197,7 @@ def campControl(control):
 
 	'''mostra informacio de cada part'''
 	'''bit res (reserva) sempre ha de ser 0'''
-	if(res): 
-		raise RuntimeError("Bit de reserva no és 0")
+	if(res): raise RuntimeError("Bit de reserva no és 0")
 
 	'''bit prm: direccio del missatge'''
 	if(prm): print("    bit PRM=1: Aquest missatge es una PETICIO");
@@ -199,12 +210,11 @@ def campControl(control):
 		else:
 			#print("    ACD=0: No es permet l'acces a les dades de classe 1 (ignorat per reglament REE)")
 			pass
-
 		if(dfc): 
-			raise RuntimeError("    DFC = 1. ELS MISSATGES FUTURS CAUSARAN DATA OVERFLOW")
+			raise RuntimeError("    bit DFC=1. ELS MISSATGES FUTURS CAUSARAN DATA OVERFLOW")
 
 	'''Mostra el text de la funcio "fun" (4 bits) '''
-	print("    bits FUN: "+bin(fun)),
+	print("    FUN: "+bin(fun)),
 	if(prm):
 		print({
 			 0:"[Funció 0] [Petició: RESET DEL LINK REMOT]",
@@ -220,26 +230,24 @@ def campControl(control):
 			 9:"\033[31m[Funció 9] [Resposta: NACK. DADES DEMANADES NO DISPONIBLES]\033[0m",
 			11:"[Funció 11] [Resposta: ESTAT DEL LINK O DEMANDA D'ACCÉS]",
 		}[fun])
-		'''Si hi ha un NACK para-ho tot ?'''
-		#if fun in [1,9]: raise Exception("NACK: Petició no acceptada")
 
 	'''fi'''
 	print("  </control>")
 
-'''camp iud dins del camp ASDU'''
+'''Procssa Camp iud (data unit identifier): 6 primers bytes del camp ASDU'''
 def campIUD(iud):
 	'''
 		iud: bytearray (6 bytes)
 
-			 6     5     4     3   2   1
+		  6     5     4     3   2   1
 		+-----+-----+-----+-------------+
 		| IDT | QEV | CDT |    DCO      |
 		+-----+-----+-----+-------------+
 
-		idt = identificador de tipus
-		qev = qualificador d'estructura variable
-		cdt = causa de transmissió
-		dco = direcció comuna (punt mesura + direccio registre)
+		idt = identificador de tipus. IMPORTANT. Marca el tipus d'ASDU
+		qev = qualificador d'estructura variable [SQ,N]
+		cdt = causa de transmissió [T,PN,Causa]
+		dco = direcció comuna [punt mesura, direccio registre]
 	'''
 	n=len(iud)
 	print("    <iud> [idt,qev,cdt,dco]")
@@ -303,13 +311,14 @@ def campIUD(iud):
 	}
 	print("      idt: "+hex(idt)+": [\033[33mASDU "+str(idt)+": "+dicc_idt[idt]+"\033[0m]")
 
-	'''byte qualificador estructura variable. Estructura: [SQ (1 bit), N (7 bits)]'''
 	'''
-		bit SQ:
-			0 : Para cada objeto de información se indica su dirección
-			1 : Se indica la dirección exclusivamente al primer objeto, siendo las direcciones del resto consecutivas.
+		QEV: byte qualificador estructura variable. Estructura: [SQ (1 bit), N (7 bits)]
 
-		N (7 bits): quantitat d'objectes d'informació dins del camp ASDU
+			* bit SQ:
+				0 : Para cada objeto de información se indica su dirección
+				1 : Se indica la dirección exclusivamente al primer objeto, siendo las direcciones del resto consecutivas.
+
+			* N (7 bits): quantitat d'objectes d'informació dins del camp ASDU
 	'''
 	SQ = qev & 0b10000000 == 128
 	N  = qev & 0b01111111
@@ -340,7 +349,6 @@ def campIUD(iud):
 	'''direccio comuna (DCO) (3 bytes). Estructura : [punt_mesura (2 bytes), registre (1 byte) ]'''
 	dco_punt_mesura = (dco[1]<<8) | dco[0]
 	dco_registre    = dco[2]
-
 	dicc_registre = {
 			  0 :"Dirección de defecto",
 				1 :"Record address of integrated totals from the start of the accounting period",
@@ -372,45 +380,45 @@ def campIUD(iud):
 	}
 	print("      dco->punt mesura: "+hex(dco_punt_mesura)+"="+str(dco_punt_mesura)+" (2 bytes)")
 	print("      dco->registre: \033[33m"+hex(dco_registre)   +"="+str(dco_registre)   +": "+dicc_registre[dco_registre]+"\033[0m")
-      
+
 	'''fi'''
 	print("    </iud>")
 
-'''processa camp ASDU, dins trama variable'''
+'''Processa camp ASDU, dins trama variable'''
 def campASDU(ASDU):
 	'''
 		ASDU: objecte bytearray
 
-          6 bytes                     length var               5 bytes ò 7 bytes
-		+----------------------------+---------------------+-----------------------------------+
-		|  id unitat de dades (iud)  | information objects | etiqueta de temps comu (opcional) |
-		+-----+-----+-----+----------+---------------------+-----------------------------------+
+     6 bytes                       variable              5 bytes (a) ò 7 bytes (b)
+		+-----------------------------+---------------------+-----------------------------------+
+		|  data unit identifier (iud) | information objects | etiqueta de temps comu (opcional) |
+		+-----------------------------+---------------------+-----------------------------------+
 
 	'''
 	n=len(ASDU)
+
+	'''mostra els bytes'''
 	print("  <asdu>\n    "+str(n)+" bytes:"),
 	for i in range(len(ASDU)): print hex(ASDU[i])[2:4], 
 	print('')
 
-	'''camp iud (identificador unitat de dades)'''
+	'''processa camp iud'''
 	iud=ASDU[0:6]
 	campIUD(iud)
 
-	'''camp objectes d'informació'''
+	'''processa camp objectes d'informació'''
 	objsInfo=ASDU[6:n]
 	campObjsInfo(objsInfo)
-
-	'''etiqueta de temps comú'''
-	# NO ESTÀ CLAR TODO
 
 	'''fi'''
 	print("  </asdu>")
 
+'''Processa camp objectes d'informació, dins camp ASDU'''
 def campObjsInfo(objsInfo):
 	'''
 		objsInfo: objecte bytearray
 
-		estructura:
+		estructura (bytes):
 
 			1 byte        variable        5 ò 7 bytes
 		+----------+---------------+-------------------+
@@ -418,9 +426,9 @@ def campObjsInfo(objsInfo):
 		+----------+---------------+-------------------+
 	'''
 	n=len(objsInfo)
-	print("    <objectesInfo>\n      "+str(n)+" bytes:"),
 
 	'''mostra tots els bytes'''
+	print("    <objectesInfo>\n      "+str(n)+" bytes:"),
 	for i in range(n): print hex(objsInfo[i])[2:4],
 	print('')
 
@@ -436,12 +444,12 @@ def campObjsInfo(objsInfo):
 		print("      N="+str(N)+" objectes d'informació")
 
 	'''
-	Comprova idt
+	Comprova idt (tipus asdu)
 	idt=[     ASDU      ][IUD][idt] '''
 	idt=buf[7:len(buf)-2][0:6][ 0 ]
 
 	'''Troba si porta o no etiqueta comuna de temps'''
-	'''Si saps l'ASDU, perfecte, sinó, endevina-ho'''
+	'''Si saps l'ASDU, perfecte, sinó, intenta endevina-ho'''
 	if(idt in [8,11]):
 		print("      Amb Etiqueta comuna de temps tipus a (5 bytes)")
 		longitud_etiqueta=5
@@ -469,26 +477,27 @@ def campObjsInfo(objsInfo):
 		inici = 0+i*(longitud_camp) #posicio del byte inicial
 		final = longitud_camp*(i+1) #posició del byte final
 		objInfo=objsInfo[inici:final] #talla l'array
+		'''processa camp i'''
 		campObjInfo(objInfo)
 
-	'''processa etiqueta si n'hi ha'''
+	'''processa etiqueta comuna si n'hi ha'''
 	if(longitud_etiqueta):
 		etiquetaTemps=objsInfo[n-longitud_etiqueta:n]
 		campEtiquetaTemps(etiquetaTemps)
 
-	print("    </objectesInfo>")
 	'''fi'''
+	print("    </objectesInfo>")
 
-'''mostra un sol element d'informació'''
+'''Processa un sol objecte d'informació, dins camp Objectes Informació'''
 def campObjInfo(objInfo):
 	'''
 		objInfo: classe bytearray
 		estructura: MOLT VARIABLE DEPENENT DE L'ASDU TRIAT (mirar byte idt)
 	'''
 	n=len(objInfo)
-	print("      <objecte>")
 
 	'''mostra tots els bytes del camp'''
+	print("      <objecte>")
 	print("        "+str(n)+" bytes: "),
 	for i in range(n): print hex(objInfo[i])[2:4],
 	print("")
@@ -681,12 +690,12 @@ def campObjInfo(objInfo):
 		print("        Request de FINALITZAR SESSIÓ")
 	else:
 		print("      </objecte>")
-		raise RuntimeError("[!] ERROR: ASDU "+str(idt)+" ENCARA NO IMPLEMENTAT")
+		quit("[!] ERROR: ASDU "+str(idt)+" ENCARA NO IMPLEMENTAT")
 
 	'''fi'''
 	print("      </objecte>")
 
-'''processa una sola etiqueta de temps'''
+'''Processa una sola etiqueta de temps'''
 def campEtiquetaTemps(etiqueta):
 	'''
 		etiqueta: classe bytearray
@@ -721,22 +730,19 @@ def campEtiquetaTemps(etiqueta):
     | minut | TIS | IV | hora |  RES1 | SU | diames | diasemana |  mes  |  ETI  |  PTI  |  year | RES2 |
     +-------+-----+----+------+-------+----+--------+-----------+-------+-------+-------+-------+------+
 	'''
-	minut     = (etiqueta[0] & 0b00111111)
-	TIS       = (etiqueta[0] & 0b01000000) == 64
-	IV        = (etiqueta[0] & 0b10000000) == 128
-	hora      = (etiqueta[1] & 0b00011111)
-	RES1      = (etiqueta[1] & 0b01100000) >> 5
-	SU        = (etiqueta[1] & 0b10000000) == 128
-	diames    = (etiqueta[2] & 0b00011111)
-	diasemana = (etiqueta[2] & 0b11100000) >> 5
-	mes       = (etiqueta[3] & 0b00001111)
-	ETI       = (etiqueta[3] & 0b00110000) >> 4
-	PTI       = (etiqueta[3] & 0b11000000) >> 6
-	year      = (etiqueta[4] & 0b01111111)
-	RES2      = (etiqueta[4] & 0b10000000) == 128
-
-	'''completa l'any'''
-	year+=2000
+	minut     = (etiqueta[0]&0b00111111)
+	TIS       = (etiqueta[0]&0b01000000) == 64
+	IV        = (etiqueta[0]&0b10000000) == 128
+	hora      = (etiqueta[1]&0b00011111)
+	RES1      = (etiqueta[1]&0b01100000) >> 5
+	SU        = (etiqueta[1]&0b10000000) == 128
+	diames    = (etiqueta[2]&0b00011111)
+	diasemana = (etiqueta[2]&0b11100000) >> 5
+	mes       = (etiqueta[3]&0b00001111)
+	ETI       = (etiqueta[3]&0b00110000) >> 4
+	PTI       = (etiqueta[3]&0b11000000) >> 6
+	year      = (etiqueta[4]&0b01111111)
+	RES2      = (etiqueta[4]&0b10000000) == 128
 
 	'''detall estètic: posa un zero davant el número de: diames, mes, hora i minuts més petits de 10'''
 	if(diames<10): diames="0"+str(diames)
@@ -744,18 +750,16 @@ def campEtiquetaTemps(etiqueta):
 	if(hora  <10): hora="0"+str(hora)
 	if(minut <10): minut="0"+str(minut)
 
+	print("== Data: "+str(diames)+"/"+str(mes)+"/"+str(2000+year)+" "+str(hora)+":"+str(minut))
 	'''fi'''
-	print("== Data: "+str(diames)+"/"+str(mes)+"/"+str(year)+" "+str(hora)+":"+str(minut))
 
+'''Processa un total integrat (dins alguns tipus d'asdu)'''
 def campTotalIntegrat(totalIntegrat,nom):
-
-	'''4 bytes següents per energia (kwh o kvarh): cal byte swap i suma'''
+	'''4 bytes primers per energia (kwh o kvarh): cal byte swap i suma'''
 	nrg       = totalIntegrat[0:4]
 	nrg_valor = nrg[3] << 32 | nrg[2] << 16 | nrg[1] << 8 | nrg[0]
-
 	print("        "+nom+": "+str(nrg_valor)+" (kWh o kVARh)")
-
-	'''byte cualificador: 8 bits '''
+	'''últim byte: cualificador 8 bits '''
 	cualificador = totalIntegrat[4]
 	IV = cualificador & 0b10000000 == 128 # la lectura es vàlida?
 	CA = cualificador & 0b01000000 == 64  # el comptador està sincronitzat?
@@ -765,14 +769,28 @@ def campTotalIntegrat(totalIntegrat,nom):
 	IN = cualificador & 0b00000100 == 4   # hi ha hagut intrusió durant el període?
 	AL = cualificador & 0b00000010 == 2   # període incomplet per fallo d'alimentació durant el període?
 	RES= cualificador & 0b00000001 == 1   # bit de reserva
-	print("        byte Cualificador: "+hex(cualificador)+": [IV="+str(IV)+",CA="+str(CA)+",CY="+str(CY)+",VH="+str(VH)+",MP="+str(MP)+",IN="+str(IN)+",AL="+str(AL)+",RES="+str(RES)+"]")
 
+	'''majúscules si bit=1, minúscules si bit=0'''
+	IV  = 'IV'  if IV  else 'iv'
+	CA  = 'CA'  if CA  else 'ca'
+	CY  = 'CY'  if CY  else 'cy'
+	VH  = 'VH'  if VH  else 'vh'
+	MP  = 'MP'  if MP  else 'mp'
+	IN  = 'IN'  if IN  else 'in'
+	AL  = 'AL'  if AL  else 'al'
+	RES = 'RES' if RES else 'res'
+
+	'''fi'''
+	print("        byte Cualificador: "+hex(cualificador)+": ["+str(IV)+","+str(CA)+","+str(CY)+","+str(VH)+","+str(MP)+","+str(IN)+","+str(AL)+","+str(RES)+"]")
+
+'''Detecta errors emesos pel comptador. Es fa al final de processar tota la trama'''
 def detectaError(trama):
 	'''
-		Detectar errors dins el protocol. Sempre analitzem respostes, no peticions
-		trama: bytearray
+		Detectar errors dins el protocol. Serveix per respostes, no per peticions
+		trama: objecte bytearray
 	'''
 	n=len(trama)
+
 	#comprova els bytes inicials
 	if trama[0]==0x10:
 		tipus="fix"
@@ -780,17 +798,20 @@ def detectaError(trama):
 	elif trama[0]==0x68 and trama[3]==0x68:
 		tipus="var"
 		control=trama[4]
-	else:
-		raise RuntimeError("bytes inicials incorrectes")
+	else: raise RuntimeError("bytes inicials incorrectes")
+
 	#agafa el byte control, i mira si PRM=1. Ha de ser 0 (només mirem respostes)
 	prm=control & 0b01000000 == 64
 	if prm: return
+
 	#agafa el byte control, i mira els 4 primers bits
 	fun=control & 0b00001111
 	if   fun==1: quit("NACK. COMANDA NO ACCEPTADA")
 	elif fun==9: quit("NACK. DADES DEMANADES NO DISPONIBLES")
+
 	#si la trama és fixa ja estem
 	if tipus=="fix": return
+
 	#si la trama és variable hem de mirar la causa de transmissió
 	cdt=trama[7:n-2][0:6][2] & 0b00111111
 	if   cdt==10: quit("FINALIZACIÓN DE LA ACTIVACIÓN")
@@ -800,10 +821,13 @@ def detectaError(trama):
 	elif cdt==16: quit("ESPECIFICACION DE DIRECCION EN EL ASDU ENVIADO POR CM DESCONOCIDA")
 	elif cdt==17: quit("OBJETO DE INFORMACION NO DISPONIBLE")
 	elif cdt==18: quit("PERIODO DE INTEGRACION NO DISPONIBLE")
+	'''fi'''
 
 #==#==#==#==#==#==#==#==#==#==#==#
 #     T R A M E S   T E S T      #
 #==#==#==#==#==#==#==#==#==#==#==#
+'''trama buida'''
+#processa('')
 '''trames fixes: ok'''
 #processa('\x10\x49\x01\x00\x4a\x16')
 #processa('\x10\x0b\x01\x00\x0c\x16') 
@@ -820,4 +844,4 @@ def detectaError(trama):
 #processa("\x68\x20\x20\x68\x08\x01\x00\x08\x03\x05\x01\x00\x15\x01\xe3\xc4\x7a\x00\x00\x02\x00\x00\x00\x00\x00\x03\xef\x9c\x08\x00\x00\x00\x80\xd5\x05\x10\x53\x16")
 #processa("\x68\x15\x15\x68\x08\x01\x00\x7a\x01\x07\x01\x00\x15\x01\x02\x80\x00\x14\x05\x10\x80\x00\x17\x05\x10\xf9\x16")
 '''resposta real ASDU 140 TODO'''
-processa("\x68\xef\xef\x68\x08\x01\x00\x8c\x05\x05\x01\x00\x0b\x09\x49\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x16\x00\x00\x00\x00\x00\x00\x00\x00\x80\x00\x00\x00\x00\x80\x00\x81\xd5\x05\x10\x09\x50\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x80\x00\x00\x00\x00\x80\x00\x82\xd5\x05\x10\x09\x4b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14\x00\x00\x00\x00\x00\x00\x00\x00\x80\x00\x00\x00\x00\x80\x00\x83\xd5\x05\x10\x09\x4b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x00\x80\x00\x00\x00\x00\x80\x00\x84\xd5\x05\x10\x09\x4d\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x00\x80\x00\x00\x00\x00\x80\x00\x85\xd5\x05\x10\xd8\x16")
+#processa("\x68\xef\xef\x68\x08\x01\x00\x8c\x05\x05\x01\x00\x0b\x09\x49\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x16\x00\x00\x00\x00\x00\x00\x00\x00\x80\x00\x00\x00\x00\x80\x00\x81\xd5\x05\x10\x09\x50\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x80\x00\x00\x00\x00\x80\x00\x82\xd5\x05\x10\x09\x4b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14\x00\x00\x00\x00\x00\x00\x00\x00\x80\x00\x00\x00\x00\x80\x00\x83\xd5\x05\x10\x09\x4b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x00\x80\x00\x00\x00\x00\x80\x00\x84\xd5\x05\x10\x09\x4d\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x00\x80\x00\x00\x00\x00\x80\x00\x85\xd5\x05\x10\xd8\x16")

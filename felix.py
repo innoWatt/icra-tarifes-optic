@@ -56,8 +56,8 @@ def llegirInstantanis(self):
 
 	##====(37 i 38) ::Read Instantaneous Values ccc=115, ASDU=162, causa=5, dir.reg=0, obj inf=192,193,194
 	#REQUEST
-	vT = dict(tipus='v',ccc=0x73,idASDU = 0xA2,SQN=3,causa=5,direccioPM=0,direccioRegistre=0,objecteInformacio1=[0xC0,0XC1,0xC2,0x62,0x16])
-	vT = self.envia(vT, 0, 0)
+	vT=dict(tipus='v',ccc=0x73,idASDU = 0xA2,SQN=3,causa=5,direccioPM=0,direccioRegistre=0,objecteInformacio1=[0xC0,0XC1,0xC2,0x62,0x16])
+	vT=self.envia(vT)
 
 	#Objecte 1 (192) - A
 	temp = objInfo[1] + (objInfo[2] << 8) + (objInfo[3] << 16) + (((0b11111100 & objInfo[4]) >> 2) << 24)
