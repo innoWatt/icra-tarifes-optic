@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 '''
-	CREAR I ENVIAR TRAMES AL COMPTADOR a nivel usuari
+	CREAR I ENVIAR TRAMES AL COMPTADOR a nivell usuari
 
 	Sintaxi pregunta:
 		trama=creaTrama([opcions])
@@ -11,6 +11,9 @@
 
 	Coses trobades fent proves:
 		===FUNCIONA
+			ASDU 162 amb objecte 192 (només necessita un request data després del 1r request)
+			ASDU 162 amb objecte 193 (idem)
+			ASDU 162 amb objecte 194 (idem)
 			ASDU 190 amb registre 11 dóna corba de potència (per blocs, respon ASDU 140)
 			ASDU 123 amb registre 11 dóna corba de potència (respon ASDU 11)
 			ASDU 122 amb registre 21 dóna els resums diaris (respon ASDU 8)
@@ -31,14 +34,14 @@ P.pregunta(C.creaTramaFix(0b01011011,d)) #request class 2 data
 
 #prova asdu 162: instantanis amb objecte 192
 P.pregunta(C.creaTramaVar(0b01110011,d,C.creaASDU162(192)))
-while(1): #vés consultant fins que doni senyal de fi
-	P.pregunta(C.creaTramaFix(0b01011011,d)) #request data
-	P.pregunta(C.creaTramaFix(0b01111011,d)) #request data (flip FCB)
+P.pregunta(C.creaTramaFix(0b01011011,d)) #request data
 
 quit('-S-T-O-P-')
 
-#prova asdu 190 amb registre 11 (Curva de carga)
-'''La dirección de objeto selecciona la obtención de bloques de puntos de medida genéricos con reservas (9), bloques de puntos de medida genéricos sin reservas (10) o bloques de puntos de medida de consumo sin reservas (11).'''
+#prova asdu 190 amb registre 11 (Curva de carga) i direccio 9,10,11
+'''La dirección de objeto selecciona la obtención de bloques de puntos de medida genéricos con reservas (9), 
+bloques de puntos de medida genéricos sin reservas (10) 
+o bloques de puntos de medida de consumo sin reservas (11).'''
 P.pregunta(C.creaTramaVar(0b01110011,d,C.creaASDU190(11,10,C.creaTemps(21,5,16,0,0),C.creaTemps(22,5,16,0,0))))
 while(1): #vés consultant fins que doni senyal de fi
 	P.pregunta(C.creaTramaFix(0b01011011,d)) #request data
