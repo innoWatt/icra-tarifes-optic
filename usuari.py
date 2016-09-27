@@ -29,14 +29,13 @@ d=1; psw=1 #direccio comptador=1 i password=1
 P.pregunta(C.creaTramaVar(0b01110011,d,C.creaASDU183(psw))) #request user data & send password
 P.pregunta(C.creaTramaFix(0b01011011,d)) #request class 2 data
 
-#prova asdu 162: instantanis
-P.pregunta(C.creaTramaVar(0b01110011,d,C.creaASDU162()))
+#prova asdu 162: instantanis amb objecte 192
+P.pregunta(C.creaTramaVar(0b01110011,d,C.creaASDU162(192)))
 while(1): #vés consultant fins que doni senyal de fi
 	P.pregunta(C.creaTramaFix(0b01011011,d)) #request data
 	P.pregunta(C.creaTramaFix(0b01111011,d)) #request data (flip FCB)
 
-''' S T O P'''
-quit('final script')
+quit('-S-T-O-P-')
 
 #prova asdu 190 amb registre 11 (Curva de carga)
 '''La dirección de objeto selecciona la obtención de bloques de puntos de medida genéricos con reservas (9), bloques de puntos de medida genéricos sin reservas (10) o bloques de puntos de medida de consumo sin reservas (11).'''

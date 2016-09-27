@@ -456,7 +456,7 @@ def campObjsInfo(objsInfo):
 	if(idt in [8,11]):
 		print("      Amb Etiqueta comuna de temps tipus a (5 bytes)")
 		longitud_etiqueta=5
-	elif(idt in [122,183,134,139,140]):
+	elif(idt in [122,183,134,139,140,162,163]):
 		#print("      Sense etiqueta comuna de temps")
 		longitud_etiqueta=0
 	else:
@@ -577,18 +577,50 @@ def campObjInfo(objInfo):
 		etiquetaFinal = objInfo[6:11]
 		campEtiquetaTemps(etiquetaFinal)
 	elif(idt in [163]):
-		'''direccion objecto'''
+		'''resposta a A162 (valors instantanis)'''
 		n=len(objInfo)
 		direccio=objInfo[0]
-		print("        Direcció objecte: "+str(objecte))
+		print("        Direcció objecte: "+str(direccio))
 		if direccio==192:
-			print("29 bytes")
+			energia = objInfo[1] + (objInfo[2] << 8) + (objInfo[3] << 16) + (((0b11111100 & objInfo[4]) >> 2) << 24)
+			print("        KWh Activa Importació: "+str(energia))
+			energia = objInfo[5] + (objInfo[6] << 8) + (objInfo[7] << 16) + (((0b11111100 & objInfo[8]) >> 2) << 24)
+			print("        KWh Activa Exportació: "+str(energia))
+			energia = objInfo[9] + (objInfo[10] << 8) + (objInfo[11] << 16) + (((0b11111100 & objInfo[12]) >> 2) << 24)
+			print("        KVArh Reactiva Q1: "+str(energia))
+			energia = objInfo[13] + (objInfo[14] << 8) + (objInfo[15] << 16) + (((0b11111100 & objInfo[16]) >> 2) << 24)
+			print("        KVArh Reactiva Q2: "+str(energia))
+			energia = objInfo[17] + (objInfo[18] << 8) + (objInfo[19] << 16) + (((0b11111100 & objInfo[20]) >> 2) << 24)
+			print("        KVArh Reactiva Q3: "+str(energia))
+			energia = objInfo[21] + (objInfo[22] << 8) + (objInfo[23] << 16) + (((0b11111100 & objInfo[24]) >> 2) << 24)
+			print("        KVArh Reactiva Q4: "+str(energia))
 		elif direccio==193:
-			print("37 bytes")
+			energia = objInfo[1] + (objInfo[2] << 8) + (objInfo[3] << 16)
+			print("        Potencia Activa Total KW: "+str(energia))
+			energia = objInfo[4] + (objInfo[5] << 8) + (objInfo[6] << 16)
+			print("        Potencia Reactiva Total KVAr: "+str(energia))
+			energia = objInfo[7] + (((0b11000000 & objInfo[8]) >> 6) << 8)
+			print("        Factor de potencia total (en milessimes): "+str(energia))
+			energia = objInfo[9] + (objInfo[10] << 8) + (objInfo[11] << 16)
+			print("        P.Activa Fase I KW: "+str(energia))
+			print("        P.Reactiva Fase I KVAr: "+ (objInfo[12] + (objInfo[13] << 8) + (objInfo[14] << 16)))
+			print("        Factor de Potencia (cos phi). Fase I (en milessimes): "+ (objInfo[15] + (((0b11000000 & objInfo[16]) >> 6) << 8)))
+			print("        P.Activa Fase II KW: "+ (objInfo[17] + (objInfo[18] << 8) + (objInfo[19] << 16)))
+			print("        P.Reactiva Fase II KVAr: "+ (objInfo[20] + (objInfo[21] << 8) + (objInfo[22] << 16)))
+			print("        Factor de Potencia (cos phi). Fase II (en milessimes): "+ (objInfo[23] + (((0b11000000 & objInfo[24]) >> 6) << 8)))
+			print("        P.Activa Fase III KW: "+ (objInfo[25] + (objInfo[26] << 8) + (objInfo[27] << 16)))
+			print("        P.Reactiva Fase III KVAr: "+ (objInfo[28] + (objInfo[29] << 8) + (objInfo[30] << 16)))
+			print("        Factor de Potencia (cos phi). Fase III (en milessimes): "+ (objInfo[31] + (((0b11000000 & objInfo[32]) >> 6) << 8)))
 		elif direccio==194:
-			print("26 bytes")
+			print("        Intensitat Fase I (decimes de A): "+ (objInfo[1] + (objInfo[2] << 8) + (objInfo[3] << 16)))
+			print("        Tensio Fase I (decimes de V): "+ (objInfo[4] + (objInfo[5] << 8) + (objInfo[6] << 16) + (((0b11111100 & objInfo[7]) >> 2) << 24)))
+			print("        Intensitat Fase II (decimes de A): "+ (objInfo[8] + (objInfo[9] << 8) + (objInfo[10] << 16)))
+			print("        Tensio Fase II (decimes de V): "+ (objInfo[11] + (objInfo[12] << 8) + (objInfo[13] << 16) + (((0b11111100 & objInfo[14]) >> 2) << 24)))
+			print("        Intensitat Fase III (decimes de A): "+ (objInfo[15] + (objInfo[16] << 8) + (objInfo[17] << 16)))
+			print("        Tensio Fase III (decimes de V): "+ (objInfo[18] + (objInfo[19] << 8) + (objInfo[20] << 16) + (((0b11111100 & objInfo[21]) >> 2) << 24)))
 		else:
-			print("Direcció desconeguda")
+			quit("Direcció desconeguda")
+		campEtiquetaTemps(objInfo[n-5:n])
 	elif(idt in [139,140]):
 		'''direccion objecto'''
 		n=len(objInfo)
@@ -860,4 +892,4 @@ def detectaError(trama):
 #processa("\x68\x20\x20\x68\x08\x01\x00\x08\x03\x05\x01\x00\x15\x01\xe3\xc4\x7a\x00\x00\x02\x00\x00\x00\x00\x00\x03\xef\x9c\x08\x00\x00\x00\x80\xd5\x05\x10\x53\x16")
 #processa("\x68\x15\x15\x68\x08\x01\x00\x7a\x01\x07\x01\x00\x15\x01\x02\x80\x00\x14\x05\x10\x80\x00\x17\x05\x10\xf9\x16")
 '''resposta real ASDU 140 TODO'''
-#processa("\x68\xef\xef\x68\x08\x01\x00\x8c\x05\x05\x01\x00\x0b\x09\x49\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x16\x00\x00\x00\x00\x00\x00\x00\x00\x80\x00\x00\x00\x00\x80\x00\x81\xd5\x05\x10\x09\x50\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12\x00\x00\x00\x00\x00\x00\x00\x00\x80\x00\x00\x00\x00\x80\x00\x82\xd5\x05\x10\x09\x4b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14\x00\x00\x00\x00\x00\x00\x00\x00\x80\x00\x00\x00\x00\x80\x00\x83\xd5\x05\x10\x09\x4b\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x00\x80\x00\x00\x00\x00\x80\x00\x84\xd5\x05\x10\x09\x4d\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x00\x80\x00\x00\x00\x00\x80\x00\x85\xd5\x05\x10\xd8\x16")
+processa("\x68\x27\x27\x68\x08\x01\x00\xa3\x01\x05\x01\x00\x00\xc0\x2f\xcc\x7f\x00\x00\x00\x00\x00\x6f\xa0\x08\x00\x00\x00\x00\x00\x00\x00\x00\x00\xe6\x95\x15\x00\x1d\x80\x7c\x09\x10\xc6\x16")
