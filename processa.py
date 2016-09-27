@@ -871,9 +871,8 @@ def detectaError(trama):
 	elif cdt==18: quit("PERIODO DE INTEGRACION NO DISPONIBLE")
 	'''fi'''
 
-#==#==#==#==#==#==#==#==#==#==#==#
-#     T R A M E S   T E S T      #
-#==#==#==#==#==#==#==#==#==#==#==#
+'''tests'''
+
 '''trama buida'''
 #processa('')
 '''trames fixes: ok'''
