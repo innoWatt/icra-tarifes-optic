@@ -542,10 +542,10 @@ def campObjInfo(objInfo):
 		'''A8 és una resposta a la petició A122'''
 		'''A11 és una resposta a A123'''
 		'''byte 1: direccio de l'objecte'''
-		direccio=totalIntegrat[0]
+		direccio=objInfo[0]
 		print("        Registre "+hex(direccio)+"="+str(direccio)+": "+dicc_direccio[direccio])
 		'''bytes 2 a 6: total integrat'''
-		campTotalIntegrat(objInfo[1:6],'Energia')
+		campTotalIntegrat(objInfo[1:6],'Energia (kWh)')
 	elif(idt in [122,123]):
 		'''A122 i A123: LEER TOTALES INTEGRADOS OPERACIONALES POR INTERVALO DE TIEMPO Y RANGO DE DIRECCIONES'''
 		'''A122 és una petició de 4 elements: direcció inicial, direcció final, data inicial, data final'''
