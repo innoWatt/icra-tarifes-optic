@@ -298,6 +298,7 @@ def campIUD(iud):
 		147:"LECTURAS DE DÍAS FESTIVOS.",
 		148:"ENVÍO DE DÍAS FESTIVOS",
 		162:"LLEGIR INSTANTANIS",
+		163:"INSTANTANIS (RESPOSTA)",
 		180:"MODIFICACIÓN DE DÍAS FESTIVOS",
 		181:"LEER FIRMA ELECTRÓNICA DE LOS TOTALES INTEGRADOS POR INTERVALO DE TIEMPO (LECTURAS) CAMBIAR FECHA Y HORA",
 		182:"LEER LOS PARÁMETROS DEL PUNTO DE MEDIDA",
@@ -323,6 +324,8 @@ def campIUD(iud):
 	SQ = qev & 0b10000000 == 128
 	N  = qev & 0b01111111
 	print("      qev: "+hex(qev)+" = "+bin(qev)+": [SQ="+str(SQ)+", N="+str(N)+" objectes d'informació]")
+
+	if(SQ):quit("SQ encara no implementat (estructura variable)")
 
 	'''causa de transmissio (cdt) (1 byte). Estructura: [T (1 bit), PN (1 bit), causa (6 bits)]'''
 	T     = cdt & 0b10000000 == 128 # bit "test" val 1 si la trama es un test
@@ -573,6 +576,19 @@ def campObjInfo(objInfo):
 		'''etiqueta de temps final'''
 		etiquetaFinal = objInfo[6:11]
 		campEtiquetaTemps(etiquetaFinal)
+	elif(idt in [163]):
+		'''direccion objecto'''
+		n=len(objInfo)
+		direccio=objInfo[0]
+		print("        Direcció objecte: "+str(objecte))
+		if direccio==192:
+			print("29 bytes")
+		elif direccio==193:
+			print("37 bytes")
+		elif direccio==194:
+			print("26 bytes")
+		else:
+			print("Direcció desconeguda")
 	elif(idt in [139,140]):
 		'''direccion objecto'''
 		n=len(objInfo)

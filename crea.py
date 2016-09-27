@@ -19,25 +19,24 @@
 '''
 
 '''TIPUS ASDU implementats'''
-def creaASDU162():
+def creaASDU162(direccio):
 	'''
-		A162: Read Instantaneous Values causa=5, obj inf=192,193,194
-		#REQUEST
-		vT = direccioRegistre=0,objecteInformacio1=[0xC0,0XC1,0xC2,0x62,0x16])
-		vT = self.envia(vT, 0, 0)
-
+		A162: Read Instantaneous Values, obj inf=192,193,194
 		la resposta és un A163
 	'''
-	asdu=[None]*9
+	asdu=[None]*7
 	asdu[0]=162 #idt identificador de tipo
-	asdu[1]=3   #qev: byte [SQ=0 (1 bit), N=3 (7 bits)] 00000011
+	asdu[1]=1   #qev: byte [SQ=0 (1 bit), N=1 (7 bits)] 00000001
 	asdu[2]=5   #cdt: causa=petición (5)
 	asdu[3]=(1&0x00ff)    #punt mesura (2 bytes)
 	asdu[4]=(1&0xff00)>>8 #punt mesura (2 bytes)
 	asdu[5]=0   #registre=0
-	asdu[6]=192 #Elem. Info.: Totalizadores de energías (Agrup: V / Dir. Obj.: 192)
-	asdu[7]=193 #Elem. Info.: Potencias activas (Agrup: V / Dir. Obj.: 193)
-	asdu[8]=194 #Contiene los valores instantáneos de las tensiones y corrientes, referidos a valores secundarios..
+	asdu[6]=direccio 
+	'''
+		direccio 192: Elem. Info.: Totalizadores de energías (Agrup: V / Dir. Obj.: 192)
+		direccio 193: Elem. Info.: Potencias activas (Agrup: V / Dir. Obj.: 193)
+		direccio 194: Contiene los valores instantáneos de las tensiones y corrientes, referidos a valores secundarios..
+	'''
 	return bytearray(asdu)
 def creaASDU190(registre,objecte,data_inici,data_final):
 	'''
