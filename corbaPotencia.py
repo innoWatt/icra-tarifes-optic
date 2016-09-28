@@ -34,6 +34,4 @@ while True:
 
 #mostra les trames
 for i in range(len(respostes)):
-	trama=respostes[i]
-	print([trama])
 	E.extreuPotencia(trama)

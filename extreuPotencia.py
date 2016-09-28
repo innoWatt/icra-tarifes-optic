@@ -5,7 +5,6 @@
 	a partir d'un ASDU 11 amb registre 11 (corba de potència)
 	ASDU 11 és una resposta al ASDU 123
 '''
-
 def extreuPotencia(trama):
 	'''
 		Extreu la data i la potencia d'una trama de bytes tipus ASDU 11 (resposta del comptador)
@@ -57,6 +56,12 @@ def extreuPotencia(trama):
 	PTI       = (etiqueta[3]&0b11000000) >> 6
 	year      = (etiqueta[4]&0b01111111) + 2000 # any va de 0-99
 	RES2      = (etiqueta[4]&0b10000000) == 128
+
+	'''detall estètic: posa un zero davant el número de: diames, mes, hora i minuts més petits de 10'''
+	if(diames<10): diames="0"+str(diames)
+	if(mes   <10): mes="0"+str(mes)
+	if(hora  <10): hora="0"+str(hora)
+	if(minut <10): minut="0"+str(minut)
 
 	#final: mostra info i retorna dades d'interés
 	print(str(diames)+"/"+str(mes)+"/"+str(year)+" "+str(hora)+":"+str(minut)+" "+str(nrg_valor)+" kW")
