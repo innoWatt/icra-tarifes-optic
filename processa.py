@@ -51,7 +51,7 @@ def processa(missatge):
 	n=len(buf) 
 
 	'''comprova trama buida'''
-	if n==0: quit("TRAMA BUIDA")
+	if n==0: raise RuntimeError("TRAMA BUIDA")
 
 
 	'''mostra tots els bytes del missatge'''
@@ -325,7 +325,7 @@ def campIUD(iud):
 	N  = qev & 0b01111111
 	print("      qev: "+hex(qev)+" = "+bin(qev)+": [SQ="+str(SQ)+", N="+str(N)+" objectes d'informació]")
 
-	if(SQ):quit("SQ encara no implementat (estructura variable)")
+	if(SQ):raise RuntimeError("SQ encara no implementat (estructura variable)")
 
 	'''causa de transmissio (cdt) (1 byte). Estructura: [T (1 bit), PN (1 bit), causa (6 bits)]'''
 	T     = cdt & 0b10000000 == 128 # bit "test" val 1 si la trama es un test
@@ -619,7 +619,7 @@ def campObjInfo(objInfo):
 			print("        Intensitat Fase III (decimes de A): "+ str(objInfo[15] + (objInfo[16] << 8) + (objInfo[17] << 16)))
 			print("        Tensio Fase III (decimes de V): "+ str(objInfo[18] + (objInfo[19] << 8) + (objInfo[20] << 16) + (((0b11111100 & objInfo[21]) >> 2) << 24)))
 		else:
-			quit("Direcció desconeguda")
+			raise RuntimeError("Direcció desconeguda")
 		campEtiquetaTemps(objInfo[n-5:n])
 	elif(idt in [139,140]):
 		'''direccion objecto'''
@@ -738,7 +738,7 @@ def campObjInfo(objInfo):
 		print("        Request de FINALITZAR SESSIÓ")
 	else:
 		print("      </objecte>")
-		quit("[!] ERROR: ASDU "+str(idt)+" ENCARA NO IMPLEMENTAT")
+		raise RuntimeError("[!] ERROR: ASDU "+str(idt)+" ENCARA NO IMPLEMENTAT")
 
 	'''fi'''
 	print("      </objecte>")
@@ -854,21 +854,21 @@ def detectaError(trama):
 
 	#agafa el byte control, i mira els 4 primers bits
 	fun=control & 0b00001111
-	if   fun==1: quit("NACK. COMANDA NO ACCEPTADA")
-	elif fun==9: quit("NACK. DADES DEMANADES NO DISPONIBLES")
+	if   fun==1: raise RuntimeError("NACK. COMANDA NO ACCEPTADA")
+	elif fun==9: raise RuntimeError("NACK. DADES DEMANADES NO DISPONIBLES")
 
 	#si la trama és fixa ja estem
 	if tipus=="fix": return
 
 	#si la trama és variable hem de mirar la causa de transmissió
 	cdt=trama[7:n-2][0:6][2] & 0b00111111
-	if   cdt==10: quit("FINALIZACIÓN DE LA ACTIVACIÓN")
-	elif cdt==13: quit("REGISTRO DE DATOS SOLICITADO NO DISPONIBLE")
-	elif cdt==14: quit("TIPO DE ASDU SOLICITADO NO DISPONIBLE")
-	elif cdt==15: quit("NÚMERO DE REGISTRO EN EL ASDU ENVIADO POR CM DESCONOCIDO")
-	elif cdt==16: quit("ESPECIFICACION DE DIRECCION EN EL ASDU ENVIADO POR CM DESCONOCIDA")
-	elif cdt==17: quit("OBJETO DE INFORMACION NO DISPONIBLE")
-	elif cdt==18: quit("PERIODO DE INTEGRACION NO DISPONIBLE")
+	if   cdt==10: raise RuntimeError("FINALIZACIÓN DE LA ACTIVACIÓN")
+	elif cdt==13: raise RuntimeError("REGISTRO DE DATOS SOLICITADO NO DISPONIBLE")
+	elif cdt==14: raise RuntimeError("TIPO DE ASDU SOLICITADO NO DISPONIBLE")
+	elif cdt==15: raise RuntimeError("NÚMERO DE REGISTRO EN EL ASDU ENVIADO POR CM DESCONOCIDO")
+	elif cdt==16: raise RuntimeError("ESPECIFICACION DE DIRECCION EN EL ASDU ENVIADO POR CM DESCONOCIDA")
+	elif cdt==17: raise RuntimeError("OBJETO DE INFORMACION NO DISPONIBLE")
+	elif cdt==18: raise RuntimeError("PERIODO DE INTEGRACION NO DISPONIBLE")
 	'''fi'''
 
 '''tests'''

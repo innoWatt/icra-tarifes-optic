@@ -22,11 +22,18 @@ respostes=[]
 P.pregunta(C.creaTramaVar(0b01110011,d,C.creaASDU183(psw))) #request data & send password
 P.pregunta(C.creaTramaFix(0b01011011,d)) #request data
 
+'''ASDU 123'''
 #pregunta: trama variable amb asdu 123, registre 11, objecte 1 (inicial i final)
 P.pregunta(C.creaTramaVar(0b01110011,d,C.creaASDU123(11,1,1,C.creaTemps(diaInici,mesInici,anyInici,0,0),C.creaTemps(diaFinal,mesFinal,anyFinal,0,0))))
-while(1): #vés consultant fins que doni senyal de fi
-	respostes.append(P.pregunta(C.creaTramaFix(0b01011011,d))) #request data
-	respostes.append(P.pregunta(C.creaTramaFix(0b01111011,d))) #request data (flip FCB)
+
+#vés consultant fins que doni senyal de fi
+while True: 
+	try:                                          
+		respostes.append(P.pregunta(C.creaTramaFix(0b01011011,d))) #request data
+		respostes.append(P.pregunta(C.creaTramaFix(0b01111011,d))) #flip FCB bit
+	except:
+		break
+'''FI CONSULTA'''
 
 #mostra les trames
 for i in len(respostes):
