@@ -9,7 +9,7 @@ import pregunta as P
 
 '''CONFIGURACIÓ'''
 #direccio comptador i password
-di=1; psw=1 
+d=1; psw=1 
 #data inici i final
 diaInici=1; mesInici=7; anyInici=16
 diaFinal=2; mesFinal=7; anyFinal=16
@@ -19,8 +19,8 @@ diaFinal=2; mesFinal=7; anyFinal=16
 respostes=[] 
 
 '''Inicia sessió al comptador ('pregunta.py')'''
-P.pregunta(C.creaTramaVar(0b01110011,di,C.creaASDU183(psw))) #request data & send password
-P.pregunta(C.creaTramaFix(0b01011011,di)) #request data
+P.pregunta(C.creaTramaVar(0b01110011,d,C.creaASDU183(psw))) #request data & send password
+P.pregunta(C.creaTramaFix(0b01011011,d)) #request data
 
 #pregunta: trama variable amb asdu 123, registre 11, objecte 1 (inicial i final)
 P.pregunta(C.creaTramaVar(0b01110011,d,C.creaASDU123(11,1,1,C.creaTemps(diaInici,mesInici,anyInici,0,0),C.creaTemps(diaFinal,mesFinal,anyFinal,0,0))))
