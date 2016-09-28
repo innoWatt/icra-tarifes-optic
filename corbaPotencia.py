@@ -32,6 +32,8 @@ while True:
 	except: break
 '''FI REQUEST'''
 
+print(" CORBA POTÈNCIA ")
+print("================")
 #mostra les trames
 for i in range(len(respostes)):
 	trama=respostes[i]
