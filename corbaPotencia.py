@@ -12,7 +12,7 @@ import pregunta as P
 d=1; psw=1 
 #data inici i final
 diaInici=1; mesInici=7; anyInici=16
-diaFinal=2; mesFinal=7; anyFinal=16
+diaFinal=3; mesFinal=7; anyFinal=16
 '''FI CONFIGURACIÓ'''
 
 #omplirem aquest array amb les respostes que s'hauran de processar
@@ -36,5 +36,5 @@ while True:
 '''FI CONSULTA'''
 
 #mostra les trames
-for i in len(respostes):
-	print(respostes[i])
+for i in range(len(respostes)):
+	print([respostes[i]])
