@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 '''
+	Script per fer proves
 	CREAR I ENVIAR TRAMES AL COMPTADOR a nivell usuari
 
-	Sintaxi pregunta:
+	Al fitxer "pregunta.py" es fa la connexió serial
+
+	Sintaxi d'una consulta:
 		trama=creaTrama([opcions])
 		pregunta(trama)
 

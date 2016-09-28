@@ -5,11 +5,13 @@ DOCUMENTACIÓ ICRA – TARIFES – OPTIC
 Autors: Lluis Bosch (lbosch@icra.cat) & Felix Hill (fhill@icra.cat)
 
 Aquest paquet inclou:
- * Intèrpret de trames del Protocol IEC 60870-5-102
 
-Tenim una Raspberry Pi connectada a un comptador Actaris SL761 amb un sensor òptic (port serial)
+ * Intèrpret de trames del Protocol IEC 60870-5-102 (processa.py)
+ * Un creador de trames de bytes (crea.py)
+ * Una funció per enviar trames i llegir la resposta (pregunta.py)
+ * Una funció per extreure corba horària de potència (extreuPotencia.py)
 
-El protocol implementat es el "iec 60870-5-102"
+Tenim una Raspberry Pi connectada a un comptador Actaris SL762B amb un sensor òptic (port serial)
 
 Abstracció, idea global:
 
@@ -35,7 +37,7 @@ Abstracció, idea global:
 		+-------------------+
 
 
-ASDUS implementats (peticions): 122, 134, 183
+ASDUS implementats (peticions): 122, 123, 134, 183, 190
 
 Dades Rasbperry: pi, icrahopetayea 
 
@@ -54,12 +56,6 @@ Dades de la connexió serial:
 	ser.dsrdtr=False
 	ser.timeout=1 
 
-En un futur es podria configurar un servidor TCP, 'script "server/tcp_serial_redirect.py" al raspberry:
-
-```
-python tcp_serial_redirect.py --parity E -P 3333 /dev/ttyUSB0 9600
-```
-
 EN DESENVOLUPAMENT
 
 Referències:
@@ -69,32 +65,7 @@ Referències:
 
 Pendent:
 
-```
-def flipFCB(trama):
-	'''1. Trama fixa o variable'''
-
-	'''
-		2. Agafa el byte control
-		estructura:
-			8     7     6     5     4   3   2   1
-		+-----+-----+-----+-----+-----------------+
-		| RES | PRM | FCB | FCV |       FUN       | (si PRM=1)
-		+-----+-----+-----+-----+-----------------+
-	'''
-
-	''' 3. Gira el bit 6 amb un XOR (^) '''
-
-	'''
-		control ^ 0b00100000
-	'''
-
-	'''actualitza el checksum'''
-
-	return trama
-``` 
-L'arxiu processa.py crea un xml que llavors es pot interpretar. 
-
-Per indentar un arxiu xml de resultat:
+L'arxiu processa.py crea un xml que llavors es podria obrir amb un format més bonic. Per indentar un arxiu xml de resultat:
 
 ```
 	xmllint --format arxiu.xml
