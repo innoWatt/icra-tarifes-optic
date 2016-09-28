@@ -9,7 +9,7 @@ import extreuPotencia as E
 d=1; psw=1 
 #data inici i final
 diaInici=1; mesInici=7; anyInici=16
-diaFinal=3; mesFinal=7; anyFinal=16
+diaFinal=2; mesFinal=7; anyFinal=16
 '''FI CONFIGURACIÓ'''
 
 #aquest array tindrà les trames que s'hauran de processar
@@ -34,4 +34,5 @@ while True:
 
 #mostra les trames
 for i in range(len(respostes)):
+	trama=respostes[i]
 	E.extreuPotencia(trama)
