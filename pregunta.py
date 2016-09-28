@@ -27,13 +27,13 @@ ser.timeout=1
 ser.open()
 
 '''envia la trama per la connexió serial que acabem de crear (ser)'''
-comptador=0 #comptador pel nombre de preguntes i respostes
+compta=0 #compta el nombre de preguntes i respostes
 def pregunta(trama):
-	comptador++
-	print("\033[32mPREGUNTA "+str(comptador)+"\033[0m")
+	compta+=1
+	print("\033[32mPREGUNTA "+str(compta)+"\033[0m")
 	#Pro.processa(trama) #mostra la pregunta feta
 	ser.write(bytearray(trama))
-	print("\033[32mRESPOSTA "+str(comptador)+"\033[0m")
+	print("\033[32mRESPOSTA "+str(compta)+"\033[0m")
 	resposta=ser.readlines() #resposta és una "list"
 	respostaTotal="" #ajunta tots els elements en un sol string
 	for i in range(len(resposta)): 
