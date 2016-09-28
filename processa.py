@@ -53,7 +53,6 @@ def processa(missatge):
 	'''comprova trama buida'''
 	if n==0: raise RuntimeError("TRAMA BUIDA")
 
-
 	'''mostra tots els bytes del missatge'''
 	print("<missatge>\n  "+str(n)+" bytes:"),
 	for i in range(n): print hex(buf[i])[2:4], 
