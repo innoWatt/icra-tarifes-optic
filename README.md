@@ -1,3 +1,7 @@
+# TO DO
+	* Aconseguir mini portatil o tablet per integrar tot el sistema
+	* Programar lectura única d'energia
+
 # icra-tarifes-optic
 
 DOCUMENTACIÓ ICRA – TARIFES – OPTIC
