@@ -15,7 +15,9 @@ Aquest paquet inclou:
  * Una funció per enviar trames i llegir la resposta (pregunta.py)
  * Una funció per extreure corba horària de potència d'un ASDU 11 (processaA11.py)
 
-Raspberry Pi connectada a un comptador Actaris SL762B, al sensor òptic (port serial)
+Raspberry Pi connectada a un comptador Actaris SL762B, al sensor òptic (port serial, RS232)
+
+https://www1.itron.com/local/Spain%20Product%20Portfolio/ACE%20SL7000%20tipo%20762-EL-ES-04.14.pdf
 
 Idea general:
 
@@ -43,11 +45,11 @@ Idea general:
 ASDUS implementats (peticions): 122, 123, 134, 183, 190
 
 #Inici 
-El primer que s'ha de fer és editar l'arxiu `config.py` per posar les dades de connexió i tot seguit testejar si el Raspberry envia trames correctament:
+El primer que s'ha de fer és editar l'arxiu `config.py`, i després testejar si el Raspberry envia trames correctament:
 
 ```
-vim config.py
-python tests/serialProva.py
+	vim config.py
+	python tests/serialProva.py
 ```
 ![](https://raw.githubusercontent.com/holalluis/icra-tarifes-optic/master/gif/serialProva.gif)
 
@@ -84,7 +86,7 @@ Exemple de resposta script usuari_extreuPotencia.py:
 Dades Rasbperry ICRA:
 
 * ip local:   192.168.103.63
-* ip externa: 84.89.61.64:22
+* ip externa: 84.89.61.64
 
 Dades de la connexió serial --> `config.py`:
 
