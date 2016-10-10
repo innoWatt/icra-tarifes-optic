@@ -1,7 +1,6 @@
 ## TO DO
-	* Programar lectura única d'energia
+	* Programar script usuari_lectura per lectura única d'energia (una sola data)
 	* Crear un serial virtual per quan no hi ha serial "virtual.py"
-	* Crear un sol arxiu de configuració per tot que inclogui dades serial, direcció i punt de mesura
 
 # Manual EN DESENVOLUPAMENT
 
@@ -86,7 +85,7 @@ Exemple de resposta script extreuCorbaPotencia.py:
 	01/07/2016 10:00 175 kW
 	01/07/2016 14:00 153 kW
 
-Dades Rasbperry:
+Dades Rasbperry ICRA:
 
 * ip local:   192.168.103.63
 * ip externa: 84.89.61.64:22
