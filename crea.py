@@ -17,6 +17,11 @@
 	Utilitats:
 		creaTemps: crea etiquetes de temps (5 bytes)
 '''
+import config
+
+#punt mesura i direccio
+pm = config.puntMesura # 2 bytes maxim
+di = config.direccio   # 2 bytes maxim
 
 '''TIPUS ASDU implementats'''
 def creaASDU162(direccio):
@@ -28,8 +33,8 @@ def creaASDU162(direccio):
 	asdu[0]=162 #idt identificador de tipo
 	asdu[1]=1   #qev: byte [SQ=0 (1 bit), N=1 (7 bits)] 00000001
 	asdu[2]=5   #cdt: causa=petición (5)
-	asdu[3]=(1&0x00ff)    #punt mesura (2 bytes)
-	asdu[4]=(1&0xff00)>>8 #punt mesura (2 bytes)
+	asdu[3]=(pm&0x00ff)    #punt mesura (2 bytes)
+	asdu[4]=(pm&0xff00)>>8 #punt mesura (2 bytes)
 	asdu[5]=0   #registre=0
 	asdu[6]=direccio 
 	'''
@@ -63,8 +68,8 @@ def creaASDU190(registre,objecte,data_inici,data_final):
 	asdu[0]=190 #idt identificador de tipo
 	asdu[1]=1   #qev: byte [SQ=0 (1 bit), N=1 (7 bits)] 00000001
 	asdu[2]=6   #cdt: causa=activación (6)
-	asdu[3]=(1&0x00ff)    #punt mesura (2 bytes)
-	asdu[4]=(1&0xff00)>>8 #punt mesura (2 bytes)
+	asdu[3]=(pm&0x00ff)    #punt mesura (2 bytes)
+	asdu[4]=(pm&0xff00)>>8 #punt mesura (2 bytes)
 	asdu[5]=registre
 	asdu[6]=objecte
 	asdu[7:12]=data_inici
@@ -89,8 +94,8 @@ def creaASDU123(registre,integrat_inici,integrat_final,data_inici,data_final):
 	asdu[0]=123 #idt identificador de tipo
 	asdu[1]=1   #qev: byte [SQ=0 (1 bit), N=1 (7 bits)] 00000001
 	asdu[2]=6   #cdt: causa=activación (6)
-	asdu[3]=(1&0x00ff)    #punt mesura (2 bytes)
-	asdu[4]=(1&0xff00)>>8 #punt mesura (2 bytes)
+	asdu[3]=(pm&0x00ff)    #punt mesura (2 bytes)
+	asdu[4]=(pm&0xff00)>>8 #punt mesura (2 bytes)
 	asdu[5]=registre #exemple:: 11: Totales integrados con período de integración 1 (curva de carga)
 	asdu[6]=integrat_inici
 	asdu[7]=integrat_final
@@ -115,8 +120,8 @@ def creaASDU122(registre,integrat_inici,integrat_final,data_inici,data_final):
 	asdu[0]=122 #idt identificador de tipo
 	asdu[1]=1   #qev: byte [SQ=0 (1 bit), N=1 (7 bits)] 00000001
 	asdu[2]=6   #cdt: causa=activación (6)
-	asdu[3]=(1&0x00ff)    #punt mesura (2 bytes)
-	asdu[4]=(1&0xff00)>>8 #punt mesura (2 bytes)
+	asdu[3]=(pm&0x00ff)    #punt mesura (2 bytes)
+	asdu[4]=(pm&0xff00)>>8 #punt mesura (2 bytes)
 	asdu[5]=registre #exemple:: 11: Totales integrados con período de integración 1 (curva de carga)
 	asdu[6]=integrat_inici
 	asdu[7]=integrat_final
@@ -139,8 +144,8 @@ def creaASDU134(data_inici,data_final):
 	asdu[0]=134 #idt identificador de tipo
 	asdu[1]=1   #qev: byte [SQ=0 (1 bit), N=1 (7 bits)] 00000001
 	asdu[2]=5   #cdt: causa=peticion o solicitada (5)
-	asdu[3]=(1&0x00ff)    #punt mesura (2 bytes)
-	asdu[4]=(1&0xff00)>>8 #punt mesura (2 bytes)
+	asdu[3]=(pm&0x00ff)    #punt mesura (2 bytes)
+	asdu[4]=(pm&0xff00)>>8 #punt mesura (2 bytes)
 	asdu[5]=136 #direccio registre: 136: Información de Tarificación relativa al Contrato III
 	asdu[6:11]=data_inici
 	asdu[11:16]=data_final
@@ -159,8 +164,8 @@ def creaASDU183(clau):
 	asdu[0]=183 #idt identificador de tipo
 	asdu[1]=1   #qev: byte [SQ=0 (1 bit), N=1 (7 bits)] 00000001
 	asdu[2]=6   #cdt: causa=activación (6)
-	asdu[3]=(1&0x00ff)    #punt mesura (2 bytes)
-	asdu[4]=(1&0xff00)>>8 #punt mesura (2 bytes)
+	asdu[3]=(pm&0x00ff)    #punt mesura (2 bytes)
+	asdu[4]=(pm&0xff00)>>8 #punt mesura (2 bytes)
 	asdu[5]=0 #direccio registre: 0: cap registre
 	asdu[6]=(clau & 0x000000ff)
 	asdu[7]=(clau & 0x0000ff00)>>8
@@ -176,8 +181,8 @@ def creaASDU187():
 	asdu[0]=187 #idt identificador de tipo
 	asdu[1]=0   #qev: byte [SQ=0 (1 bit), N=0 (7 bits)]
 	asdu[2]=6   #cdt: causa=activación (6)
-	asdu[3]=(1&0x00ff)    #punt mesura (2 bytes)
-	asdu[4]=(1&0xff00)>>8 #punt mesura (2 bytes)
+	asdu[3]=(pm&0x00ff)    #punt mesura (2 bytes)
+	asdu[4]=(pm&0xff00)>>8 #punt mesura (2 bytes)
 	asdu[5]=0 #direccio registre: 0: cap registre
 	return bytearray(asdu)
 def creaTemps(diames,mes,year,hora,minut):
@@ -214,12 +219,12 @@ def creaTemps(diames,mes,year,hora,minut):
 	trama[3] = mes
 	trama[4] = year
 	return bytearray(trama)
-def creaTramaFix(control,direccio):
+def creaTramaFix(control):
 	trama=[None]*6
 	trama[0]=0x10 #inici            1   1   1   1   4   (bits)
 	trama[1]=control #byte control [RES,PRM,FCB,FCV,FUN]
-	trama[2]=direccio & 0xff
-	trama[3]=(direccio & 0xff00)>>8
+	trama[2]=(di & 0xff)
+	trama[3]=(di & 0xff00)>>8
 	trama[4]=(trama[1]+trama[2]+trama[3])%256 #checksum
 	trama[5]=0x16 #fi
 	return bytearray(trama)
@@ -229,15 +234,15 @@ def creaTramaFix(control,direccio):
 		trama=creaTramaFix(0b01000000,1) #reset d'enllaç remot
 		Pro.processa(trama)
 	'''
-def creaTramaVar(control,direccio,asdu):
+def creaTramaVar(control,asdu):
 	trama=[None]*8
 	trama[0]=0x68 #inici
 	trama[1]=0x00 #longitud
 	trama[2]=0x00 #longitud
 	trama[3]=0x68 #inici
 	trama[4]=control
-	trama[5]=direccio & 0xff
-	trama[6]=direccio & 0xff00
+	trama[5]=(di & 0xff)
+	trama[6]=(di & 0xff00)>>8
 	trama[7:7+len(asdu)]=asdu
 	checksum=0
 	for i in range(4,len(trama)): checksum+=trama[i]
@@ -248,11 +253,12 @@ def creaTramaVar(control,direccio,asdu):
 	trama[2]=3+len(asdu)
 	return bytearray(trama)
 
-'''tests'''
+'''tests
 import processa as Pro
-#trama=creaTramaFix(0x49,1)
-#trama=creaTramaVar(0x73,1,creaASDU122(21,1,2,creaTemps(25,1,16,6,5),creaTemps(25,1,16,8,5)))
-#trama=creaTramaVar(0x73,1,creaASDU134(creaTemps(25,1,14,0,0),creaTemps(26,1,14,0,0)))
-#trama=creaTramaVar(0x73,1,creaASDU183(12345678))
-#trama=creaTramaVar(0x53,1,creaASDU187())
-#Pro.processa(trama)
+trama=creaTramaFix(0x49)
+trama=creaTramaVar(0x73,creaASDU122(21,1,2,creaTemps(25,1,16,6,5),creaTemps(25,1,16,8,5)))
+trama=creaTramaVar(0x73,creaASDU134(creaTemps(25,1,14,0,0),creaTemps(26,1,14,0,0)))
+trama=creaTramaVar(0x73,creaASDU183(12345678))
+trama=creaTramaVar(0x53,creaASDU187())
+Pro.processa(trama)
+'''

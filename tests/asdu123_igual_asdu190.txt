@@ -1,4 +1,6 @@
-													DÓNA EL MATEIX RESULTAT ASDU123==ASDU190
+
+RESULTAT: DÓNA EL MATEIX fent petició amb ASDU123 que amb ASDU190
+
 ---------------------------------------------++----------------------------------------------
 Obtingut amb ASDU123, registre 11, objecte 1 || Obtingut amb ASDU190, registre 11, objecte 10
 ---------------------------------------------++----------------------------------------------
