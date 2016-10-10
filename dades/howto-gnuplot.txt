@@ -1,3 +1,0 @@
-com fer un grafic:
-
-plot "icra-20160701.txt" using 2:3 with line

@@ -2,28 +2,30 @@
 # -*- coding: utf-8 -*-
 import crea     as C
 import pregunta as P
-import extreuPotencia as E
+import processaA11 as E
 
-'''CONFIGURACIÓ'''
+''' CONFIGURACIÓ '''
 #direccio comptador i password
 d=1; psw=1 
-#data inici i final
-diaInici=1; mesInici=7; anyInici=16
-diaFinal=2; mesFinal=7; anyFinal=16
-'''FI CONFIGURACIÓ'''
+#data inici i final (dia,mes,any)
+inici=[ 1, 7,16]
+final=[ 2, 7,16]
+''' FI CONFIGURACIÓ '''
 
-#aquest array tindrà les trames que s'hauran de processar
-respostes=[] 
+#processa dates
+diaInici=inici[0]; mesInici=inici[1]; anyInici=inici[2]
+diaFinal=final[0]; mesFinal=final[1]; anyFinal=final[2]
 
-'''Inicia sessió al comptador ('pregunta.py')'''
+'''Login (asdu 183) ('pregunta.py')'''
 P.pregunta(C.creaTramaVar(0b01110011,d,C.creaASDU183(psw))) #request data & send password
 P.pregunta(C.creaTramaFix(0b01011011,d)) #request data
 
-'''REQUEST amb ASDU 123'''
+'''INICI REQUEST amb ASDU 123'''
 #pregunta: trama variable amb asdu 123, registre 11, objecte 1 (inicial i final)
 P.pregunta(C.creaTramaVar(0b01110011,d,C.creaASDU123(11,1,1,C.creaTemps(diaInici,mesInici,anyInici,0,0),C.creaTemps(diaFinal,mesFinal,anyFinal,0,0))))
 P.pregunta(C.creaTramaFix(0b01011011,d)) #request data
-
+#aquest array tindrà les trames que s'hauran de processar
+respostes=[] 
 #vés consultant fins que doni senyal de fi
 while True: 
 	try:                                          
