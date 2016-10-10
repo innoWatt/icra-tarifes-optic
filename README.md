@@ -1,10 +1,10 @@
+## Manual en desenvolupament
+
 ## TO DO
 	* Programar script usuari_lectura per lectura única d'energia (una sola data)
 	* Crear un serial virtual per quan no hi ha serial "virtual.py"
 
-# Manual EN DESENVOLUPAMENT
-
-# icra-tarifes-optic documentació
+# icra-tarifes-optic
 
 Autors: Lluis Bosch (lbosch@icra.cat) & Felix Hill (fhill@icra.cat)
 
@@ -53,7 +53,7 @@ python tests/serialProva.py
 
 Després, s'ha de crear un script com ara `usuari.py` per fer les peticions desitjades. Exemple
 
-```
+```python
 	import crea     as C
 	import pregunta as P
 
@@ -72,18 +72,14 @@ Després, s'ha de crear un script com ara `usuari.py` per fer les peticions desi
 * usuari.py
 * usuari_extreuPotencia.py
 
-Exemple de resposta script extreuCorbaPotencia.py: 
+Exemple de resposta script usuari_extreuPotencia.py: 
 
 	01/07/2016 01:00 114 kW
 	01/07/2016 02:00 113 kW
 	01/07/2016 03:00 108 kW
 	01/07/2016 04:00 110 kW
 	01/07/2016 05:00 107 kW
-	01/07/2016 06:00 110 kW
-	01/07/2016 07:00 111 kW
-	01/07/2016 09:00 139 kW
-	01/07/2016 10:00 175 kW
-	01/07/2016 14:00 153 kW
+	[...]
 
 Dades Rasbperry ICRA:
 
@@ -92,16 +88,16 @@ Dades Rasbperry ICRA:
 
 Dades de la connexió serial --> `config.py`:
 
-```
-	ser.port = "/dev/ttyUSB0"
-	ser.baudrate=9600
-	ser.bytesize=8
-	ser.parity=serial.PARITY_EVEN
-	ser.stopbits=1
-	ser.xonxoff=False
-	ser.rtscts=False
-	ser.dsrdtr=False
-	ser.timeout=1 
+```python
+	port = "/dev/ttyUSB0"
+	baudrate=9600
+	bytesize=8
+	parity=serial.PARITY_EVEN
+	stopbits=1
+	xonxoff=False
+	rtscts=False
+	dsrdtr=False
+	timeout=1 
 ```
 
 Com fer un grafic amb la comanda `gnuplot`

@@ -2,14 +2,12 @@
 # -*- coding: utf-8 -*-
 '''
 	Arxiu preparat per importar i cridar
-	NO IMPLEMENTAT ENCARA
 
-		import config as con
+	import config as con
 
-		con.direccio
-		con.password
-		[...]
-
+	con.direccio
+	con.password
+	[...]
 '''
 
 #dades comptador "crea.py"
