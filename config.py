@@ -1,13 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 '''
-	Arxiu preparat per importar i cridar
-
-	import config as con
-
-	con.direccio
-	con.password
-	[...]
+Arxiu preparat per importar i cridar
+import config as con
+con.direccio
+con.password
 '''
 
 #dades comptador "crea.py"

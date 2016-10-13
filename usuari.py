@@ -2,27 +2,23 @@
 # -*- coding: utf-8 -*-
 '''
 	Script per CREAR I ENVIAR TRAMES AL COMPTADOR a nivell usuari (fer proves)
-
 	Al fitxer "config.py" es configuren els paràmetres per la connexió serial i dades comptador
-
 	Sintaxi d'una consulta:
 		trama=creaTrama([opcions])
 		pregunta(trama)
-
 	Per crear trames, veure sintaxi a "crea.py"
-
 	Coses trobades fent proves:
-		===FUNCIONA
-			ASDU 162 amb objecte 192 (només necessita un request data després del 1r request)
-			ASDU 162 amb objecte 193 (idem)
-			ASDU 162 amb objecte 194 (idem)
-			ASDU 190 amb registre 11 dóna corba de potència (per blocs, respon ASDU 140)
-			ASDU 123 amb registre 11 dóna corba de potència (respon ASDU 11)
-			ASDU 122 amb registre 21 dóna els resums diaris (respon ASDU 8)
-		===NO FUNCIONA
-			ASDU 122 amb registre 11 no funciona
-			ASDU 115: no disponible (esborrat del codi)
-			ASDU 118: no disponible (idem)
+        ===FUNCIONA
+                ASDU 162 amb objecte 192 (només necessita un request data després del 1r request)
+                ASDU 162 amb objecte 193 (idem)
+                ASDU 162 amb objecte 194 (idem)
+                ASDU 190 amb registre 11 dóna corba de potència (per blocs, respon ASDU 140)
+                ASDU 123 amb registre 11 dóna corba de potència (respon ASDU 11)
+                ASDU 122 amb registre 21 dóna els resums diaris (respon ASDU 8)
+        ===NO FUNCIONA
+                ASDU 122 amb registre 11 no funciona
+                ASDU 115: no disponible (esborrat del codi)
+                ASDU 118: no disponible (idem)
 '''
 import crea     as C
 import pregunta as P

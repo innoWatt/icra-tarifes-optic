@@ -1,12 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+'''
+Extreure corba horària
+'''
 import crea     as C
 import pregunta as P
 import processaA11 as E
 
 #data inici i final (dia,mes,any)
-inici=[ 1, 7,16]
-final=[ 2, 7,16]
+inici=[ 1,10,16]
+final=[17,10,16]
 
 #processa dates
 diaInici=inici[0]; mesInici=inici[1]; anyInici=inici[2]
@@ -38,4 +41,3 @@ print("================")
 for i in range(len(respostes)):
 	trama=respostes[i]
 	E.extreuPotencia(trama)
-
