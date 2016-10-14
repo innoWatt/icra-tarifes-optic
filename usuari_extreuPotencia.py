@@ -9,7 +9,7 @@ import processaA11 as E
 
 #data inici i final (dia,mes,any)
 inici=[1, 9,16]
-final=[1,10,16]
+final=[2,9,16]
 
 #processa dates
 diaInici=inici[0]; mesInici=inici[1]; anyInici=inici[2]
