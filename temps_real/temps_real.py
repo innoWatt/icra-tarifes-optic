@@ -3,20 +3,19 @@
 '''
 Extreure corba horària a temps real per link amb projecte "pantalla3"
 (github.com/holalluis/pantalla3)
-
 Des del dia 1 del mes actual fins al dia actual
-
 '''
 import sys
 import time
-sys.path.insert(0,"..") #path: add parent
+
+sys.path.insert(0,"..") #add parent folder to path
 import crea     as C
 import pregunta as P
 import processaA11 as E
 
-#dia, mes i any acutals?
+#dia, mes, any actuals
 ara=time.localtime()
-dia=ara.tm_mday+1 #necessari pq sino es queda a les 00:00
+dia=ara.tm_mday+1 #necessari pq sino es queda a les 00:00 del dia actual
 mes=ara.tm_mon
 yea=ara.tm_year-2000 #0-99
 
@@ -29,7 +28,7 @@ P.pregunta(C.creaTramaFix(0b01011011)) #request data
 P.pregunta(C.creaTramaVar(0b01110011,C.creaASDU123(11,1,1,C.creaTemps(1,mes,yea,0,0),C.creaTemps(dia,mes,yea,0,0))))
 P.pregunta(C.creaTramaFix(0b01011011)) #request data
 
-respostes=[] #array per contenir les respostes a processar (asdus 11)
+respostes=[] #array per contenir les respostes a processar (trames amb asdus 11)
 
 #consulta fins que doni senyal de fi
 while True: 
@@ -41,18 +40,16 @@ while True:
 
 print(" CORBA POTÈNCIA ")
 print("================")
-
 #obre arxiu
 f=open('corba.txt','w')
-
 for i in range(len(respostes)):
     trama=respostes[i]
     #estructura dada: [diames,mes,year,hora,minut,nrg_valor]
     dada=E.extreuPotencia(trama) 
     #escriu a l'arxiu la potencia "nrg_valor"
-    f.write(str(dada[5])+"\n")
+    f.write(str(dada)+" "+str(dada[5])+"\n")
 
 #a partir d'aqui esperar una hora i escriure la següent dada. Si el mes canvia, acaba el programa
-
+#TODO
 #espera 1 hora i agafa l'últim integrat disponible
 f.close()
