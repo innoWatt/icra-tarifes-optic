@@ -7,18 +7,16 @@ Extreure corba horària a temps real per link amb projecte "pantalla3"
 Des del dia 1 del mes actual fins al dia actual
 
 '''
+import sys
+import time
+sys.path.insert(0,"..") #path: add parent
 import crea     as C
 import pregunta as P
 import processaA11 as E
-import sys
-import time
 
 #dia, mes i any acutals?
 ara=time.localtime()
-dia=ara.tm_mday
-
-dia=2 #TEMPORAL TESTING
-
+dia=ara.tm_mday+1 #necessari pq sino es queda a les 00:00
 mes=ara.tm_mon
 yea=ara.tm_year-2000 #0-99
 
@@ -54,7 +52,7 @@ for i in range(len(respostes)):
     #escriu a l'arxiu la potencia "nrg_valor"
     f.write(str(dada[5])+"\n")
 
-# a partir d'aqui esperar una hora i escriure la següent dada. Si el mes canvia, acaba el programa
+#a partir d'aqui esperar una hora i escriure la següent dada. Si el mes canvia, acaba el programa
 
 #espera 1 hora i agafa l'últim integrat disponible
 f.close()
