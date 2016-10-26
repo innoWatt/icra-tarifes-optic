@@ -10,9 +10,7 @@
   Direcció comptador: 0x1=1
 </missatge>
 
-
 [...raw data eliminat...]
-
 
  CORBA POTÈNCIA <-- el grep buscarà aquesta línia
 ================
