@@ -25,7 +25,7 @@ P.pregunta(C.creaTramaFix(0b01011011)) #request data
 
 '''Request amb asdu 123'''
 #trama variable amb asdu 123, registre 11, objecte 1 (inicial i final)
-P.pregunta(C.creaTramaVar(0b01110011,C.creaASDU123(11,1,1,C.creaTemps(1,mes,yea,0,0),C.creaTemps(dia,mes,yea,0,0))))
+P.pregunta(C.creaTramaVar(0b01110011,C.creaASDU123(11,1,1,C.creaTemps(26,mes,yea,0,0),C.creaTemps(dia,mes,yea,0,0))))
 P.pregunta(C.creaTramaFix(0b01011011)) #request data
 
 respostes=[] #array per contenir les respostes a processar (trames amb asdus 11)
@@ -45,11 +45,11 @@ f=open('corba.txt','w')
 for i in range(len(respostes)):
     trama=respostes[i]
     #estructura dada: [diames,mes,year,hora,minut,nrg_valor]
-    dada=E.extreuPotencia(trama) 
-    #escriu a l'arxiu la potencia "nrg_valor"
-    f.write(str(dada)+" "+str(dada[5])+"\n")
+    d=E.extreuPotencia(trama) 
+    #escriu a l'arxiu la potencia "nrg_valor" amb el format any-mes-dia hora:minut potencia
+    f.write(str(d[2])+"-"+str(d[1])+"-"+str(d[0])+" "+str(d[3])+":"+str(d[4])+" "+str(d[5])+"\n")
 
 #a partir d'aqui esperar una hora i escriure la següent dada. Si el mes canvia, acaba el programa
-#TODO
+print "Esperant una hora per la següent lectura (dia/mes/any hora:minut)"; time.sleep(3600)
 #espera 1 hora i agafa l'últim integrat disponible
 f.close()
