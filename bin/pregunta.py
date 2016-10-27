@@ -33,7 +33,7 @@ ser.open()
 
 '''envia la trama per la connexió serial que acabem de crear (ser)'''
 def pregunta(trama):
-	print("\033[32mPREGUNTA\033[0m")
+	#print("\033[32mPREGUNTA\033[0m")
 	#Pro.processa(trama) #mostra la pregunta feta
 	ser.write(bytearray(trama))
 	print("\033[32mRESPOSTA\033[0m")

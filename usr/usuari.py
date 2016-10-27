@@ -14,6 +14,7 @@
                 ASDU 162 amb objecte 194 (idem)
                 ASDU 190 amb registre 11 dóna corba de potència (per blocs, respon ASDU 140)
                 ASDU 123 amb registre 11 dóna corba de potència (respon ASDU 11)
+                ASDU 123 amb registre 21 dóna resums diaris
                 ASDU 122 amb registre 21 dóna els resums diaris (respon ASDU 8)
         ===NO FUNCIONA
                 ASDU 122 amb registre 11 no funciona
@@ -30,6 +31,21 @@ import pregunta as P
 P.pregunta(C.creaTramaVar(0b01110011,C.creaASDU183())) #request user data & send password
 P.pregunta(C.creaTramaFix(0b01011011)) #request class 2 data
 
+'''ASDU 123 amb registre 21'''
+P.pregunta(C.creaTramaVar(0b01110011,
+	C.creaASDU123(21,1,1,
+		C.creaTemps(20,10,16,0,0),
+		C.creaTemps(22,10,16,0,0)
+	)
+))
+
+while(1):
+	P.pregunta(C.creaTramaFix(0b01011011)) #request data
+	P.pregunta(C.creaTramaFix(0b01111011)) #request data (flip FCB)
+
+
+quit('STOP')
+
 #prova asdu 190 amb registre 11 (Curva de carga) i direccio 9,10,11
 '''La dirección de objeto selecciona la obtención de bloques de puntos de medida genéricos con reservas (9), 
 bloques de puntos de medida genéricos sin reservas (10) 
@@ -39,10 +55,3 @@ while(1): #vés consultant fins que doni senyal de fi
 	P.pregunta(C.creaTramaFix(0b01011011)) #request data
 	P.pregunta(C.creaTramaFix(0b01111011)) #request data (flip FCB)
 
-quit('STOP')
-
-#curva de carga: asdu 123 amb registre 11, objecte 1
-P.pregunta(C.creaTramaVar(0b01110011,C.creaASDU123(11,1,1,C.creaTemps(21,7,16,0,0),C.creaTemps(22,7,16,0,0))))
-while(1): #vés consultant fins que doni senyal de fi
-	P.pregunta(C.creaTramaFix(0b01011011)) #request data
-	P.pregunta(C.creaTramaFix(0b01111011)) #request data (flip FCB)

@@ -51,7 +51,7 @@ def processa(missatge):
 	n=len(buf) 
 
 	'''comprova trama buida'''
-	if n==0: raise RuntimeError("TRAMA BUIDA")
+	if n==0: raise RuntimeError("TRAMA BUIDA: REINTENTAR")
 
 	'''mostra tots els bytes del missatge'''
 	print("<missatge>\n  "+str(n)+" bytes:"),
@@ -105,7 +105,7 @@ def processaTramaFixa(buf):
 
 	'''mostra els 2 bytes de direccio: byte swap i suma'ls'''
 	direccio = buf[3] << 8 | buf[2]
-	print("  Direcció comptador: "+hex(direccio)+"="+str(direccio))
+	#print("  Direcció comptador: "+hex(direccio)+"="+str(direccio))
 	'''fi'''
 
 '''Processa una trama de longitud variable'''
@@ -150,7 +150,7 @@ def processaTramaVariable(buf):
 
 	'''2 bytes de direccio: byte swap i suma'ls'''
 	direccio = (buf[6]<<8) | buf[5]
-	print("  Direcció comptador: "+str(hex(direccio))+" = "+str(direccio))
+	#print("  Direcció comptador: "+str(hex(direccio))+" = "+str(direccio))
 
 	'''camp ASDU: del byte 6 fins al el n-3 inclòs'''
 	ASDU=buf[7:n-2]
@@ -249,7 +249,7 @@ def campIUD(iud):
 		dco = direcció comuna [punt mesura, direccio registre]
 	'''
 	n=len(iud)
-	print("    <iud> [idt,qev,cdt,dco]")
+	print("    <iud>")
 	print("      "+str(n)+" bytes:"),
 
 	'''mostra tots els bytes'''
@@ -322,7 +322,7 @@ def campIUD(iud):
 	'''
 	SQ = qev & 0b10000000 == 128
 	N  = qev & 0b01111111
-	print("      qev: "+hex(qev)+" = "+bin(qev)+": [SQ="+str(SQ)+", N="+str(N)+" objectes d'informació]")
+	print("      qev: "+hex(qev)+"="+bin(qev)+": [SQ="+str(SQ)+", N="+str(N)+" objectes d'informació]")
 
 	if(SQ):raise RuntimeError("SQ encara no implementat (estructura variable)")
 
@@ -380,7 +380,7 @@ def campIUD(iud):
 			138 :"Información de Tarificación relativa al Contrato Latente II",
 			139 :"Información de Tarificación relativa al Contrato Latente III",
 	}
-	print("      dco->punt mesura: "+hex(dco_punt_mesura)+"="+str(dco_punt_mesura)+" (2 bytes)")
+	#print("      dco->punt mesura: "+hex(dco_punt_mesura)+"="+str(dco_punt_mesura)+" (2 bytes)")
 	print("      dco->registre: \033[33m"+hex(dco_registre)   +"="+str(dco_registre)   +": "+dicc_registre[dco_registre]+"\033[0m")
 
 	'''fi'''
@@ -442,8 +442,7 @@ def campObjsInfo(objsInfo):
 	if N==0:
 		print("      N=0 objectes d'informació\n    <objectesInfo>")
 		return
-	else:
-		print("      N="+str(N)+" objectes d'informació")
+	#else: print("      N="+str(N)+" objectes d'informació")
 
 	'''
 	Comprova idt (tipus asdu)
@@ -797,7 +796,7 @@ def campEtiquetaTemps(etiqueta):
 	if(hora  <10): hora="0"+str(hora)
 	if(minut <10): minut="0"+str(minut)
 
-	print("== Data: "+str(diames)+"/"+str(mes)+"/"+str(2000+year)+" "+str(hora)+":"+str(minut))
+	print("= Data: "+str(diames)+"/"+str(mes)+"/"+str(2000+year)+" "+str(hora)+":"+str(minut))
 	'''fi'''
 
 '''Processa un total integrat (dins alguns tipus d'asdu)'''

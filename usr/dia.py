@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 '''
-Extreu corba horària
-i mostra-la per pantalla
+Mostra la dada de la corba horària d'una data concreta (NOMÉS ES POT FER DE TOT UN DIA)
 '''
 import sys
 sys.path.insert(0,"../bin") #add bin folder to path
@@ -11,28 +10,34 @@ import crea        as C
 import pregunta    as P
 import processaA11 as E
 
-#data inici i final (dia,mes,any)
-inici=[ 1,10,16]
-final=[32,10,16]
+args=len(sys.argv)
 
-#processa dates
-diaInici=inici[0]; mesInici=inici[1]; anyInici=inici[2]
-diaFinal=final[0]; mesFinal=final[1]; anyFinal=final[2]
+if(args<2):
+	print 'Ús: python %s dd-mm-yy' % sys.argv[0]
+	sys.exit()
+else:
+	data=sys.argv[1]
+	data=data.split("-")
+	dia=int(data[0])
+	mes=int(data[1])
+	yea=int(data[2])
 
-#array per contenir les trames resposta a processar
-respostes=[] 
-
-'''Login (asdu 183) ('pregunta.py')'''
+'''Login ASDU 183'''
 P.pregunta(C.creaTramaVar(0b01110011,C.creaASDU183())) #request data & send password
 P.pregunta(C.creaTramaFix(0b01011011)) #request data
 
-'''INICI REQUEST amb ASDU 123'''
-#pregunta: trama variable amb asdu 123, registre 11, objecte 1 (inicial i final)
-P.pregunta(C.creaTramaVar(0b01110011,C.creaASDU123(11,1,1,C.creaTemps(diaInici,mesInici,anyInici,0,0),C.creaTemps(diaFinal,mesFinal,anyFinal,0,0))))
+'''ASDU 123, registre 11, objecte 1 (inicial i final)'''
+P.pregunta(
+	C.creaTramaVar(0b01110011,
+		C.creaASDU123(11,1,1,
+			C.creaTemps(dia  ,mes,yea,0,0),
+			C.creaTemps(dia+1,mes,yea,0,0)
+		)
+	)
+)
 P.pregunta(C.creaTramaFix(0b01011011)) #request data
-
-#vés consultant fins que doni senyal de fi
-while True: 
+respostes=[] #array per contenir les respostes a processar (trames amb asdus 11)
+while True: #vés consultant fins que doni senyal de fi
     try:                                          
         respostes.append(P.pregunta(C.creaTramaFix(0b01111011))) #flip FCB bit
         respostes.append(P.pregunta(C.creaTramaFix(0b01011011))) #request data
@@ -40,8 +45,8 @@ while True:
         break
 '''FI REQUEST'''
 
-print(" CORBA POTÈNCIA ")
-print("================")
+print("CORBA POTÈNCIA")
+print("==============")
 for i in range(len(respostes)):
     trama=respostes[i]
     E.extreuPotencia(trama)
