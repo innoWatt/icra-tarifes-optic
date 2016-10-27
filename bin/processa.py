@@ -51,7 +51,7 @@ def processa(missatge):
 	n=len(buf) 
 
 	'''comprova trama buida'''
-	if n==0: raise RuntimeError("TRAMA BUIDA: REINTENTAR")
+	if n==0: raise RuntimeError("TRAMA BUIDA")
 
 	'''mostra tots els bytes del missatge'''
 	print("<missatge>\n  "+str(n)+" bytes:"),
@@ -796,7 +796,7 @@ def campEtiquetaTemps(etiqueta):
 	if(hora  <10): hora="0"+str(hora)
 	if(minut <10): minut="0"+str(minut)
 
-	print("= Data: "+str(diames)+"/"+str(mes)+"/"+str(2000+year)+" "+str(hora)+":"+str(minut))
+	print("= Data: \033[34m"+str(diames)+"/"+str(mes)+"/"+str(2000+year)+" "+str(hora)+":"+str(minut)+"\033[0m")
 	'''fi'''
 
 '''Processa un total integrat (dins alguns tipus d'asdu)'''
@@ -804,7 +804,7 @@ def campTotalIntegrat(totalIntegrat,nom):
 	'''4 bytes primers per energia (kwh o kvarh): cal byte swap i suma'''
 	nrg       = totalIntegrat[0:4]
 	nrg_valor = nrg[3] << 32 | nrg[2] << 16 | nrg[1] << 8 | nrg[0]
-	print("        "+nom+": "+str(nrg_valor)+" (kWh o kVARh)")
+	print("        "+nom+": \033[32m"+str(nrg_valor)+"\033[0m (kWh o kVARh)")
 	'''últim byte: cualificador 8 bits '''
 	cualificador = totalIntegrat[4]
 	IV = cualificador & 0b10000000 == 128 # la lectura es vàlida?

@@ -4,16 +4,15 @@
 Extreu corba horària
 i mostra-la per pantalla
 '''
-import sys
-sys.path.insert(0,"../bin") #add bin folder to path
-
-import crea        as C
-import pregunta    as P
-import processaA11 as E
-
 #data inici i final (dia,mes,any)
 inici=[ 1,10,16]
 final=[29,10,16]
+
+import sys
+sys.path.insert(0,"../bin") #add bin folder to path
+import crea        as C
+import pregunta    as P
+import processaA11 as E
 
 #processa dates
 diaInici=inici[0]; mesInici=inici[1]; anyInici=inici[2]
