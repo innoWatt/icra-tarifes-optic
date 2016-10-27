@@ -30,13 +30,13 @@
 		01/09/2016 07:00 98 kW
 
 	* Exemple OUTPUT:
-		97
-		96
-		95
-		98
-		97
-		97
-		98
+		01/09/2016 01:00 97
+		01/09/2016 02:00 96
+		01/09/2016 03:00 95
+		01/09/2016 04:00 98
+		01/09/2016 05:00 97
+		01/09/2016 06:00 97
+		01/09/2016 07:00 98
 '
 
 if (($#<1)); then echo "Falta arxiu d'entrada. Ús: $0 [corba_carrega.txt]";exit;fi
@@ -44,6 +44,6 @@ if (($#<1)); then echo "Falta arxiu d'entrada. Ús: $0 [corba_carrega.txt]";exit
 file=$1
 
 cat $file\
-	| sed -n -e '/ CORBA POTÈNCIA/,$p'\
+	| sed -n -e '/CORBA POTÈNCIA/,$p'\
 	| sed -n -e "3,$ p"\
-	| awk '{print $3}'\
+	| awk '{print $1,$2,$3}'\

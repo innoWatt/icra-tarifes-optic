@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 '''
-Arxiu preparat per importar i cridar
-import config as con
-con.direccio
-con.password
+    Edita aquest arxiu per entrar les dades del teu sistema:
+    direcció, password i punt de mesura del comptador
+    i dades de la connexió serial
 '''
 
 #dades comptador "crea.py"

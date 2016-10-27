@@ -10,6 +10,10 @@
 	
 	Les trames "trama" es generen amb les funcions de "crea.py" (veure comentaris dins)
 '''
+#add parent folder to path
+import sys
+sys.path.insert(0,"..") 
+
 import serial
 import config
 import processa as Pro

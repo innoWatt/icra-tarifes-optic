@@ -1,26 +1,26 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 '''
-Extreure corba horària a temps real per link amb projecte "pantalla3"
-(github.com/holalluis/pantalla3)
-Des del dia 1 del mes actual fins al dia actual
+    Extreure corba horària a temps real per link amb projecte "pantalla3"
+    (github.com/holalluis/pantalla3)
+    Des del dia 1 del mes actual fins al dia actual
 '''
 import sys
-import time
+sys.path.insert(0,"../bin") #add bin folder to path
 
-sys.path.insert(0,"..") #add parent folder to path
-import crea     as C
-import pregunta as P
+import time
+import crea        as C
+import pregunta    as P
 import processaA11 as E
 
-#dia, mes, any actuals
+#esbrina dia, mes i any actuals
 ara=time.localtime()
-dia=ara.tm_mday+1 #necessari pq sino es queda a les 00:00 del dia actual
+dia=ara.tm_mday+1 #dia següent: sinó es queda a les 00:00 del dia actual
 mes=ara.tm_mon
 yea=ara.tm_year-2000 #0-99
 
 '''Login amb asdu 183'''
-P.pregunta(C.creaTramaVar(0b01110011,C.creaASDU183(1))) #request data & send password
+P.pregunta(C.creaTramaVar(0b01110011,C.creaASDU183())) #request data & send password
 P.pregunta(C.creaTramaFix(0b01011011)) #request data
 
 '''Request amb asdu 123'''

@@ -20,11 +20,14 @@
                 ASDU 115: no disponible (esborrat del codi)
                 ASDU 118: no disponible (idem)
 '''
+import sys
+sys.path.insert(0,"../bin") #add bin folder to path
+
 import crea     as C
 import pregunta as P
 
 #login
-P.pregunta(C.creaTramaVar(0b01110011,C.creaASDU183(1))) #request user data & send password
+P.pregunta(C.creaTramaVar(0b01110011,C.creaASDU183())) #request user data & send password
 P.pregunta(C.creaTramaFix(0b01011011)) #request class 2 data
 
 #prova asdu 190 amb registre 11 (Curva de carga) i direccio 9,10,11
@@ -36,15 +39,10 @@ while(1): #vés consultant fins que doni senyal de fi
 	P.pregunta(C.creaTramaFix(0b01011011)) #request data
 	P.pregunta(C.creaTramaFix(0b01111011)) #request data (flip FCB)
 
-quit('-S-T-O-P-')
-
-#prova asdu 162: instantanis amb objecte 192
-P.pregunta(C.creaTramaVar(0b01110011,C.creaASDU162(192)))
-P.pregunta(C.creaTramaFix(0b01011011)) #request data
+quit('STOP')
 
 #curva de carga: asdu 123 amb registre 11, objecte 1
 P.pregunta(C.creaTramaVar(0b01110011,C.creaASDU123(11,1,1,C.creaTemps(21,7,16,0,0),C.creaTemps(22,7,16,0,0))))
 while(1): #vés consultant fins que doni senyal de fi
 	P.pregunta(C.creaTramaFix(0b01011011)) #request data
 	P.pregunta(C.creaTramaFix(0b01111011)) #request data (flip FCB)
-

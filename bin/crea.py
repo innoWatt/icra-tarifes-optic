@@ -17,11 +17,16 @@
 	Utilitats:
 		creaTemps: crea etiquetes de temps (5 bytes)
 '''
+#add parent folder to path
+import sys
+sys.path.insert(0,"..") 
+
 import config
 
 #punt mesura i direccio
-pm = config.puntMesura # 2 bytes maxim
-di = config.direccio   # 2 bytes maxim
+pm   = config.puntMesura # 2 bytes maxim
+di   = config.direccio   # 2 bytes maxim
+clau = config.password
 
 '''TIPUS ASDU implementats'''
 def creaASDU162(direccio):
@@ -150,7 +155,7 @@ def creaASDU134(data_inici,data_final):
 	asdu[6:11]=data_inici
 	asdu[11:16]=data_final
 	return bytearray(asdu)
-def creaASDU183(clau):
+def creaASDU183():
 	'''
 		A183: INICIAR SESIÓN Y ENVIAR CLAVE DE ACCESO
 		És una petició

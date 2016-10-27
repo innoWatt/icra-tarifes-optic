@@ -1,10 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 '''
-Extreure corba horària
+Extreu corba horària
+i mostra-la per pantalla
 '''
-import crea     as C
-import pregunta as P
+import sys
+sys.path.insert(0,"../bin") #add bin folder to path
+
+import crea        as C
+import pregunta    as P
 import processaA11 as E
 
 #data inici i final (dia,mes,any)
@@ -19,7 +23,7 @@ diaFinal=final[0]; mesFinal=final[1]; anyFinal=final[2]
 respostes=[] 
 
 '''Login (asdu 183) ('pregunta.py')'''
-P.pregunta(C.creaTramaVar(0b01110011,C.creaASDU183(1))) #request data & send password
+P.pregunta(C.creaTramaVar(0b01110011,C.creaASDU183())) #request data & send password
 P.pregunta(C.creaTramaFix(0b01011011)) #request data
 
 '''INICI REQUEST amb ASDU 123'''
