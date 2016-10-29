@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 '''
-	Prova de mínims:
+	Script totalment autònom que fa una prova de mínims:
 		1. Crea un serial
 		2. Envia una trama
 		3. Rep la resposta
@@ -21,18 +21,12 @@ ser.dsrdtr=False
 ser.timeout=1
 ser.open()
 
-#munta trama test
+#envia una trama i llegeix la resposta
 trama='\x10\x49\x01\x00\x4a\x16'
-print("Enviant: "+str([trama])) #si 'trama' no està dins un array no es veuen els caràcters
-
-#envia
+print("Enviant: "+str([trama]))
 ser.write(bytearray(trama))
 ser.flush()
-
-#resposta
 resposta=ser.readlines()
-
-#print resposta
 print("Resposta:")
 print(type(resposta))
 print(resposta)

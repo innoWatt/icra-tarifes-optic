@@ -1,8 +1,6 @@
 ## Manual en desenvolupament
 
 ## TO DO
-	* Programar script usuari_lectura per lectura única d'energia (una sola data)
-	* Crear un serial virtual per quan no hi ha serial "virtual.py"
 
 # icra-tarifes-optic
 
@@ -49,9 +47,9 @@ El primer que s'ha de fer és editar l'arxiu `config.py`, i després testejar si
 
 ```
 	vim config.py
-	python tests/serialProva.py
+	python test.py
 ```
-![](https://raw.githubusercontent.com/holalluis/icra-tarifes-optic/master/gif/serialProva.gif)
+![](https://raw.githubusercontent.com/holalluis/icra-tarifes-optic/master/gif/test.gif)
 
 Després, s'ha de crear un script com ara `usuari.py` per fer les peticions desitjades. Exemple
 

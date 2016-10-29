@@ -1,17 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 '''
-    Edita aquest arxiu per entrar les dades del teu sistema:
-    direcció, password i punt de mesura del comptador
-    i dades de la connexió serial
+    Edita aquest arxiu per configurar la connexió al comptador.
+    Direcció, password, punt de mesura i connexió serial
 '''
 
-#dades comptador "crea.py"
-direccio = 1
-password = 1
-puntMesura = 1
+#dades per crear trames (bin/crea.py)
+direccio=1
+password=1
+puntMesura=1
 
-#dades connexió serial "pregunta.py"
+#connexió serial per enviar trames (bin/pregunta.py)
 port="/dev/ttyUSB0"
 baudrate=9600
 bytesize=8

@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 '''
-Mostra la dada de la corba horària d'una data concreta (NOMÉS ES POT FER DE TOT UN DIA)
+Mostra la corba horària d'una dia concret 
+(NOMÉS ES POT FER DE TOT UN DIA, no només d'una sola hora)
+No es crea un arxiu, només es mostren les dades (24)
 '''
 import sys
 sys.path.insert(0,"../bin") #add bin folder to path
@@ -10,9 +12,7 @@ import crea        as C
 import pregunta    as P
 import processaA11 as E
 
-args=len(sys.argv)
-
-if(args<2):
+if(len(sys.argv)<2):
 	print 'Ús: python %s dd-mm-yy' % sys.argv[0]
 	sys.exit()
 else:
@@ -31,10 +31,8 @@ P.pregunta(
 	C.creaTramaVar(0b01110011,
 		C.creaASDU123(11,1,1,
 			C.creaTemps(dia  ,mes,yea,0,0),
-			C.creaTemps(dia+1,mes,yea,0,0)
-		)
-	)
-)
+			C.creaTemps(dia+1,mes,yea,0,0))))
+
 P.pregunta(C.creaTramaFix(0b01011011)) #request data
 respostes=[] #array per contenir les respostes a processar (trames amb asdus 11)
 while True: #vés consultant fins que doni senyal de fi
@@ -45,8 +43,6 @@ while True: #vés consultant fins que doni senyal de fi
         break
 '''FI REQUEST'''
 
-print("CORBA POTÈNCIA")
-print("==============")
+print("CORBA POTÈNCIA");print("==============")
 for i in range(len(respostes)):
-    trama=respostes[i]
-    E.extreuPotencia(trama)
+    E.extreuPotencia(respostes[i])
