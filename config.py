@@ -5,12 +5,12 @@
     Direcció, password, punt de mesura i connexió serial
 '''
 
-#dades per crear trames (bin/crea.py)
+#COMPTADOR - dades internes aparell, per crear trames (bin/crea.py)
 direccio=1
 password=1
 puntMesura=1
 
-#connexió serial per enviar trames (bin/pregunta.py)
+#COMPTADOR - connexió serial, per enviar trames (bin/pregunta.py)
 port="/dev/ttyUSB0"
 baudrate=9600
 bytesize=8
