@@ -6,21 +6,22 @@ Mostra la corba horària d'una dia concret
 No es crea un arxiu, només es mostren les dades (24)
 '''
 import sys
-sys.path.insert(0,"../bin") #add bin folder to path
 
+if(len(sys.argv)<2):
+    print 'Ús: python %s dd-mm-yy' % sys.argv[0]
+    sys.exit()
+else:
+    data=sys.argv[1]
+    data=data.split("-")
+    dia=int(data[0])
+    mes=int(data[1])
+    yea=int(data[2])
+
+#local imports
+sys.path.insert(0,"../bin") #add bin folder to path
 import crea        as C
 import pregunta    as P
 import processaA11 as E
-
-if(len(sys.argv)<2):
-	print 'Ús: python %s dd-mm-yy' % sys.argv[0]
-	sys.exit()
-else:
-	data=sys.argv[1]
-	data=data.split("-")
-	dia=int(data[0])
-	mes=int(data[1])
-	yea=int(data[2])
 
 '''Login ASDU 183'''
 P.pregunta(C.creaTramaVar(0b01110011,C.creaASDU183())) #request data & send password

@@ -7,16 +7,22 @@
 '''
 import time
 import sys
-sys.path.insert(0,"../bin") #add bin folder to path
-import crea        as C
-import pregunta    as P
-import processaA11 as E
 
 #esbrina dia, mes i any actuals
 ara=time.localtime()
 dia=ara.tm_mday+1 #dia següent: sinó es queda a les 00:00 del dia actual
 mes=ara.tm_mon
 yea=ara.tm_year-2000 #0-99
+
+#mostra per pantalla dia inici
+print "Dia inici:",[1,mes,yea];
+print "Dia final:",[dia,mes,yea];
+
+#local imports
+sys.path.insert(0,"../bin") #add bin folder to path
+import crea        as C
+import pregunta    as P
+import processaA11 as E
 
 '''Login ASDU 183'''
 P.pregunta(C.creaTramaVar(0b01110011,C.creaASDU183())) #request data & send password

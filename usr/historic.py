@@ -1,11 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-'''
-Extreu corba horària entre un rang de dates i mostra-la per pantalla
-'''
-#dates inicial i final (dia,mes,any)
+''' 
+Aquest programa extreu la corba horària entre un rang de dates i la mostra per pantalla'''
+
+#dates inici i final (dd,mm,yy)
 inici=[ 1,10,16]
 final=[29,10,16]
+
+print "Data inici:",inici;
+print "Data final:",final;
 
 #imports
 import sys
@@ -31,13 +34,14 @@ respostes=[]
 
 #consulta fins que doni error
 while True: 
-    try:                                          
-        respostes.append(P.pregunta(C.creaTramaFix(0b01111011))) #flip FCB bit
+    try:                                               #fcb 
+        respostes.append(P.pregunta(C.creaTramaFix(0b01111011))) #request data & flip FCB bit
         respostes.append(P.pregunta(C.creaTramaFix(0b01011011))) #request data
     except: #quan s'acabi donarà runtime error
         break
 '''FI REQUEST'''
 
+#ensenya les dades
 print("CORBA POTÈNCIA");print("==============")
 for i in range(len(respostes)):
 	E.extreuPotencia(respostes[i])

@@ -1,8 +1,12 @@
-## Manual en desenvolupament
-
-## TO DO
-
 # icra-tarifes-optic
+
+Comunicació amb comptadors elèctrics pel protocol IEC 60870-5-102
+
+## Requeriments
+- Python 2.7
+- pyserial
+
+## Manual en desenvolupament
 
 Autors: Lluis Bosch (lbosch@icra.cat) & Felix Hill (fhill@icra.cat)
 
