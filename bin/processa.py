@@ -19,7 +19,7 @@
 	Estructura global:
 
 	* Processa missatge
-		* trama fixe
+		* trama fixa
 			* camp control
 		* trama variable
 			* camp control
@@ -40,7 +40,7 @@ def processa(missatge):
 				</asdu>
 			</missatge>
 
-		missatge: bytestring com ara: '\x10\x49\x01\x00\x4a\x16'
+		missatge: tipus bytestring com ara: '\x10\x49\x01\x00\x4a\x16'
 	'''
 	global buf #global perquè altres funcions agafen bits d'altres camps
 
@@ -97,8 +97,7 @@ def processaTramaFixa(buf):
 	else:
 		raise RuntimeError('Checksum incorrecte: '+str(checksum)+'=/='+str(buf[4]))
 
-	#print("  Trama FIXE [inici (0x10), control, direccio1, direccio2, checksum, fi (0x16)]")
-
+	#print("  Trama FIXA [inici (0x10), control, direccio1, direccio2, checksum, fi (0x16)]")
 	'''processa el byte de control'''
 	control=buf[1]
 	campControl(control)
@@ -115,10 +114,10 @@ def processaTramaVariable(buf):
 
 		estructura en bytes:
 
-      1              1      1      1              1         2     var    1          1
-		+--------------+------+------+--------------+---------+-----+------+----------+--------------+
-		| Inici (0x68) | Long | Long | Inici (0x68) | Control | A A | ASDU | Checksum | Final (0x16) |
-		+--------------+------+------+--------------+---------+-----+------+----------+--------------+
+1              1      1      1              1         2     var    1          1
++--------------+------+------+--------------+---------+-----+------+----------+--------------+
+| Inici (0x68) | Long | Long | Inici (0x68) | Control | A A | ASDU | Checksum | Final (0x16) |
++--------------+------+------+--------------+---------+-----+------+----------+--------------+
 	'''
 
 	'''longitud'''

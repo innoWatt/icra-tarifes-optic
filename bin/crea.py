@@ -21,12 +21,11 @@
 import sys
 sys.path.insert(0,"..") 
 
+#punt mesura, direccio i password
 import config
-
-#punt mesura i direccio
 pm   = config.puntMesura # 2 bytes maxim
 di   = config.direccio   # 2 bytes maxim
-clau = config.password
+clau = config.password   # 4 bytes maxim
 
 '''TIPUS ASDU implementats'''
 def creaASDU162(direccio):
@@ -263,7 +262,7 @@ import processa as Pro
 trama=creaTramaFix(0x49)
 trama=creaTramaVar(0x73,creaASDU122(21,1,2,creaTemps(25,1,16,6,5),creaTemps(25,1,16,8,5)))
 trama=creaTramaVar(0x73,creaASDU134(creaTemps(25,1,14,0,0),creaTemps(26,1,14,0,0)))
-trama=creaTramaVar(0x73,creaASDU183(12345678))
 trama=creaTramaVar(0x53,creaASDU187())
+trama=creaTramaVar(0x73,creaASDU183())
 Pro.processa(trama)
 '''
