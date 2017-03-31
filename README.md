@@ -4,7 +4,10 @@ Comunicació amb comptadors elèctrics pel protocol IEC 60870-5-102
 
 ## Requeriments
 - Python 2.7
-- pyserial
+- pyserial (can be installed using pip, 'pip install pyserial')
+
+## Inici
+bash inici.sh
 
 ## Manual en desenvolupament
 
