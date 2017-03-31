@@ -14,8 +14,10 @@ dia=ara.tm_mday+1 #dia següent: sinó es queda a les 00:00 del dia actual
 mes=ara.tm_mon
 yea=ara.tm_year-2000 #0-99
 
+if(dia>
+
 #mostra per pantalla dia inici
-print "Dia inici:",[1,mes,yea];
+print "Dia inici:",[1,  mes,yea];
 print "Dia final:",[dia,mes,yea];
 
 #local imports
@@ -47,8 +49,8 @@ while True:
         break
 '''FI REQUEST'''
 
-#obre arxiu de corba horària
-f=open('corba.txt','w')
+#obre arxiu de lectura
+f=open('lectura.txt','w')
 
 '''Estructura: [diames,mes,year,hora,minut,nrg_valor] '''
 for i in range(len(respostes)):

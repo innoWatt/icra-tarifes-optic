@@ -1,12 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 '''
-	Script totalment autònom que fa una prova de mínims:
-		1. Crea un serial
-		2. Envia una trama
-		3. Rep la resposta
+Script que fa una prova de mínims:
+    1. Crea un serial
+    2. Envia una trama
+    3. Rep la resposta
 '''
 import serial
+print "+------------------------+"
+print "| TEST SERIAL CONNECTION |"
+print "+------------------------+"
 
 #obre serial
 ser=serial.Serial()
