@@ -14,11 +14,9 @@ dia=ara.tm_mday+1 #dia següent: sinó es queda a les 00:00 del dia actual
 mes=ara.tm_mon
 yea=ara.tm_year-2000 #0-99
 
-if(dia>
-
 #mostra per pantalla dia inici
-print "Dia inici:",[1,  mes,yea];
-print "Dia final:",[dia,mes,yea];
+print "Dia inici (dd/mm/aa): 1",mes,yea;
+print "Dia final (dd/mm/aa):",dia,mes,yea;
 
 #local imports
 sys.path.insert(0,"../bin") #add bin folder to path
