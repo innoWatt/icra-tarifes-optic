@@ -1,21 +1,21 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 '''
-	Funcions que permeten crear trames (format bytearray) 
+Funcions que permeten crear trames (en format bytearray) 
 
-	ASDUS:
-		ASDU 190: permet llegir curva carga (kW) (registre 11) en bloc
-		ASDU 123: permet llegir curva carga (kW) (registre 11)
-		ASDU 122: permet llegir acumulats (energia, kWh)
-		ASDU 183: inici sessió
-		ASDU 187: final sessió
+ASDUS:
+- ASDU 190: permet llegir curva carga (kW) (registre 11) en bloc
+- ASDU 123: permet llegir curva carga (kW) (registre 11)
+- ASDU 122: permet llegir acumulats (energia, kWh)
+- ASDU 183: inici sessió
+- ASDU 187: final sessió
 
-	Els asdus es creen i es posen dins les funcions:
-		creaTramaFix: crea trames fixes (6 bytes)
-		creaTramaVar: crea trames variables (n bytes)
+Els asdus es creen cadascun amb la seva funció i es posen dins les funcions:
+- creaTramaFix: crea trames fixes (6 bytes)
+- creaTramaVar: crea trames variables (n bytes)
 
-	Utilitats:
-		creaTemps: crea etiquetes de temps (5 bytes)
+Utilitats:
+- creaTemps: crea etiquetes de temps (5 bytes)
 '''
 #add parent folder to path
 import sys
@@ -29,24 +29,24 @@ clau = config.password   # 4 bytes maxim
 
 '''TIPUS ASDU implementats'''
 def creaASDU162(direccio):
-	'''
-		A162: Read Instantaneous Values, obj inf=192,193,194
-		la resposta és un A163
-	'''
-	asdu=[None]*7
-	asdu[0]=162 #idt identificador de tipo
-	asdu[1]=1   #qev: byte [SQ=0 (1 bit), N=1 (7 bits)] 00000001
-	asdu[2]=5   #cdt: causa=petición (5)
-	asdu[3]=(pm&0x00ff)    #punt mesura (2 bytes)
-	asdu[4]=(pm&0xff00)>>8 #punt mesura (2 bytes)
-	asdu[5]=0   #registre=0
-	asdu[6]=direccio 
-	'''
-		direccio 192: Elem. Info.: Totalizadores de energías (Agrup: V / Dir. Obj.: 192)
-		direccio 193: Elem. Info.: Potencias activas (Agrup: V / Dir. Obj.: 193)
-		direccio 194: Contiene los valores instantáneos de las tensiones y corrientes, referidos a valores secundarios..
-	'''
-	return bytearray(asdu)
+    '''
+      A162: Read Instantaneous Values, obj inf=192,193,194
+      la resposta és un A163
+    '''
+    asdu=[None]*7
+    asdu[0]=162 #idt identificador de tipo
+    asdu[1]=1   #qev: byte [SQ=0 (1 bit), N=1 (7 bits)] 00000001
+    asdu[2]=5   #cdt: causa=petición (5)
+    asdu[3]=(pm&0x00ff)    #punt mesura (2 bytes)
+    asdu[4]=(pm&0xff00)>>8 #punt mesura (2 bytes)
+    asdu[5]=0   #registre=0
+    asdu[6]=direccio 
+    '''
+        direccio 192: Elem. Info.: Totalizadores de energías (Agrup: V / Dir. Obj.: 192)
+        direccio 193: Elem. Info.: Potencias activas (Agrup: V / Dir. Obj.: 193)
+        direccio 194: Contiene los valores instantáneos de las tensiones y corrientes, referidos a valores secundarios..
+    '''
+    return bytearray(asdu)
 def creaASDU190(registre,objecte,data_inici,data_final):
 	'''
 		A190:"LEER BLOQUES DE TOTALES INTEGRADOS OPERACIONALES REPUESTOS PERIÓDICAMENTE POR INTERVALO DE TIEMPO Y DIRECCIÓN",

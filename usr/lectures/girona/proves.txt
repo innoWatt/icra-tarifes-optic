@@ -1,0 +1,36 @@
+<missatge>
+
+  16 bytes: 68 a a 68 73 1 0 a2 1 5 1 0 0 c0 dd 16 
+
+  <control>
+	Byte control: 0x73=115=0b1110011
+	bit PRM=1: Aquest missatge es una PETICIO
+	FUN: 0b11 [Funció 3] [Petició: ENVIAMENT DE DADES D'USUARI]
+  </control>
+  <asdu>
+	7 bytes: a2 1 5 1 0 0 c0 
+	<iud>
+	  6 bytes: a2 1 5 1 0 0 
+	  idt: 0xa2: [ASDU 162: LLEGIR INSTANTANIS]
+	  qev: 0x1=0b1: [SQ=False, N=1 objectes d'informació]
+	  cdt: 0x5: [T=False, PN=False, Causa de transmissió=5: PETICION O SOLICITADA (REQUEST OR REQUESTED)]
+	  dco->registre: 0x0=0: Dirección de defecto
+	</iud>
+	<objectesInfo>
+	  1 bytes: c0 
+	  <objecte>
+		1 bytes:  c0 
+	  </objecte>
+RuntimeError: [!] ERROR: ASDU 162 ENCARA NO IMPLEMENTAT
+
+CORBA POTÈNCIA
+==============
+01/04/2017 00:00 673 kW
+01/04/2017 01:00 660 kW
+01/04/2017 02:00 648 kW
+01/04/2017 03:00 629 kW
+01/04/2017 04:00 608 kW
+01/04/2017 05:00 570 kW
+01/04/2017 06:00 618 kW
+01/04/2017 07:00 654 kW
+01/04/2017 08:00 674 kW

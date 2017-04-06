@@ -6,6 +6,10 @@ Comunicació amb comptadors elèctrics pel protocol IEC 60870-5-102
 - Python 2.7
 - pyserial (can be installed using pip, 'pip install pyserial')
 
+## Comptadors provats
+- Actaris SL762B (port òptic) (icra)
+- Actaris ACE6000 (port òptic) (depu quart)
+
 ## Inici
 bash inici.sh
 
