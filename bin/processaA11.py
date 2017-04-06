@@ -26,7 +26,7 @@ def extreuPotencia(trama):
 	totalIntegrat=objInfo[1:6]
 	#els 4 bytes primers són la potència (kw): cal byte swap i suma
 	nrg=totalIntegrat[0:4]
-	nrg_valor = nrg[3]<<32 | nrg[2]<<16 | nrg[1]<<8 | nrg[0] #<---VALOR POTÈNCIA kW
+	nrg_valor = nrg[3]<<24 | nrg[2]<<16 | nrg[1]<<8 | nrg[0] #<---VALOR POTÈNCIA kW
 	#últim byte: cualificador 8 bits
 	cualificador=totalIntegrat[4]
 

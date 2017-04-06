@@ -684,16 +684,16 @@ def campObjInfo(objInfo):
         FechaFin = infot[57:62] #Fin del período                             (<etiqueta de tiempo tipo a> 5 bytes)
 
         '''suma els bytes dels camps de 4 i 5 bytes'''
-        VabA     =   VabA[3]<<32 |   VabA[2]<<16 |   VabA[1]<<8  |   VabA[0] 
-        VinA     =   VinA[3]<<32 |   VinA[2]<<16 |   VinA[1]<<8  |   VinA[0] 
-        VabRi    =  VabRi[3]<<32 |  VabRi[2]<<16 |  VabRi[1]<<8  |  VabRi[0] 
-        VinRi    =  VinRi[3]<<32 |  VinRi[2]<<16 |  VinRi[1]<<8  |  VinRi[0] 
-        VabRc    =  VabRc[3]<<32 |  VabRc[2]<<16 |  VabRc[1]<<8  |  VabRc[0] 
-        VinRc    =  VinRc[3]<<32 |  VinRc[2]<<16 |  VinRc[1]<<8  |  VinRc[0] 
-        R7       =     R7[3]<<32 |     R7[2]<<16 |     R7[1]<<8  |     R7[0] 
-        R8       =     R8[3]<<32 |     R8[2]<<16 |     R8[1]<<8  |     R8[0] 
-        VMaxA    =  VMaxA[3]<<32 |  VMaxA[2]<<16 |  VMaxA[1]<<8  |  VMaxA[0] 
-        VexcA    =  VexcA[3]<<32 |  VexcA[2]<<16 |  VexcA[1]<<8  |  VexcA[0] 
+        VabA     =   VabA[3]<<24 |   VabA[2]<<16 |   VabA[1]<<8  |   VabA[0] 
+        VinA     =   VinA[3]<<24 |   VinA[2]<<16 |   VinA[1]<<8  |   VinA[0] 
+        VabRi    =  VabRi[3]<<24 |  VabRi[2]<<16 |  VabRi[1]<<8  |  VabRi[0] 
+        VinRi    =  VinRi[3]<<24 |  VinRi[2]<<16 |  VinRi[1]<<8  |  VinRi[0] 
+        VabRc    =  VabRc[3]<<24 |  VabRc[2]<<16 |  VabRc[1]<<8  |  VabRc[0] 
+        VinRc    =  VinRc[3]<<24 |  VinRc[2]<<16 |  VinRc[1]<<8  |  VinRc[0] 
+        R7       =     R7[3]<<24 |     R7[2]<<16 |     R7[1]<<8  |     R7[0] 
+        R8       =     R8[3]<<24 |     R8[2]<<16 |     R8[1]<<8  |     R8[0] 
+        VMaxA    =  VMaxA[3]<<24 |  VMaxA[2]<<16 |  VMaxA[1]<<8  |  VMaxA[0] 
+        VexcA    =  VexcA[3]<<24 |  VexcA[2]<<16 |  VexcA[1]<<8  |  VexcA[0] 
 
         '''mostra'''
         print("        Energía absoluta Activa:                     "+str( VabA)+" kWh"   )
@@ -722,7 +722,7 @@ def campObjInfo(objInfo):
         clau = objInfo[0:4]
 
         '''suma els 4 bytes de la clau d'accés'''
-        clau = clau[3]<<32 | clau[2]<<16 | clau[1]<<8 | clau[0]
+        clau = clau[3]<<24 | clau[2]<<16 | clau[1]<<8 | clau[0]
         print("        Clau d'accés: "+str(clau))
     elif(idt==187):
         ''' A187: petició FINALIZAR SESIÓN
