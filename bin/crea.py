@@ -9,6 +9,10 @@ ASDUS:
 - ASDU 122: permet llegir acumulats (energia, kWh)
 - ASDU 183: inici sessió
 - ASDU 187: final sessió
+- 162
+- 123
+- 122 
+- 134
 
 Els asdus es creen cadascun amb la seva funció i es posen dins les funcions:
 - creaTramaFix: crea trames fixes (6 bytes)
@@ -189,6 +193,20 @@ def creaASDU187():
     asdu[4]=(pm&0xff00)>>8 #punt mesura (2 bytes)
     asdu[5]=0 #direccio registre: 0: cap registre
     return bytearray(asdu)
+def creaASDU103():
+    '''
+        A103: Llegeix la hora de l'equip
+        ASDU buit, només té el camp IUD (6 bytes)
+    '''
+    asdu=[None]*6
+    asdu[0]=103 #idt identificador de tipo
+    asdu[1]=0   #qev: byte [SQ=0 (1 bit), N=0 (7 bits)]
+    asdu[2]=6   #cdt: causa=activación (6)
+    asdu[3]=(pm&0x00ff)    #punt mesura (2 bytes)
+    asdu[4]=(pm&0xff00)>>8 #punt mesura (2 bytes)
+    asdu[5]=0 #direccio registre: 0: cap registre
+    return bytearray(asdu)
+
 def creaTemps(diames,mes,year,hora,minut):
     '''
         minut:int, hora:int, diames:int, mes:int, year:int (0-99)
