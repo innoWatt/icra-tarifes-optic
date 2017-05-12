@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 '''
-    Edita aquest arxiu per configurar la connexió al comptador.
-    Direcció, password, punt de mesura i connexió serial
+Edita aquest arxiu per configurar la connexió al comptador.
+Direcció, password, punt de mesura i connexió serial
 '''
 
 #COMPTADOR - dades internes aparell, per crear trames (bin/crea.py)
