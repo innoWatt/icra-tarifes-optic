@@ -798,7 +798,7 @@ def campEtiquetaTemps(etiqueta):
         if(hora  <10): hora="0"+str(hora)
         if(minut <10): minut="0"+str(minut)
 
-        print("= Data: \033[34m"+str(diames)+"/"+str(mes)+"/"+str(2000+year)+" "+str(hora)+":"+str(minut)+"\033[0m")
+        print("= Data: \033[34m"+str(diames)+"/"+str(mes)+"/"+str(2000+year)+" "+str(hora)+":"+str(minut)+" (estiu="+str(SU)+")\033[0m")
 
     elif tipus=="b":
         '''
@@ -811,36 +811,31 @@ def campEtiquetaTemps(etiqueta):
             +-----------+-------+-------+-----+----+------+-------+----+--------+-----------+-------+-------+-------+-------+------+
 
         '''
-        direccio = buf[1] << 8 | buf[0]
-
         milisegon = (etiqueta[1]&0b00000011) <<8 | etiqueta[0];
         segon     = (etiqueta[1]&0b11111100) >> 2
-        //ACABAR TODO
-        //ACABAR TODO
-        //ACABAR TODO
-        //ACABAR TODO
-        minut     = (etiqueta[1]&0b00000000)
-        TIS       = (etiqueta[1]&0b00000000) == 64
-        IV        = (etiqueta[1]&0b00000000) == 128
-        hora      = (etiqueta[1]&0b00000000)
-        RES1      = (etiqueta[1]&0b00000000) >> 5
-        SU        = (etiqueta[1]&0b00000000) == 128
-        diames    = (etiqueta[1]&0b00000000)
-        diasemana = (etiqueta[1]&0b00000000) >> 5
-        mes       = (etiqueta[1]&0b00000000)
-        ETI       = (etiqueta[1]&0b00000000) >> 4
-        PTI       = (etiqueta[1]&0b00000000) >> 6
-        year      = (etiqueta[1]&0b00000000)
-        RES2      = (etiqueta[1]&0b00000000) == 128
+				minut     = (etiqueta[2]&0b00111111)
+				TIS       = (etiqueta[2]&0b01000000) == 64
+				IV        = (etiqueta[2]&0b10000000) == 128
+				hora      = (etiqueta[3]&0b00011111)
+				RES1      = (etiqueta[3]&0b01100000) >> 5
+				SU        = (etiqueta[3]&0b10000000) == 128
+				diames    = (etiqueta[4]&0b00011111)
+				diasemana = (etiqueta[4]&0b11100000) >> 5
+				mes       = (etiqueta[5]&0b00001111)
+				ETI       = (etiqueta[5]&0b00110000) >> 4
+				PTI       = (etiqueta[5]&0b11000000) >> 6
+				year      = (etiqueta[6]&0b01111111)
+				RES2      = (etiqueta[6]&0b10000000) == 128
+
 
         '''detall estètic: posa un zero davant el número de: diames, mes, hora i minuts més petits de 10'''
         if(diames<10): diames="0"+str(diames)
         if(mes   <10): mes="0"+str(mes)
         if(hora  <10): hora="0"+str(hora)
         if(minut <10): minut="0"+str(minut)
+				if(segon <10): segon="0"+str(segon)
 
-        print("= Data: \033[34m"+str(diames)+"/"+str(mes)+"/"+str(2000+year)+" "+str(hora)+":"+str(minut)+"\033[0m")
-
+        print("= Data: \033[34m"+str(diames)+"/"+str(mes)+"/"+str(2000+year)+" "+str(hora)+":"+str(minut)+":"+str(segon)+":"+str(milisegon)+" (estiu="+str(SU)+")\033[0m")
 
     '''fi'''
 
