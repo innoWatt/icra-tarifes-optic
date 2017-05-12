@@ -64,7 +64,7 @@ def extreuPotencia(trama):
 	if(minut <10): minut="0"+str(minut)
 
 	#final: mostra info i retorna dades d'interés
-	print(str(diames)+"/"+str(mes)+"/"+str(year)+" "+str(hora)+":"+str(minut)+" "+str(nrg_valor)+" kW")
+	print(str(diames)+"/"+str(mes)+"/"+str(year)+" "+str(hora)+":"+str(minut)+" "+str(nrg_valor)+" kW (estiu="+str(SU)+")")
 	return [diames,mes,year,hora,minut,nrg_valor]
 
 '''TESTS (dades reals icra)

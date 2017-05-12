@@ -2,7 +2,7 @@
 
 cd usr #move pwd (important for python import paths)
 
-options=("test" "instantani" "dia" "mes_actual" "historic" "sortir")
+options=("test" "hora" "instantani" "dia" "mes_actual" "historic" "sortir")
 
 echo "Tria una opció"
 

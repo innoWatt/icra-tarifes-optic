@@ -33,3 +33,8 @@ resposta=ser.readlines()
 print("Resposta:")
 print(type(resposta))
 print(resposta)
+
+if len(resposta):
+  print("--> La comunicació funciona!")
+else:
+  print("--> La comunicació ha fallat")

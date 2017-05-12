@@ -12,7 +12,9 @@ puntMesura=1
 
 #COMPTADOR - connexió serial, per enviar trames (bin/pregunta.py)
 port="/dev/ttyUSB0"
-baudrate=9600
+
+baudrate=9600 #9600, 14400, 19200, 28800, 38400, 57600, or 115200
+
 bytesize=8
 parity='E' #even
 stopbits=1
