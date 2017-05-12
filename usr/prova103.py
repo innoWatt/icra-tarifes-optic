@@ -13,7 +13,7 @@ P.pregunta(C.creaTramaVar(0b01110011,C.creaASDU183())) #request user data & send
 P.pregunta(C.creaTramaFix(0b01011011)) #request class 2 data
 
 #envia asdu 103
-trama=creaTramaVar(0x73,creaASDU103())
+trama=C.creaTramaVar(0x73,C.creaASDU103())
 P.pregunta(trama) 
 
 #request data
