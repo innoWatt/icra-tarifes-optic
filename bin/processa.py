@@ -539,6 +539,15 @@ def campObjInfo(objInfo):
         print("        Registre "+hex(direccio)+"="+str(direccio)+": "+dicc_direccio[direccio])
         '''bytes 2 a 6: total integrat'''
         campTotalIntegrat(objInfo[1:6],'Energia (kWh)')
+    elif(idt in [72]):
+        '''A72 es una resposta a A103: petició de la hora del comptador'''
+        direccio=objInfo[0]
+        print("        Registre "+hex(direccio)+"="+str(direccio)+": "+dicc_direccio[direccio])
+
+        '''etiqueta temporal (7 bytes)'''
+        etiqueta = objInfo[1:8]
+        campEtiquetaTemps(etiqueta)
+
     elif(idt in [122,123]):
         '''A122 i A123: LEER TOTALES INTEGRADOS OPERACIONALES POR INTERVALO DE TIEMPO Y RANGO DE DIRECCIONES'''
         '''A122 és una petició de 4 elements: direcció inicial, direcció final, data inicial, data final'''
@@ -743,9 +752,7 @@ def campObjInfo(objInfo):
 def campEtiquetaTemps(etiqueta):
     '''
             etiqueta: classe bytearray
-
             l'etiqueta de temps conté una data
-
             pot ser: 
                     * tipus a (5 bytes) 
                     * tipus b (7 bytes)
@@ -757,44 +764,84 @@ def campEtiquetaTemps(etiqueta):
     elif(n==7): tipus="b"
     else: raise RuntimeError("Etiqueta de temps desconeguda")
 
-    if tipus=="b":
-        print("          Etiqueta Tipus b encara no implementada")
-        return
-
     '''mostra l'etiqueta'''
     print("        [\033[34mETIQUETA\033[0m] tipus "+tipus+" ("+str(n)+" bytes):"),
     for i in range(n): print hex(etiqueta[i])[2:4],
 
-    '''
-        Estructura: 5 bytes == 40 bits
-        Cada byte s'ha de llegir al revés
+    if tipus=="a":
+        '''
+            Estructura a: 5 bytes == 40 bits
+            Cada byte s'ha de llegir al revés
 
-        1-6     7     8    9-13   14-15   16   17-21    22-24       25-28   29-30   31-32   33-39   40
-        +-------+-----+----+------+-------+----+--------+-----------+-------+-------+-------+-------+------+
-        | minut | TIS | IV | hora |  RES1 | SU | diames | diasemana |  mes  |  ETI  |  PTI  |  year | RES2 |
-        +-------+-----+----+------+-------+----+--------+-----------+-------+-------+-------+-------+------+
-    '''
-    minut     = (etiqueta[0]&0b00111111)
-    TIS       = (etiqueta[0]&0b01000000) == 64
-    IV        = (etiqueta[0]&0b10000000) == 128
-    hora      = (etiqueta[1]&0b00011111)
-    RES1      = (etiqueta[1]&0b01100000) >> 5
-    SU        = (etiqueta[1]&0b10000000) == 128
-    diames    = (etiqueta[2]&0b00011111)
-    diasemana = (etiqueta[2]&0b11100000) >> 5
-    mes       = (etiqueta[3]&0b00001111)
-    ETI       = (etiqueta[3]&0b00110000) >> 4
-    PTI       = (etiqueta[3]&0b11000000) >> 6
-    year      = (etiqueta[4]&0b01111111)
-    RES2      = (etiqueta[4]&0b10000000) == 128
+            1-6     7     8    9-13   14-15   16   17-21    22-24       25-28   29-30   31-32   33-39   40
+            +-------+-----+----+------+-------+----+--------+-----------+-------+-------+-------+-------+------+
+            | minut | TIS | IV | hora |  RES1 | SU | diames | diasemana |  mes  |  ETI  |  PTI  |  year | RES2 |
+            +-------+-----+----+------+-------+----+--------+-----------+-------+-------+-------+-------+------+
+        '''
+        minut     = (etiqueta[0]&0b00111111)
+        TIS       = (etiqueta[0]&0b01000000) == 64
+        IV        = (etiqueta[0]&0b10000000) == 128
+        hora      = (etiqueta[1]&0b00011111)
+        RES1      = (etiqueta[1]&0b01100000) >> 5
+        SU        = (etiqueta[1]&0b10000000) == 128
+        diames    = (etiqueta[2]&0b00011111)
+        diasemana = (etiqueta[2]&0b11100000) >> 5
+        mes       = (etiqueta[3]&0b00001111)
+        ETI       = (etiqueta[3]&0b00110000) >> 4
+        PTI       = (etiqueta[3]&0b11000000) >> 6
+        year      = (etiqueta[4]&0b01111111)
+        RES2      = (etiqueta[4]&0b10000000) == 128
 
-    '''detall estètic: posa un zero davant el número de: diames, mes, hora i minuts més petits de 10'''
-    if(diames<10): diames="0"+str(diames)
-    if(mes   <10): mes="0"+str(mes)
-    if(hora  <10): hora="0"+str(hora)
-    if(minut <10): minut="0"+str(minut)
+        '''detall estètic: posa un zero davant el número de: diames, mes, hora i minuts més petits de 10'''
+        if(diames<10): diames="0"+str(diames)
+        if(mes   <10): mes="0"+str(mes)
+        if(hora  <10): hora="0"+str(hora)
+        if(minut <10): minut="0"+str(minut)
 
-    print("= Data: \033[34m"+str(diames)+"/"+str(mes)+"/"+str(2000+year)+" "+str(hora)+":"+str(minut)+"\033[0m")
+        print("= Data: \033[34m"+str(diames)+"/"+str(mes)+"/"+str(2000+year)+" "+str(hora)+":"+str(minut)+"\033[0m")
+
+    elif tipus=="b":
+        '''
+            Estructura a: 7 bytes == 56 bits
+            Cada byte s'ha de llegir al revés
+
+            1-10        11-16   17-22   23    24   25-29  30-31   32   33-37    38-40       41-44   45-46   47-48   49-55   56
+            +-----------+-------+-------+-----+----+------+-------+----+--------+-----------+-------+-------+-------+-------+------+
+            | milisegon | segon | minut | TIS | IV | hora |  RES1 | SU | diames | diasemana |  mes  |  ETI  |  PTI  |  year | RES2 |
+            +-----------+-------+-------+-----+----+------+-------+----+--------+-----------+-------+-------+-------+-------+------+
+
+        '''
+        direccio = buf[1] << 8 | buf[0]
+
+        milisegon = (etiqueta[1]&0b00000011) <<8 | etiqueta[0];
+        segon     = (etiqueta[1]&0b11111100) >> 2
+        //ACABAR TODO
+        //ACABAR TODO
+        //ACABAR TODO
+        //ACABAR TODO
+        minut     = (etiqueta[1]&0b00000000)
+        TIS       = (etiqueta[1]&0b00000000) == 64
+        IV        = (etiqueta[1]&0b00000000) == 128
+        hora      = (etiqueta[1]&0b00000000)
+        RES1      = (etiqueta[1]&0b00000000) >> 5
+        SU        = (etiqueta[1]&0b00000000) == 128
+        diames    = (etiqueta[1]&0b00000000)
+        diasemana = (etiqueta[1]&0b00000000) >> 5
+        mes       = (etiqueta[1]&0b00000000)
+        ETI       = (etiqueta[1]&0b00000000) >> 4
+        PTI       = (etiqueta[1]&0b00000000) >> 6
+        year      = (etiqueta[1]&0b00000000)
+        RES2      = (etiqueta[1]&0b00000000) == 128
+
+        '''detall estètic: posa un zero davant el número de: diames, mes, hora i minuts més petits de 10'''
+        if(diames<10): diames="0"+str(diames)
+        if(mes   <10): mes="0"+str(mes)
+        if(hora  <10): hora="0"+str(hora)
+        if(minut <10): minut="0"+str(minut)
+
+        print("= Data: \033[34m"+str(diames)+"/"+str(mes)+"/"+str(2000+year)+" "+str(hora)+":"+str(minut)+"\033[0m")
+
+
     '''fi'''
 
 '''Processa un total integrat (dins alguns tipus d'asdu)'''
