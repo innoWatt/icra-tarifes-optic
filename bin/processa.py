@@ -450,7 +450,7 @@ def campObjsInfo(objsInfo):
     if(idt in [8,11]):
         print("      Amb Etiqueta comuna de temps tipus a (5 bytes)")
         longitud_etiqueta=5
-    elif(idt in [122,123,183,134,139,140,162,163]):
+    elif(idt in [72,122,123,183,134,139,140,162,163]):
         #print("      Sense etiqueta comuna de temps")
         longitud_etiqueta=0
     else:
@@ -541,11 +541,8 @@ def campObjInfo(objInfo):
         campTotalIntegrat(objInfo[1:6],'Energia (kWh)')
     elif(idt in [72]):
         '''A72 es una resposta a A103: petició de la hora del comptador'''
-        direccio=objInfo[0]
-        print("        Registre "+hex(direccio)+"="+str(direccio)+": "+dicc_direccio[direccio])
-
         '''etiqueta temporal (7 bytes)'''
-        etiqueta = objInfo[1:8]
+        etiqueta = objInfo[0:7]
         campEtiquetaTemps(etiqueta)
 
     elif(idt in [122,123]):
@@ -762,7 +759,7 @@ def campEtiquetaTemps(etiqueta):
     '''comprova el tipus d'etiqueta'''
     if(n==5):   tipus="a"
     elif(n==7): tipus="b"
-    else: raise RuntimeError("Etiqueta de temps desconeguda")
+    else: raise RuntimeError("Etiqueta de temps desconeguda (longitud="+str(n)+")")
 
     '''mostra l'etiqueta'''
     print("        [\033[34mETIQUETA\033[0m] tipus "+tipus+" ("+str(n)+" bytes):"),
@@ -813,27 +810,26 @@ def campEtiquetaTemps(etiqueta):
         '''
         milisegon = (etiqueta[1]&0b00000011) <<8 | etiqueta[0];
         segon     = (etiqueta[1]&0b11111100) >> 2
-				minut     = (etiqueta[2]&0b00111111)
-				TIS       = (etiqueta[2]&0b01000000) == 64
-				IV        = (etiqueta[2]&0b10000000) == 128
-				hora      = (etiqueta[3]&0b00011111)
-				RES1      = (etiqueta[3]&0b01100000) >> 5
-				SU        = (etiqueta[3]&0b10000000) == 128
-				diames    = (etiqueta[4]&0b00011111)
-				diasemana = (etiqueta[4]&0b11100000) >> 5
-				mes       = (etiqueta[5]&0b00001111)
-				ETI       = (etiqueta[5]&0b00110000) >> 4
-				PTI       = (etiqueta[5]&0b11000000) >> 6
-				year      = (etiqueta[6]&0b01111111)
-				RES2      = (etiqueta[6]&0b10000000) == 128
-
+        minut     = (etiqueta[2]&0b00111111)
+        TIS       = (etiqueta[2]&0b01000000) == 64
+        IV        = (etiqueta[2]&0b10000000) == 128
+        hora      = (etiqueta[3]&0b00011111)
+        RES1      = (etiqueta[3]&0b01100000) >> 5
+        SU        = (etiqueta[3]&0b10000000) == 128
+        diames    = (etiqueta[4]&0b00011111)
+        diasemana = (etiqueta[4]&0b11100000) >> 5
+        mes       = (etiqueta[5]&0b00001111)
+        ETI       = (etiqueta[5]&0b00110000) >> 4
+        PTI       = (etiqueta[5]&0b11000000) >> 6
+        year      = (etiqueta[6]&0b01111111)
+        RES2      = (etiqueta[6]&0b10000000) == 128
 
         '''detall estètic: posa un zero davant el número de: diames, mes, hora i minuts més petits de 10'''
         if(diames<10): diames="0"+str(diames)
         if(mes   <10): mes="0"+str(mes)
         if(hora  <10): hora="0"+str(hora)
         if(minut <10): minut="0"+str(minut)
-				if(segon <10): segon="0"+str(segon)
+        if(segon <10): segon="0"+str(segon)
 
         print("= Data: \033[34m"+str(diames)+"/"+str(mes)+"/"+str(2000+year)+" "+str(hora)+":"+str(minut)+":"+str(segon)+":"+str(milisegon)+" (estiu="+str(SU)+")\033[0m")
 
