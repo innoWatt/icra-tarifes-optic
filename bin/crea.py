@@ -51,6 +51,7 @@ def creaASDU162(direccio):
         direccio 194: Contiene los valores instantáneos de las tensiones y corrientes, referidos a valores secundarios..
     '''
     return bytearray(asdu)
+
 def creaASDU190(registre,objecte,data_inici,data_final):
     '''
         A190:"LEER BLOQUES DE TOTALES INTEGRADOS OPERACIONALES REPUESTOS PERIÓDICAMENTE POR INTERVALO DE TIEMPO Y DIRECCIÓN",
@@ -83,6 +84,7 @@ def creaASDU190(registre,objecte,data_inici,data_final):
     asdu[7:12]=data_inici
     asdu[12:17]=data_final
     return bytearray(asdu)
+
 def creaASDU123(registre,integrat_inici,integrat_final,data_inici,data_final):
     '''
         A123:"LEER TOTALES INTEGRADOS OPERACIONALES REPUESTOS PERIÓDICAMENTE POR INTERVALO DE TIEMPO Y RANGO DE DIRECCIONES",
@@ -110,6 +112,7 @@ def creaASDU123(registre,integrat_inici,integrat_final,data_inici,data_final):
     asdu[8:13]=data_inici
     asdu[13:18]=data_final
     return bytearray(asdu)
+
 def creaASDU122(registre,integrat_inici,integrat_final,data_inici,data_final):
     '''
         122:"LEER TOTALES INTEGRADOS OPERACIONALES POR INTERVALO DE TIEMPO Y RANGO DE DIRECCIONES",
@@ -136,6 +139,7 @@ def creaASDU122(registre,integrat_inici,integrat_final,data_inici,data_final):
     asdu[8:13]=data_inici
     asdu[13:18]=data_final
     return bytearray(asdu)
+
 def creaASDU134(data_inici,data_final):
     '''
         A134: LEER INFORMACIÓN DE TARIFICACIÓN (VALORES MEMORIZADOS)
@@ -158,6 +162,7 @@ def creaASDU134(data_inici,data_final):
     asdu[6:11]=data_inici
     asdu[11:16]=data_final
     return bytearray(asdu)
+
 def creaASDU183():
     '''
         A183: INICIAR SESIÓN Y ENVIAR CLAVE DE ACCESO
@@ -180,6 +185,7 @@ def creaASDU183():
     asdu[8]=(clau & 0x00ff0000)>>16
     asdu[9]=(clau & 0xff000000)>>24
     return bytearray(asdu)
+
 def creaASDU187():
     '''
         A187: Finalitzar sessió (request)
@@ -193,6 +199,7 @@ def creaASDU187():
     asdu[4]=(pm&0xff00)>>8 #punt mesura (2 bytes)
     asdu[5]=0 #direccio registre: 0: cap registre
     return bytearray(asdu)
+
 def creaASDU103():
     '''
         A103: Llegeix l'hora de l'equip
@@ -207,32 +214,33 @@ def creaASDU103():
     asdu[5]=0 #direccio registre: 0: cap registre
     return bytearray(asdu)
 
-def creaTemps(diames,mes,year,hora,minut):
+def creaTemps(year,mes,diames,hora=0,minut=0,estiu=0):
     '''
         minut:int, hora:int, diames:int, mes:int, year:int (0-99)
+        estiu:<0,1> (0 default, if not specified)
+
         returns: objecte bytearray
 
-        tipus a: 5 bytes. Estructura 40 bits:
+        tipus a: 5 bytes == 40 bits:
 
-                    1-6     7     8   9-13   14-15   16    17-21     22-24     25-28   29-30   31-32   33-39    40
+        1-6     7     8    9-13   14-15   16   17-21    22-24       25-28   29-30   31-32   33-39   40
         +-------+-----+----+------+-------+----+--------+-----------+-------+-------+-------+-------+------+
         | minut | TIS | IV | hora |  RES1 | SU | diames | diasemana |  mes  |  ETI  |  PTI  |  year | RES2 |
         +-------+-----+----+------+-------+----+--------+-----------+-------+-------+-------+-------+------+
-                    0     1           0-0    0              0                    0       0              0
 
-        minut     = (etiqueta[0] & 0b00111111)
-        TIS       = (etiqueta[0] & 0b01000000) == 64
-        IV        = (etiqueta[0] & 0b10000000) == 128
-        hora      = (etiqueta[1] & 0b00011111)
-        RES1      = (etiqueta[1] & 0b01100000) >> 5
-        SU        = (etiqueta[1] & 0b10000000) == 128
-        diames    = (etiqueta[2] & 0b00011111)
-        diasemana = (etiqueta[2] & 0b11100000) >> 5
-        mes       = (etiqueta[3] & 0b00001111)
-        ETI       = (etiqueta[3] & 0b00110000) >> 4
-        PTI       = (etiqueta[3] & 0b11000000) >> 6
-        year      = (etiqueta[4] & 0b01111111)
-        RES2      = (etiqueta[4] & 0b10000000) == 128
+        minut     = UI6 - 0..59 
+        TIS       = BS1 - tariff information switch
+        IV        = BS1 - is invalid?
+        hora      = UI5 - 0..23
+        RES1      = BS2 - 00
+        SU        = BS1 - Summer time?
+        diames    = UI5 - 1..31
+        diasemana = UI3 - 1..7
+        mes       = UI3 - 1..12
+        ETI       = UI2 - energi tariff information
+        PTI       = UI2 - power tariff information
+        year      = UI7 - 0..99
+        RES2      = BS1 - 0
     '''
     trama=[None]*5
     trama[0] = minut
@@ -240,7 +248,12 @@ def creaTemps(diames,mes,year,hora,minut):
     trama[2] = diames
     trama[3] = mes
     trama[4] = year
+
+    #suma el bit 16 (summer time, SU) al byte 1
+    if estiu: trama[1] | 0b10000000
+
     return bytearray(trama)
+
 def creaTramaFix(control):
     trama=[None]*6
     trama[0]=0x10 #inici            1   1   1   1   4   (bits)
@@ -256,6 +269,7 @@ def creaTramaFix(control):
         trama=creaTramaFix(0b01000000,1) #reset d'enllaç remot
         Pro.processa(trama)
     '''
+
 def creaTramaVar(control,asdu):
     trama=[None]*8
     trama[0]=0x68 #inici
@@ -278,8 +292,8 @@ def creaTramaVar(control,asdu):
 '''tests
 import processa as Pro
 trama=creaTramaFix(0x49)
-trama=creaTramaVar(0x73,creaASDU122(21,1,2,creaTemps(25,1,16,6,5),creaTemps(25,1,16,8,5)))
-trama=creaTramaVar(0x73,creaASDU134(creaTemps(25,1,14,0,0),creaTemps(26,1,14,0,0)))
+trama=creaTramaVar(0x73,creaASDU122(21,1,2,creaTemps(16,1,25,6,5,0),creaTemps(16,1,25,8,5,0)))
+trama=creaTramaVar(0x73,creaASDU134(creaTemps(14,1,23,0,0,0),creaTemps(14,1,26,0,0,0)))
 trama=creaTramaVar(0x53,creaASDU187())
 trama=creaTramaVar(0x73,creaASDU183())
 Pro.processa(trama)

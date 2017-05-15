@@ -18,18 +18,23 @@ import processaA11 as E
 
 #data del dia que es vol llegir
 if(len(sys.argv)<2):
-    #print 'Ús: python %s dd-mm-yy' % sys.argv[0]
+    #print 'Ús: python %s dd-mm-yy su' % sys.argv[0]
     #sys.exit()
     print "Escriu el dia que vols llegir (dd-mm-aa):";
     dia=input("dia (dd): ");
     mes=input("mes (mm): ");
     yea=input("any (aa): ");
+    estiu=input("horari estiu (GMT+1)? (0,1): ");
 else:
+    #data
     data=sys.argv[1]
     data=data.split("-")
     dia=int(data[0])
     mes=int(data[1])
     yea=int(data[2])
+    #horari estiu? <0,1>
+    estiu=sys.argv[2]
+    if estiu=="": estiu=0 #default value
 
 '''Login ASDU 183'''
 P.pregunta(C.creaTramaVar(0b01110011,C.creaASDU183())) #request data & send password
@@ -39,8 +44,8 @@ P.pregunta(C.creaTramaFix(0b01011011)) #request data
 P.pregunta(
     C.creaTramaVar(0b01110011,
         C.creaASDU123(11,1,1,
-            C.creaTemps(dia  ,mes,yea,0,0),
-		C.creaTemps(dia+1,mes,yea,0,0))))
+            C.creaTemps(yea,mes,dia,0,0,estiu),
+		C.creaTemps(yea,mes,dia+1,0,0,estiu))))
 
 P.pregunta(C.creaTramaFix(0b01011011)) #request data
 respostes=[] #array per contenir les respostes a processar (trames amb asdus 11)
@@ -52,5 +57,7 @@ while True: #vés consultant fins que doni senyal de fi
         break
 '''FI REQUEST'''
 
-print("CORBA POTÈNCIA");print("==============")
-for i in range(len(respostes)): E.extreuPotencia(respostes[i])
+# mostra corba potència
+print("CORBA POTÈNCIA\n==============");
+for i in range(len(respostes)): 
+    E.extreuPotencia(respostes[i])

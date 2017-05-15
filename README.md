@@ -75,7 +75,7 @@ Després, s'ha de crear un script com ara `usuari.py` per fer les peticions desi
 	P.pregunta(C.creaTramaFix(0b01011011)) #request class 2 data
 
 	#prova asdu 190 amb registre 11 (Curva de carga) i direccio 9,10,11
-	P.pregunta(C.creaTramaVar(0b01110011,C.creaASDU190(11,10,C.creaTemps(21,7,16,0,0),C.creaTemps(22,7,16,0,0))))
+	P.pregunta(C.creaTramaVar(0b01110011,C.creaASDU190(11,10,C.creaTemps(16,7,21,0,0,1),C.creaTemps(16,7,22,16,0,0,1))))
 	while 1:
 		P.pregunta(C.creaTramaFix(0b01011011)) #request data
 		P.pregunta(C.creaTramaFix(0b01111011)) #request data (flip FCB)

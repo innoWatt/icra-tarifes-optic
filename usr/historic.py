@@ -3,9 +3,9 @@
 ''' 
 Aquest programa extreu la corba horària entre un rang de dates i la mostra per pantalla'''
 
-#dates inici i final (dd,mm,yy)
-inici=[ 1,10,16]
-final=[29,10,16]
+#dates inici i final (dd,mm,yy,horari_estiu)
+inici=[ 1,10,16,0]
+final=[29,10,16,0]
 
 print "Data inici:",inici;
 print "Data final:",final;
@@ -21,12 +21,16 @@ import processaA11 as E
 diaInici=inici[0]; mesInici=inici[1]; anyInici=inici[2]
 diaFinal=final[0]; mesFinal=final[1]; anyFinal=final[2]
 
+#horari estiu? <0,1>
+estiuInici=inici[3];
+estiuFinal=final[3];
+
 '''Login amb ASDU 183'''
 P.pregunta(C.creaTramaVar(0b01110011,C.creaASDU183())) #request data & send password
 P.pregunta(C.creaTramaFix(0b01011011)) #request data
 
 '''REQUEST amb ASDU 123 registre 11 i objecte 1 inicial i final'''
-P.pregunta(C.creaTramaVar(0b01110011,C.creaASDU123(11,1,1,C.creaTemps(diaInici,mesInici,anyInici,0,0),C.creaTemps(diaFinal,mesFinal,anyFinal,0,0))))
+P.pregunta(C.creaTramaVar(0b01110011,C.creaASDU123(11,1,1,C.creaTemps(anyInici,mesInici,diaInici,0,0,estiuInici),C.creaTemps(anyFinal,mesFinal,diaFinal,0,0,estiuFinal))))
 P.pregunta(C.creaTramaFix(0b01011011)) #request data
 
 '''Array per contenir les respostes a processar (trames amb asdus 11)'''

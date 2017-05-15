@@ -14,6 +14,13 @@ dia=ara.tm_mday+1 #dia següent: sinó es queda a les 00:00 del dia actual
 mes=ara.tm_mon
 yea=ara.tm_year-2000 #0-99
 
+#horari estiu <0,1>
+estiu_inici=time.ara_isdst
+estiu_final=estiu_inici
+
+#si és març o octubre, flip bit estiu (pel canvi d'hora)
+if mes in [3,10]: estiu_final=int(not(estiu_inici))
+
 #mostra per pantalla dia inici
 print "Dia inici (dd/mm/aa): 1",mes,yea;
 print "Dia final (dd/mm/aa):",dia,mes,yea;
@@ -31,8 +38,8 @@ P.pregunta(C.creaTramaFix(0b01011011)) #request data
 '''ASDU 123 amb registre 11 i objecte 1 (inicial i final)'''
 P.pregunta(C.creaTramaVar(0b01110011,
 	C.creaASDU123(11,1,1,
-		C.creaTemps(1  ,mes,yea,0,0),
-		C.creaTemps(dia,mes,yea,0,0))))
+		C.creaTemps(yea,mes,1  ,0,0,estiu_inici),
+		C.creaTemps(yea,mes,dia,0,0,estiu_final))))
 
 P.pregunta(C.creaTramaFix(0b01011011)) #request data
 
