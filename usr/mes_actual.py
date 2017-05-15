@@ -15,7 +15,7 @@ mes=ara.tm_mon
 yea=ara.tm_year-2000 #0-99
 
 #horari estiu <0,1>
-estiu_inici=time.ara_isdst
+estiu_inici=ara.tm_isdst
 estiu_final=estiu_inici
 
 #si és març o octubre, flip bit estiu (pel canvi d'hora)
@@ -36,11 +36,14 @@ P.pregunta(C.creaTramaVar(0b01110011,C.creaASDU183())) #request data & send pass
 P.pregunta(C.creaTramaFix(0b01011011)) #request data
 
 '''ASDU 123 amb registre 11 i objecte 1 (inicial i final)'''
-P.pregunta(C.creaTramaVar(0b01110011,
-	C.creaASDU123(11,1,1,
-		C.creaTemps(yea,mes,1  ,0,0,estiu_inici),
-		C.creaTemps(yea,mes,dia,0,0,estiu_final))))
-
+P.pregunta(
+	C.creaTramaVar(0b01110011,
+		C.creaASDU123(11,1,1,
+			C.creaTemps(yea,mes,1  ,0,0,estiu_inici),
+			C.creaTemps(yea,mes,dia,0,0,estiu_final)
+		)
+	)
+)
 P.pregunta(C.creaTramaFix(0b01011011)) #request data
 
 respostes=[] #array de trames amb asdus 11
@@ -56,6 +59,7 @@ while True:
 
 #obre arxiu de lectura
 f=open('lectura.txt','w')
+print "Creant arxiu 'lectura.txt'..."
 
 '''Estructura: [diames,mes,year,hora,minut,nrg_valor] '''
 for i in range(len(respostes)):

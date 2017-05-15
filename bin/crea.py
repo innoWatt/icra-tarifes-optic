@@ -250,7 +250,9 @@ def creaTemps(year,mes,diames,hora=0,minut=0,estiu=0):
     trama[4] = year
 
     #suma el bit 16 (summer time, SU) al byte 1
-    if estiu: trama[1] | 0b10000000
+    if estiu: 
+      trama[1] += 0b10000000
+      print bin(trama[1])
 
     return bytearray(trama)
 
