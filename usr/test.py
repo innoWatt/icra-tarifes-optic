@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 '''
-Script que fa una prova de mínims:
-    1. Crea un serial
-    2. Envia una trama
-    3. Rep la resposta
+Script prova de mínims:
+  1. Crea un serial
+  2. Envia una trama
+  3. Rep la resposta
 '''
-import serial
 print "+------------------------+"
 print "| TEST SERIAL CONNECTION |"
 print "+------------------------+"
+import serial
 
 #obre serial
 ser=serial.Serial()
