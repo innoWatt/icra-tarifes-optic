@@ -10,6 +10,7 @@ print "| LLEGIR CORBA DE POTENCIA D'UN DIA CONCRET |";
 print "+-------------------------------------------+";
 
 import sys
+import time
 #local imports
 sys.path.insert(0,"../bin") #add bin folder to path
 import crea        as C
@@ -21,12 +22,27 @@ if(len(sys.argv)<2):
     #print 'Ús: python %s dd-mm-yy su' % sys.argv[0]
     #sys.exit()
     print "Escriu el dia que vols llegir (dd-mm-aa):";
-    dia=input("dia (dd): ");
-    mes=input("mes (mm): ");
-    yea=input("any (aa): ");
-    estiu=input("horari estiu (GMT+1)? (0,1): ");
+
+    #esbrina data actual per fer defaults
+    ara=time.localtime()
+    ara_dia=ara.tm_mday
+    ara_mes=ara.tm_mon
+    ara_yea=ara.tm_year-2000 #0-99
+    ara_dst=ara.tm_isdst
+
+    dia=raw_input("dia (dd) ["+str(ara_dia)+"]: ")
+    mes=raw_input("mes (mm) ["+str(ara_mes)+"]: ")
+    yea=raw_input("any (aa) ["+str(ara_yea)+"]: ")
+    estiu=raw_input("horari estiu (GMT+1)? (0,1) ["+str(ara_dst)+"]: ")
+
+    #aplica defaults si els inputs son buits 
+    if dia=='': dia=ara_dia
+    if mes=='': mes=ara_mes
+    if yea=='': yea=ara_yea
+    if estiu=='': estiu=ara_dst
+    print "Data:",dia,mes,yea,estiu
 else:
-    #data
+    #processa args
     data=sys.argv[1]
     data=data.split("-")
     dia=int(data[0])
