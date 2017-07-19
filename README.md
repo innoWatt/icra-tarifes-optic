@@ -17,7 +17,7 @@ bash inici.sh
 
 ## Manual en desenvolupament
 
-Autors: Lluis Bosch (lbosch@icra.cat) & Felix Hill (fhill@icra.cat)
+Autors: Lluis Bosch (lbosch@icra.cat) & Felix Hill (fhill@icra.cat) & Lluís Corominas (lcorominas@icra.cat)
 
 Aquest paquet inclou:
 
